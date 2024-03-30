@@ -1,20 +1,18 @@
 # HDL Flow
 
-**Description**: HDL Flow is an open-source React project built with Yarn and Vite, leveraging the power of the ReactFlow library. This project aims to provide a user-friendly web application capable of transcribing Finite State Machine (FSM) diagrams into hardware description languages (HDLs), making it easier for hardware designers and engineers to convert visual representations of FSMs into code.
+This is an open-source React project built with Yarn and Vite, leveraging the power of the ReactFlow library. This project aims to provide a user-friendly web application capable of transcribing Finite State Machine (FSM) diagrams into hardware description languages (HDLs), making it easier for hardware designers and engineers to convert visual representations of FSMs into code.
 
-Other things to include:
+**Technology stack**:
 
-- **Technology stack**:
+- React: A popular JavaScript library for building user interfaces.
+- ReactFlow: A React library for building interactive node-based graphs.
+- Yarn: A fast, reliable, and secure package manager for JavaScript.
+- Vite: A modern build tool that serves your code via native ES Module imports during development.
+- Tailwindcss: SA utility-first CSS framework packed with classes.
 
-* React: A popular JavaScript library for building user interfaces.
-* ReactFlow: A React library for building interactive node-based graphs.
-* Yarn: A fast, reliable, and secure package manager for JavaScript.
-* Vite: A modern build tool that serves your code via native ES Module imports during development.
-* Tailwindcss: SA utility-first CSS framework packed with classes.
+**Status**: We're just getting started. Check the [CHANGELOG](CHANGELOG.md) for more information.
 
-- **Status**: We're just getting started. Check the [CHANGELOG](CHANGELOG.md) for more information.
-- **Links to production or demo instances**
-- You can check the project's website right now right [here!](https://github.com/jvdprates/pfc-hdl-flow).
+**Links to production or demo instances**: You can check the latest version of the website right [here!](https://github.com/jvdprates/pfc-hdl-flow).
 
 <!-- **Screenshot**: If the software has visual components, place a screenshot after the description; e.g.,
 
