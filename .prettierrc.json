@@ -2,8 +2,14 @@
   "bracketSpacing": false,
   "bracketSameLine": true,
   "singleQuote": true,
+  "importOrder": ["^components/(.*)$", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSpecifiers": true,
   "trailingComma": "all",
   "arrowParens": "avoid",
   "endOfLine": "auto",
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": [
+    "prettier-plugin-tailwindcss",
+    "@trivago/prettier-plugin-sort-imports"
+  ]
 }
