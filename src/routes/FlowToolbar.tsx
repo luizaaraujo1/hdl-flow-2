@@ -6,7 +6,7 @@ interface Props {
 
 function FlowToolbar({addNewNode}: Props) {
   return (
-    <Toolbar.Root className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-lg border-zinc[300] px-8 h-20 w-96 overflow-hidden">
+    <Toolbar.Root className="relative bottom-24 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-lg border-zinc[300] px-8 h-20 w-96 overflow-hidden">
       <Toolbar.Button
         className="w-32 h-32 bg-violet-500 rounded mt-6 hover:-translate-y-2 transition-transform"
         onClick={addNewNode}

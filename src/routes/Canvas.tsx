@@ -60,23 +60,25 @@ function Canvas() {
   }
 
   return (
-    <div className="h-1/2 w-1/2">
-      <ReactFlow
-        nodeTypes={NODE_TYPES}
-        edgeTypes={EDGE_TYPES}
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        connectionMode={ConnectionMode.Loose}
-        defaultEdgeOptions={{type: 'default'}}
-        snapGrid={[12, 12]}
-        snapToGrid={true}>
-        <Background gap={12} size={2} color={zinc[200]} />
-        <Controls />
-      </ReactFlow>
-      <FlowToolbar addNewNode={addNewNode} />
+    <div className="flex-1 bg-slate-100">
+      <div className="h-[80vh]">
+        <ReactFlow
+          nodeTypes={NODE_TYPES}
+          edgeTypes={EDGE_TYPES}
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          connectionMode={ConnectionMode.Loose}
+          defaultEdgeOptions={{type: 'default'}}
+          snapGrid={[12, 12]}
+          snapToGrid={true}>
+          <Background gap={12} size={2} color={zinc[200]} />
+          <Controls />
+        </ReactFlow>
+        <FlowToolbar addNewNode={addNewNode} />
+      </div>
     </div>
   );
 }
