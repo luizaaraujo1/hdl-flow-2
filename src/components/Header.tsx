@@ -1,5 +1,7 @@
 import {Link} from 'react-router-dom';
 
+import {GITHUB_LINK} from '../constants/links';
+
 function Header() {
   return (
     <header className="bg-gray-800 text-gray-100 shadow-lg">
@@ -10,12 +12,12 @@ function Header() {
         <nav>
           <ul className="flex space-x-4">
             <li>
-              <Link to="/feedback" className="hover:text-gray-200">
+              <a href={GITHUB_LINK} className="hover:text-gray-200">
                 Feedback
-              </Link>
+              </a>
             </li>
             <li>
-              <a href="#contribute" className="hover:text-gray-200">
+              <a href={GITHUB_LINK} className="hover:text-gray-200">
                 Contribute
               </a>
             </li>
