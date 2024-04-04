@@ -14,7 +14,7 @@ import {zinc} from 'tailwindcss/colors';
 
 import {DefaultEdge} from '../components/edges/DefaultEdge';
 import {Square} from '../components/nodes/Square';
-import FlowToolbar from './FlowToolbar';
+import SideMenu from './SideMenu';
 
 const NODE_TYPES = {
   square: Square,
@@ -77,7 +77,7 @@ function Canvas() {
           <Background gap={12} size={2} color={zinc[200]} />
           <Controls position="bottom-right" />
         </ReactFlow>
-        <FlowToolbar addNewNode={addNewNode} />
+        <SideMenu addNewNode={addNewNode} />
       </div>
     </div>
   );

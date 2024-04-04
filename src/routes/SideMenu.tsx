@@ -39,7 +39,7 @@ function CustomIcon({icon}: CustomIconProps) {
   });
 }
 
-function FlowToolbar({addNewNode}: Props) {
+function SideMenu({addNewNode}: Props) {
   const [open, setOpen] = useState(true);
   return (
     <Toolbar.Root
@@ -63,4 +63,4 @@ function FlowToolbar({addNewNode}: Props) {
   );
 }
 
-export default FlowToolbar;
+export default SideMenu;
