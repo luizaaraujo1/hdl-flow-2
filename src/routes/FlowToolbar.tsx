@@ -1,16 +1,64 @@
+import {
+  BoxModelIcon,
+  ChevronLeftIcon,
+  HamburgerMenuIcon,
+  QuestionMarkIcon,
+} from '@radix-ui/react-icons';
 import * as Toolbar from '@radix-ui/react-toolbar';
+import {cloneElement, useState} from 'react';
+import colors from 'tailwindcss/colors';
 
 interface Props {
   addNewNode: () => void;
 }
 
-function FlowToolbar({addNewNode}: Props) {
+interface CustomButtonProps {
+  onClick: () => void;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+interface CustomIconProps {
+  icon: React.ReactElement;
+}
+
+function CustomButton({children, onClick, className}: CustomButtonProps) {
   return (
-    <Toolbar.Root className="relative bottom-24 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-lg border-zinc[300] px-8 h-20 w-96 overflow-hidden">
-      <Toolbar.Button
-        className="w-32 h-32 bg-violet-500 rounded mt-6 hover:-translate-y-2 transition-transform"
-        onClick={addNewNode}
-      />
+    <Toolbar.Button
+      className={`w-16 h-16 border-2 bg-white border-solid border-zinc-300/60 rounded-3xl shadow-md hover:border-zinc-100 hover:shadow-sm transition-colors active:bg-slate-200 active:shadow-lg flex justify-center items-center ${className}`}
+      onClick={onClick}>
+      {children}
+    </Toolbar.Button>
+  );
+}
+
+function CustomIcon({icon}: CustomIconProps) {
+  return cloneElement(icon, {
+    color: colors.zinc['600'],
+    className: 'relative h-1/2 w-1/2',
+  });
+}
+
+function FlowToolbar({addNewNode}: Props) {
+  const [open, setOpen] = useState(true);
+  return (
+    <Toolbar.Root
+      orientation="vertical"
+      className={`relative bottom-1/2 -translate-y-1/2 ${open ? '' : '-translate-x-16'} bg-white rounded-e-2xl shadow-lg border-zinc-300 py-8 px-2 h-96 w-20 flex flex-col gap-2 overflow-visible transition-transform`}>
+      <CustomButton onClick={() => {}}>
+        {<CustomIcon icon={<QuestionMarkIcon />} />}
+      </CustomButton>
+      <CustomButton onClick={() => {}}>
+        {<CustomIcon icon={<HamburgerMenuIcon />} />}
+      </CustomButton>
+      <CustomButton onClick={addNewNode}>
+        {<CustomIcon icon={<BoxModelIcon />} />}
+      </CustomButton>
+      <CustomButton
+        onClick={() => setOpen(prev => !prev)}
+        className={`${open ? '' : 'translate-x-8 -rotate-180'} transition-transform`}>
+        {<CustomIcon icon={<ChevronLeftIcon />} />}
+      </CustomButton>
     </Toolbar.Root>
   );
 }
