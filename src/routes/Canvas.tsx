@@ -12,7 +12,8 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
 
-import SideMenu from '../components/SideMenu';
+import SideMenu from '../components/canvas/SideMenu';
+import SettingsDialog from '../components/canvas/settings/SettingsDialog';
 import {DefaultEdge} from '../components/edges/DefaultEdge';
 import {Square} from '../components/nodes/Square';
 
@@ -78,6 +79,7 @@ function Canvas() {
           <Controls position="bottom-right" />
         </ReactFlow>
         <SideMenu addNewNode={addNewNode} />
+        <SettingsDialog />
       </div>
     </div>
   );
