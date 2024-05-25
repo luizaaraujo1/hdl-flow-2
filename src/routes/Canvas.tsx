@@ -12,9 +12,9 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
 
+import SideMenu from '../components/SideMenu';
 import {DefaultEdge} from '../components/edges/DefaultEdge';
 import {Square} from '../components/nodes/Square';
-import SideMenu from './SideMenu';
 
 const NODE_TYPES = {
   square: Square,
