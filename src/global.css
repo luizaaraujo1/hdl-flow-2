@@ -19,6 +19,6 @@
     @apply  fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
   }
   .btn-canvas {
-    @apply border-2 bg-white border-solid border-zinc-100 rounded-3xl shadow-sm hover:border-zinc-300/60 hover:shadow-md transition-colors active:bg-slate-200 active:shadow-lg flex justify-center items-center
+    @apply border-2 bg-white border-solid border-zinc-100 rounded-3xl shadow-sm hover:border-zinc-300/60 hover:shadow-md transition-colors active:bg-slate-200 active:shadow-lg flex justify-center items-center aria-selected:bg-slate-200
   }
 }
