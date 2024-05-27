@@ -1,4 +1,4 @@
-interface Props {
+export interface TextInputProps {
   id: string;
   label: string;
   onChange: (value: string) => void;
@@ -26,7 +26,7 @@ function PortTextInput({
   disabled,
   expand = false,
   maxLength = DEFAULT_INPUT_MAX_LENGTH,
-}: Props) {
+}: TextInputProps) {
   const requirementStyle =
     required && value === '' ? 'bg-red-300/20 placeholder-red-500' : '';
   const disabledStyle = disabled ? 'bg-gray-200 hover:shadow-md' : '';

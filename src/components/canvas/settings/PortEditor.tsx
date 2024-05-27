@@ -3,7 +3,7 @@ import * as Tabs from '@radix-ui/react-tabs';
 
 import {PortCategory, TabSchema} from '../../../constants/ports';
 import {useGlobal} from '../../../contexts/GlobalContext';
-import Port from '../../../models/port';
+import Port, {PortTypeEnum} from '../../../models/port';
 import {
   changeSpacesIntoUnderlines,
   removeForbiddenChars,
@@ -39,7 +39,7 @@ function PortEditor() {
       id: crypto.randomUUID(),
       name: `Port ${tab} ${lengthString}`,
       id_name: `port_${lowerCaseTab}_${lengthString}`,
-      type: 'logic',
+      type: PortTypeEnum.Logic,
       description: '',
       defaultValue: false,
     };
@@ -142,7 +142,7 @@ function PortEditor() {
             key={`${tab.name}_label`}
             value={tab.name}
             className="flex items-center">
-            <h3 className="text-sm font-semibold text-gray-500 ml-4">{`Here, you can edit your FSM's ${tab.name} Ports`}</h3>
+            <h3 className="text-sm text-gray-500 ml-4">{`Here, you can edit your FSM's ${tab.name} Ports`}</h3>
           </Tabs.Content>
         ))}
       </Tabs.List>

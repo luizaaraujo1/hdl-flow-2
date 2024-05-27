@@ -9,7 +9,8 @@ import {useState} from 'react';
 import {zinc} from 'tailwindcss/colors';
 
 import {PortCategory} from '../../../constants/ports';
-import Port from '../../../models/port';
+import Port, {PortTypeEnum} from '../../../models/port';
+import PortSelectInput from './PortSelectInput';
 import PortTextInput from './PortTextInput';
 
 interface Props {
@@ -91,6 +92,13 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
               placeholder="(optional) Short description"
               expand
               maxLength={60}
+            />
+            <PortSelectInput
+              id="type_select"
+              label="Select Port Type"
+              onChange={value => setPort('type', value)}
+              value={port.type}
+              options={Object.values(PortTypeEnum)}
             />
           </fieldset>
         )}

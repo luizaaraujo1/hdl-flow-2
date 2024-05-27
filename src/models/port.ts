@@ -1,11 +1,16 @@
-type PortType = 'integer' | 'logic' | 'logic_vector';
+export enum PortTypeEnum {
+  Integer = 'integer',
+  Logic = 'logic',
+  LogicVector = 'logic_vector',
+}
+
 type PortDefault = undefined | number | boolean | string;
 
 interface Port {
   id: string;
   name: string;
   id_name: string;
-  type: PortType;
+  type: PortTypeEnum;
   description: '';
   defaultValue: PortDefault;
 }

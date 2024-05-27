@@ -13,10 +13,10 @@ function SettingsDialog() {
     <Dialog.Root open={settingsOpen} defaultOpen={false}>
       <Dialog.Portal>
         <Dialog.Overlay
-          className="bg-black opacity-80 fixed inset-0 ease-in-out cursor-pointer"
+          className="bg-black/50 fixed inset-0 cursor-pointer"
           onClick={closeDialog}
         />
-        <Dialog.Content className="bg-white rounded-md shadow-lg center-fixed ease-in-out duration-150 w-4/5 max-w-[1400px] h-2/3 focus:outline-none p-8 flex flex-col">
+        <Dialog.Content className="bg-white rounded-md shadow-lg center-fixed transition-all ease-in duration-150 w-4/5 max-w-[1400px] h-2/3 focus:outline-none p-8 flex flex-col">
           <Dialog.Close
             onClick={closeDialog}
             className="btn-canvas rounded-full w-8 h-8 fixed top-8 right-8">
