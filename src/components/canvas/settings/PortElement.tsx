@@ -32,10 +32,11 @@ function PortIcon({portType}: IconProps) {
 function PortElement({onDelete, portType, port, setPort}: Props) {
   const [editing, setEditing] = useState(false);
   const isUnnamed = port.name === '';
+  const editingStyle = editing ? 'min-h-[200px]' : 'min-h-0 h-0';
 
   return (
     <div className="flex flex-col">
-      <fieldset className="flex justify-between rounded-md shadow-sm p-2 bg-white">
+      <fieldset className="flex justify-between rounded-md shadow-lg p-2 bg-white">
         <div className="flex items-center">
           <PortIcon portType={portType} />
           <h3 className="text-sm font-semibold text-gray-500 ml-4">Name:</h3>
@@ -62,9 +63,9 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
         </div>
       </fieldset>
       <div
-        className={`bg-zinc-600/20 rounded-b-md transition-[min-height] ease-in-out ${editing ? 'min-h-[200px]' : 'min-h-0 h-0'}`}>
+        className={`bg-zinc-600/20 rounded-b-md transition-[min-height] ease-in-out shadow-lg ${editingStyle}`}>
         {editing && (
-          <fieldset className="flex flex-col p-2" disabled={!editing}>
+          <fieldset className="flex flex-col p-2 gap-1" disabled={!editing}>
             <PortTextInput
               id="name_input"
               label="Name:"

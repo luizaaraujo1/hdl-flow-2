@@ -142,7 +142,7 @@ function PortEditor() {
             key={`${tab.name}_label`}
             value={tab.name}
             className="flex items-center">
-            <h3 className="text-sm font-semibold text-gray-500 ml-4">{`Here, you can edit your FSM's ${tab.name}s`}</h3>
+            <h3 className="text-sm font-semibold text-gray-500 ml-4">{`Here, you can edit your FSM's ${tab.name} Ports`}</h3>
           </Tabs.Content>
         ))}
       </Tabs.List>

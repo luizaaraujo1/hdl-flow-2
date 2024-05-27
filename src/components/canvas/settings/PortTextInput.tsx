@@ -29,7 +29,7 @@ function PortTextInput({
 }: Props) {
   const requirementStyle =
     required && value === '' ? 'bg-red-300/20 placeholder-red-500' : '';
-  const disabledStyle = disabled ? 'bg-gray-200' : '';
+  const disabledStyle = disabled ? 'bg-gray-200 hover:shadow-md' : '';
 
   return (
     <>
@@ -42,7 +42,7 @@ function PortTextInput({
         <input
           id={id}
           name={id}
-          className={`w-1/2 p-1 rounded-sm text-start ${requirementStyle} ${disabledStyle} ${className}`}
+          className={`input-canvas ${requirementStyle} ${disabledStyle} ${className}`}
           type={'text'}
           placeholder={placeholder}
           value={value}
@@ -58,7 +58,7 @@ function PortTextInput({
         <textarea
           id={id}
           name={id}
-          className={`w-1/2 p-1 rounded-sm resize-none max-h-9 focus:max-h-fit ${requirementStyle} ${disabledStyle} ${className}`}
+          className={`input-canvas focus:w-full transition-[width,height] ease-in-out resize-none max-h-9 focus:max-h-fit ${requirementStyle} ${disabledStyle} ${className}`}
           cols={20}
           rows={3}
           placeholder={placeholder}
