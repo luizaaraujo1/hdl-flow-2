@@ -6,6 +6,7 @@ interface Port {
   name: string;
   id_name: string;
   type: PortType;
+  description: '';
   defaultValue: PortDefault;
 }
 

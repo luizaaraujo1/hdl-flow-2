@@ -10,6 +10,7 @@ import {zinc} from 'tailwindcss/colors';
 
 import {PortCategory} from '../../../constants/ports';
 import Port from '../../../models/port';
+import PortTextInput from './PortTextInput';
 
 interface Props {
   port: Port;
@@ -38,7 +39,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
           <PortIcon portType={portType} />
           <h3 className="text-sm font-semibold text-gray-500 ml-4">Name:</h3>
           <h3 className="text-sm font-semibold text-gray-500 ml-2">
-            {port.name !== '' ? port.name : 'Unnamed Port'}
+            {port.name !== '' ? port.name : 'Unnamed Port!'}
           </h3>
           <h2 className="text-sm font-semibold text-gray-500 ml-4">-</h2>
           <h3 className="text-sm font-semibold ml-4">Type:</h3>
@@ -62,34 +63,31 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
         className={`bg-zinc-600/20 rounded-b-md transition-[min-height] ease-in-out ${editing ? 'min-h-[200px]' : 'min-h-0 h-0'}`}>
         {editing && (
           <fieldset className="flex flex-col p-2" disabled={!editing}>
-            <label
-              htmlFor="name_input"
-              className="text-sm font-semibold text-gray-600">
-              Name:
-            </label>
-            <input
-              className="w-1/2 p-1 rounded-sm"
-              type="text"
-              id="name_input"
-              name="name_input"
+            <PortTextInput
+              id={'name_input'}
+              label={'Name:'}
+              onChange={value => setPort('name', value)}
               value={port.name}
-              onChange={event => {
-                event.preventDefault();
-                setPort('name', event.target.value);
-              }}
+              placeholder="Write an unique name"
+              required
             />
-            <label
-              htmlFor="id_name_input"
-              className="text-sm font-semibold text-gray-600 mt-2">
-              ID Name:
-            </label>
-            <input
-              className="w-1/2 p-1 rounded-sm bg-gray-200"
-              type="text"
+            <PortTextInput
               id="id_name_input"
-              name="id_name_input"
+              label="ID Name:"
+              onChange={value => setPort('id_name', value)}
               value={port.id_name}
+              placeholder="Don't leave the name empty!"
+              required
               disabled
+            />
+            <PortTextInput
+              id={'description_input'}
+              label={'Description:'}
+              onChange={value => setPort('description', value)}
+              value={port.description}
+              placeholder="(optional) Short description"
+              expand
+              maxLength={60}
             />
           </fieldset>
         )}

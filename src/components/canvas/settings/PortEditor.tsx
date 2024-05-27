@@ -40,6 +40,7 @@ function PortEditor() {
       name: `Port ${tab} ${lengthString}`,
       id_name: `port_${lowerCaseTab}_${lengthString}`,
       type: 'logic',
+      description: '',
       defaultValue: false,
     };
   };
@@ -103,7 +104,7 @@ function PortEditor() {
     value: Port[keyof Port],
   ) => {
     const name = removeForbiddenChars(String(value ?? ''));
-    const id_name = changeSpacesIntoUnderlines(name).toLowerCase();
+    const id_name = changeSpacesIntoUnderlines(name.trimEnd()).toLowerCase();
 
     updatePort(id, getList(tab), getListSetter(tab), 'name', name);
     updatePort(id, getList(tab), getListSetter(tab), 'id_name', id_name);
@@ -141,7 +142,7 @@ function PortEditor() {
             key={`${tab.name}_label`}
             value={tab.name}
             className="flex items-center">
-            <h3 className="text-sm font-semibold text-gray-500 ml-4">{`Select your ${tab.name}`}</h3>
+            <h3 className="text-sm font-semibold text-gray-500 ml-4">{`Here, you can edit your FSM's ${tab.name}s`}</h3>
           </Tabs.Content>
         ))}
       </Tabs.List>
