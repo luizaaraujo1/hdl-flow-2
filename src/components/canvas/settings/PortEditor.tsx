@@ -1,14 +1,14 @@
-import {PlusCircledIcon, TrashIcon} from '@radix-ui/react-icons';
+import {PlusCircledIcon} from '@radix-ui/react-icons';
 import * as Tabs from '@radix-ui/react-tabs';
-import {zinc} from 'tailwindcss/colors';
 
+import {PortCategory, TabSchema} from '../../../constants/ports';
 import {useGlobal} from '../../../contexts/GlobalContext';
 import Port from '../../../models/port';
-
-interface TabSchema {
-  name: string;
-  portList: Port[];
-}
+import {
+  changeSpacesIntoUnderlines,
+  removeForbiddenChars,
+} from '../../../utils/input';
+import PortElement from './PortElement';
 
 function PortEditor() {
   const {
@@ -21,9 +21,9 @@ function PortEditor() {
   } = useGlobal();
 
   const PORT_TABS: TabSchema[] = [
-    {name: 'Inputs', portList: inputList},
-    {name: 'Outputs', portList: outputList},
-    {name: 'Internals', portList: internalsList},
+    {name: 'Input', portList: inputList},
+    {name: 'Output', portList: outputList},
+    {name: 'Internal', portList: internalsList},
   ];
 
   const getTriggerRound = (index: number) => {
@@ -32,29 +32,33 @@ function PortEditor() {
     return 'rounded-none';
   };
 
-  const handleAddPort = (tab: string) => {
-    const newPort: Port = {
+  const getDefaultPortValues = (tagNumber: number, tab: PortCategory): Port => {
+    const lowerCaseTab = tab.toString().toLowerCase();
+    const lengthString = tagNumber.toString();
+    return {
       id: crypto.randomUUID(),
-      name: '',
+      name: `Port ${tab} ${lengthString}`,
+      id_name: `port_${lowerCaseTab}_${lengthString}`,
       type: 'logic',
       defaultValue: false,
     };
-    if (tab === PORT_TABS[0].name) {
-      setInputList(prev => [...prev, newPort]);
-    }
-    if (tab === PORT_TABS[1].name) {
-      setOutputList(prev => [...prev, newPort]);
-    }
-    if (tab === PORT_TABS[2].name) {
-      setInternalsList(prev => [...prev, newPort]);
-    }
   };
 
-  const getList = (tab: string) => {
+  const getList = (tab: PortCategory) => {
     if (tab === PORT_TABS[0].name) return inputList;
     if (tab === PORT_TABS[1].name) return outputList;
-    if (tab === PORT_TABS[2].name) return internalsList;
-    return [];
+    return internalsList;
+  };
+
+  const getListSetter = (tab: PortCategory) => {
+    if (tab === PORT_TABS[0].name) return setInputList;
+    if (tab === PORT_TABS[1].name) return setOutputList;
+    return setInternalsList;
+  };
+
+  const handleAddPort = (tab: PortCategory) => {
+    const newPort = getDefaultPortValues(getList(tab).length + 1, tab);
+    getListSetter(tab)(prev => [...prev, newPort]);
   };
 
   const deletePort = (
@@ -72,22 +76,55 @@ function PortEditor() {
     }
   };
 
-  const handlePortDelete = (tab: string, id: string) => {
-    if (tab === PORT_TABS[0].name) {
-      deletePort(id, inputList, setInputList);
+  const handlePortDelete = (tab: PortCategory, id: string) => {
+    deletePort(id, getList(tab), getListSetter(tab));
+  };
+
+  const updatePort = (
+    id: string,
+    portList: Port[],
+    setter: (value: React.SetStateAction<Port[]>) => void,
+    key: keyof Port,
+    value: Port[keyof Port],
+  ) => {
+    const index = portList.findIndex(port => port.id === id);
+    if (index > -1) {
+      setter(prev => {
+        const newList = [...prev];
+        newList[index] = {...newList[index], [key]: value};
+        return newList;
+      });
     }
-    if (tab === PORT_TABS[1].name) {
-      deletePort(id, outputList, setOutputList);
-    }
-    if (tab === PORT_TABS[2].name) {
-      deletePort(id, internalsList, setInternalsList);
+  };
+
+  const handlePortNameUpdate = (
+    id: string,
+    tab: PortCategory,
+    value: Port[keyof Port],
+  ) => {
+    const name = removeForbiddenChars(String(value ?? ''));
+    const id_name = changeSpacesIntoUnderlines(name).toLowerCase();
+
+    updatePort(id, getList(tab), getListSetter(tab), 'name', name);
+    updatePort(id, getList(tab), getListSetter(tab), 'id_name', id_name);
+  };
+
+  const handlePortUpdate = (
+    id: string,
+    tab: PortCategory,
+    key: keyof Port,
+    value: Port[keyof Port],
+  ) => {
+    if (key === 'name') handlePortNameUpdate(id, tab, value);
+    else {
+      updatePort(id, getList(tab), getListSetter(tab), key, value);
     }
   };
 
   return (
     <Tabs.Root
       defaultValue={PORT_TABS[0].name}
-      className="flex flex-col flex-1 overflow-y-auto">
+      className="flex flex-col flex-1 overflow-y-scroll">
       <Tabs.List
         aria-label="Select the type of Port"
         className="flex flex-row bg-white sticky -top-0.5 border-r-2 border-b-2 w-fit pr-4 rounded-r-md">
@@ -112,27 +149,26 @@ function PortEditor() {
         <Tabs.Content
           key={`${tab.name}_body`}
           value={tab.name}
-          className="rounded-md rounded-tl-none shadow-inner flex-1 p-4 bg-gray-50">
+          className="rounded-md rounded-tl-none shadow-inner flex-1 p-4 pr-2 bg-gray-50">
           <>
             <div className="grid grid-cols-2 mr-16 gap-2">
               {getList(tab.name).map(port => (
-                <fieldset
-                  key={port.id}
-                  className="flex justify-between rounded-md shadow-sm p-2 bg-white">
-                  <h3>{port.id}</h3>
-                  <button
-                    onClick={() => handlePortDelete(tab.name, port.id)}
-                    className="btn-canvas bg-rose-100 border-red-100 hover:border-red-300/60 active:bg-red-200 rounded-md p-1">
-                    <TrashIcon color={zinc[600]} />
-                  </button>
-                </fieldset>
+                <PortElement
+                  key={`element_${tab.name}_${port.id}`}
+                  portType={tab.name}
+                  port={port}
+                  onDelete={() => handlePortDelete(tab.name, port.id)}
+                  setPort={(key, value) =>
+                    handlePortUpdate(port.id, tab.name, key, value)
+                  }
+                />
               ))}
             </div>
             <button
-              className="fixed flex btn-canvas p-2 bottom-10 right-10"
+              className="fixed flex btn-canvas p-2 bottom-10 right-14"
               onClick={() => handleAddPort(tab.name)}>
               <PlusCircledIcon />
-              <h2 className="text-md font-semibold ml-2">Add new port</h2>
+              <h2 className="text-md font-semibold ml-2">Add New Port</h2>
             </button>
           </>
         </Tabs.Content>

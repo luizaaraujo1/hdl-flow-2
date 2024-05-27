@@ -1,8 +1,12 @@
+type PortType = 'integer' | 'logic' | 'logic_vector';
+type PortDefault = undefined | number | boolean | string;
+
 interface Port {
   id: string;
   name: string;
-  type: 'integer' | 'logic' | 'logic_vector';
-  defaultValue: undefined | number | boolean | string;
+  id_name: string;
+  type: PortType;
+  defaultValue: PortDefault;
 }
 
 export default Port;

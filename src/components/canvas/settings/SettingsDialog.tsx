@@ -26,7 +26,7 @@ function SettingsDialog() {
             Port Settings
           </Dialog.Title>
           <Dialog.Description className="text-md font-light mb-4">
-            Use this menu to set up the ports for your FSM
+            Use this menu to set up the Ports for your FSM
           </Dialog.Description>
           <PortEditor />
         </Dialog.Content>
