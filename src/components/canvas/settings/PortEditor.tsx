@@ -110,6 +110,27 @@ function PortEditor() {
     updatePort(id, getList(tab), getListSetter(tab), 'id_name', id_name);
   };
 
+  const getDefaultValueByType = (type: string) => {
+    if (type === PortTypeEnum.Integer) return 0;
+    if (type === PortTypeEnum.LogicVector) return '000';
+    return false;
+  };
+
+  const handlePortTypeUpdate = (
+    id: string,
+    tab: PortCategory,
+    value: Port[keyof Port],
+  ) => {
+    updatePort(
+      id,
+      getList(tab),
+      getListSetter(tab),
+      'defaultValue',
+      getDefaultValueByType(String(value)),
+    );
+    updatePort(id, getList(tab), getListSetter(tab), 'type', value);
+  };
+
   const handlePortUpdate = (
     id: string,
     tab: PortCategory,
@@ -117,6 +138,7 @@ function PortEditor() {
     value: Port[keyof Port],
   ) => {
     if (key === 'name') handlePortNameUpdate(id, tab, value);
+    if (key === 'type') handlePortTypeUpdate(id, tab, value);
     else {
       updatePort(id, getList(tab), getListSetter(tab), key, value);
     }

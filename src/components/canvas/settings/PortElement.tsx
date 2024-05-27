@@ -5,11 +5,11 @@ import {
   TrashIcon,
   UploadIcon,
 } from '@radix-ui/react-icons';
-import {useState} from 'react';
+import {cloneElement, useCallback, useState} from 'react';
 import {zinc} from 'tailwindcss/colors';
 
 import {PortCategory} from '../../../constants/ports';
-import Port, {PortTypeEnum} from '../../../models/port';
+import Port, {PortDefault, PortTypeEnum} from '../../../models/port';
 import PortSelectInput from './PortSelectInput';
 import PortTextInput from './PortTextInput';
 
@@ -34,6 +34,34 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
   const [editing, setEditing] = useState(false);
   const isUnnamed = port.name === '';
   const editingStyle = editing ? 'min-h-[200px]' : 'min-h-0 h-0';
+
+  const renderDefaultValueInput = useCallback(
+    (
+      type: PortTypeEnum,
+      onChange: (value: string) => void,
+      value: PortDefault,
+    ) => {
+      const isLogic = type === PortTypeEnum.Logic;
+      const sharedProps = {
+        id: 'default_input',
+        label: 'Default Value:',
+        required: true,
+        value: String(value),
+        onChange,
+      };
+      return cloneElement(
+        isLogic ? (
+          <PortSelectInput options={['false', 'true']} {...sharedProps} />
+        ) : (
+          <PortTextInput
+            placeholder="Set the Port's default value"
+            {...sharedProps}
+          />
+        ),
+      );
+    },
+    [],
+  );
 
   return (
     <div className="flex flex-col">
@@ -84,6 +112,23 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
               required
               disabled
             />
+            <PortSelectInput
+              id="type_select"
+              label="Select Port Type"
+              onChange={value => setPort('type', value)}
+              value={port.type}
+              options={[
+                PortTypeEnum.Logic,
+                PortTypeEnum.LogicVector,
+                PortTypeEnum.Integer,
+              ]}
+              required
+            />
+            {renderDefaultValueInput(
+              port.type,
+              value => setPort('defaultValue', value),
+              port.defaultValue,
+            )}
             <PortTextInput
               id="description_input"
               label="Description:"
@@ -92,13 +137,6 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
               placeholder="(optional) Short description"
               expand
               maxLength={60}
-            />
-            <PortSelectInput
-              id="type_select"
-              label="Select Port Type"
-              onChange={value => setPort('type', value)}
-              value={port.type}
-              options={Object.values(PortTypeEnum)}
             />
           </fieldset>
         )}

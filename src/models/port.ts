@@ -4,7 +4,7 @@ export enum PortTypeEnum {
   LogicVector = 'logic_vector',
 }
 
-type PortDefault = undefined | number | boolean | string;
+export type PortDefault = undefined | number | boolean | string;
 
 interface Port {
   id: string;
