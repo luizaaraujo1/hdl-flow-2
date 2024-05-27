@@ -31,6 +31,7 @@ function PortIcon({portType}: IconProps) {
 
 function PortElement({onDelete, portType, port, setPort}: Props) {
   const [editing, setEditing] = useState(false);
+  const isUnnamed = port.name === '';
 
   return (
     <div className="flex flex-col">
@@ -38,8 +39,9 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
         <div className="flex items-center">
           <PortIcon portType={portType} />
           <h3 className="text-sm font-semibold text-gray-500 ml-4">Name:</h3>
-          <h3 className="text-sm font-semibold text-gray-500 ml-2">
-            {port.name !== '' ? port.name : 'Unnamed Port!'}
+          <h3
+            className={`text-sm font-semibold ${isUnnamed ? 'text-red-500' : 'text-gray-500'} ml-2`}>
+            {!isUnnamed ? port.name : 'Unnamed Port!'}
           </h3>
           <h2 className="text-sm font-semibold text-gray-500 ml-4">-</h2>
           <h3 className="text-sm font-semibold ml-4">Type:</h3>
@@ -64,8 +66,8 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
         {editing && (
           <fieldset className="flex flex-col p-2" disabled={!editing}>
             <PortTextInput
-              id={'name_input'}
-              label={'Name:'}
+              id="name_input"
+              label="Name:"
               onChange={value => setPort('name', value)}
               value={port.name}
               placeholder="Write an unique name"
@@ -81,8 +83,8 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
               disabled
             />
             <PortTextInput
-              id={'description_input'}
-              label={'Description:'}
+              id="description_input"
+              label="Description:"
               onChange={value => setPort('description', value)}
               value={port.description}
               placeholder="(optional) Short description"
