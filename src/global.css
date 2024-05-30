@@ -15,4 +15,13 @@
   .btn-primary {
     @apply bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-full inline-block  hover:px-7 transition-all w-fit
   }
+  .center-fixed {
+    @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+  }
+  .btn-canvas {
+    @apply border-2 bg-white border-solid border-zinc-100 rounded-3xl shadow-sm hover:border-zinc-300/60 hover:shadow-md transition-colors active:bg-slate-200 active:shadow-lg flex justify-center items-center aria-selected:bg-slate-200
+  }
+  .input-canvas {
+    @apply w-1/2 p-1 rounded-sm shadow-md hover:shadow-lg hover:border-gray-500/50
+  }
 }
