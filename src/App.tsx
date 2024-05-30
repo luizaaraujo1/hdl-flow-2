@@ -7,15 +7,18 @@ import {Outlet} from 'react-router-dom';
 
 import Footer from './components/Footer';
 import Header from './components/Header';
+import {GlobalContextProvider} from './contexts/GlobalContext';
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col font-roboto bg-gray-800">
-      <Header />
-      <Outlet />
-      <Footer />
-      <SpeedInsights />
-    </div>
+    <GlobalContextProvider>
+      <div className="min-h-screen flex flex-col font-roboto bg-gray-800">
+        <Header />
+        <Outlet />
+        <Footer />
+        <SpeedInsights />
+      </div>
+    </GlobalContextProvider>
   );
 }
 

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import {RouterProvider, createBrowserRouter} from 'react-router-dom';
 
 import App from './App.tsx';
+import ROUTE_PATHS from './constants/routePaths.ts';
 import './global.css';
 import Canvas from './routes/Canvas.tsx';
 import Home from './routes/Home.tsx';
@@ -14,8 +15,8 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <NotFound />,
     children: [
-      {path: '/', element: <Home />},
-      {path: '/canvas', element: <Canvas />},
+      {path: ROUTE_PATHS.Home, element: <Home />},
+      {path: ROUTE_PATHS.Canvas, element: <Canvas />},
     ],
   },
 ]);

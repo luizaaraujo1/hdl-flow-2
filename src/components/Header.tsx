@@ -1,13 +1,14 @@
 import {Link} from 'react-router-dom';
 
 import {GITHUB_LINK} from '../constants/links';
+import ROUTE_PATHS from '../constants/routePaths';
 
 function Header() {
   return (
     <header className="bg-gray-800 text-gray-100 shadow-lg">
       <div className="container mx-auto flex justify-between items-center py-4">
         <h1 className="text-2xl font-bold">
-          <Link to="/">HDL Flow</Link>
+          <Link to={ROUTE_PATHS.Home}>HDL Flow</Link>
         </h1>
         <nav>
           <ul className="flex space-x-4">

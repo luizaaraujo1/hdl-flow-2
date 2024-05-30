@@ -8,28 +8,20 @@ import * as Toolbar from '@radix-ui/react-toolbar';
 import {cloneElement, useState} from 'react';
 import colors from 'tailwindcss/colors';
 
+import {useGlobal} from '../../contexts/GlobalContext';
+
 interface Props {
   addNewNode: () => void;
-}
-
-interface CustomButtonProps {
-  onClick: () => void;
-  children?: React.ReactNode;
-  className?: string;
 }
 
 interface CustomIconProps {
   icon: React.ReactElement;
 }
 
-function CustomButton({children, onClick, className}: CustomButtonProps) {
-  return (
-    <Toolbar.Button
-      className={`w-16 h-16 border-2 bg-white border-solid border-zinc-100 rounded-3xl shadow-sm hover:border-zinc-300/60 hover:shadow-md transition-colors active:bg-slate-200 active:shadow-lg flex justify-center items-center ${className}`}
-      onClick={onClick}>
-      {children}
-    </Toolbar.Button>
-  );
+interface CustomButtonProps {
+  onClick: () => void;
+  children?: React.ReactNode;
+  className?: string;
 }
 
 function CustomIcon({icon}: CustomIconProps) {
@@ -39,8 +31,24 @@ function CustomIcon({icon}: CustomIconProps) {
   });
 }
 
+function CustomButton({children, onClick, className}: CustomButtonProps) {
+  return (
+    <Toolbar.Button
+      className={`w-16 h-16 btn-canvas ${className}`}
+      onClick={onClick}>
+      {children}
+    </Toolbar.Button>
+  );
+}
+
 function SideMenu({addNewNode}: Props) {
   const [open, setOpen] = useState(true);
+  const {setSettingsOpen} = useGlobal();
+
+  const toggleSettings = () => {
+    setSettingsOpen(prev => !prev);
+  };
+
   return (
     <Toolbar.Root
       orientation="vertical"
@@ -48,7 +56,7 @@ function SideMenu({addNewNode}: Props) {
       <CustomButton onClick={() => {}}>
         {<CustomIcon icon={<QuestionMarkIcon />} />}
       </CustomButton>
-      <CustomButton onClick={() => {}}>
+      <CustomButton onClick={toggleSettings}>
         {<CustomIcon icon={<HamburgerMenuIcon />} />}
       </CustomButton>
       <CustomButton onClick={addNewNode}>

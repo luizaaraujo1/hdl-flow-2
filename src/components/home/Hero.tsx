@@ -1,5 +1,6 @@
 import {Link} from 'react-router-dom';
 
+import ROUTE_PATHS from '../../constants/routePaths';
 import SimpleSection from '../shared/SimpleSection';
 
 function Hero() {
@@ -10,7 +11,7 @@ function Hero() {
         <p className="text-lg font-light mb-8">
           Easily create FSM diagrams and transcribe them into useful HDL code.
         </p>
-        <Link to="/canvas" className="btn-primary">
+        <Link to={ROUTE_PATHS.Canvas} className="btn-primary">
           Get Started
         </Link>
       </div>
