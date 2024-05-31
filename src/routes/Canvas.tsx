@@ -6,8 +6,6 @@ import ReactFlow, {
   Controls,
   ReactFlowInstance,
   addEdge,
-  useEdgesState,
-  useNodesState,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
@@ -21,26 +19,43 @@ import {
   defaultEdgeOptions,
 } from '../constants/edges.constants';
 import {
-  INITIAL_NODES,
   NODE_TYPE,
   NODE_TYPES,
+  START_NODE_ID,
 } from '../constants/nodes.constants';
+import {useGlobal} from '../contexts/GlobalContext';
 
 function Canvas() {
-  const [nodes, setNotes, onNodesChange] = useNodesState(INITIAL_NODES);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const {
+    edgeState: {edges, onEdgesChange, setEdges},
+    nodeState: {nodes, onNodesChange, setNodes},
+  } = useGlobal();
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
     unknown,
     unknown
   > | null>(null);
 
+  const isValidConnection = useCallback(
+    (connection: Connection) => {
+      if (connection.source === connection.target) return false;
+      if (connection.source === START_NODE_ID) {
+        const isStartAlreadyConnected = edges.find(
+          edge => edge.source === START_NODE_ID,
+        );
+        if (isStartAlreadyConnected) return false;
+      }
+      if (connection.targetHandle !== NODE_TYPE.State) return false;
+      return true;
+    },
+    [edges],
+  );
+
   const onConnect = useCallback((connection: Connection) => {
-    if (connection.targetHandle === NODE_TYPE.State)
-      setEdges(edges => addEdge(connection, edges));
+    setEdges(edges => addEdge(connection, edges));
   }, []);
 
   function addNewNode(type: NODE_TYPE, position: {x: number; y: number}) {
-    setNotes(nodes => [
+    setNodes(nodes => [
       ...nodes,
       {
         id: crypto.randomUUID(),
@@ -94,6 +109,7 @@ function Canvas() {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           connectionMode={ConnectionMode.Loose}
+          isValidConnection={isValidConnection}
           defaultEdgeOptions={defaultEdgeOptions}
           connectionLineComponent={StraightConnectionLine}
           connectionLineStyle={connectionLineStyle}

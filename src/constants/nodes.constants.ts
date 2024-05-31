@@ -23,9 +23,11 @@ export const NODE_TYPES = {
   square: Square, //TODO: This will be removed
 };
 
+export const START_NODE_ID = 'start_id';
+
 export const INITIAL_NODES: Node[] = [
   {
-    id: crypto.randomUUID(),
+    id: START_NODE_ID,
     type: NODE_TYPE.Start,
     position: {
       x: getWindowDimensions().width / 2 - 200,
