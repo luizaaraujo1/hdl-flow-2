@@ -8,17 +8,14 @@ import * as Toolbar from '@radix-ui/react-toolbar';
 import {cloneElement, useState} from 'react';
 import colors from 'tailwindcss/colors';
 
+import {NODE_TYPE} from '../../constants/nodes.constants';
 import {useGlobal} from '../../contexts/GlobalContext';
-
-interface Props {
-  addNewNode: () => void;
-}
 
 interface CustomIconProps {
   icon: React.ReactElement;
 }
 
-interface CustomButtonProps {
+interface CustomButtonProps extends Toolbar.ToolbarButtonProps {
   onClick: () => void;
   children?: React.ReactNode;
   className?: string;
@@ -31,22 +28,36 @@ function CustomIcon({icon}: CustomIconProps) {
   });
 }
 
-function CustomButton({children, onClick, className}: CustomButtonProps) {
+function CustomButton({
+  children,
+  onClick,
+  className,
+  ...rest
+}: CustomButtonProps) {
   return (
     <Toolbar.Button
       className={`w-16 h-16 btn-canvas ${className}`}
-      onClick={onClick}>
+      onClick={onClick}
+      {...rest}>
       {children}
     </Toolbar.Button>
   );
 }
 
-function SideMenu({addNewNode}: Props) {
+function SideMenu() {
   const [open, setOpen] = useState(true);
   const {setSettingsOpen} = useGlobal();
 
   const toggleSettings = () => {
     setSettingsOpen(prev => !prev);
+  };
+
+  const onDragStart = (
+    event: React.DragEvent<HTMLButtonElement>,
+    nodeType: NODE_TYPE,
+  ) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
   };
 
   return (
@@ -59,7 +70,10 @@ function SideMenu({addNewNode}: Props) {
       <CustomButton onClick={toggleSettings}>
         {<CustomIcon icon={<HamburgerMenuIcon />} />}
       </CustomButton>
-      <CustomButton onClick={addNewNode}>
+      <CustomButton
+        onClick={() => {}}
+        onDragStart={event => onDragStart(event, NODE_TYPE.State)}
+        draggable>
         {<CustomIcon icon={<BoxModelIcon />} />}
       </CustomButton>
       <CustomButton

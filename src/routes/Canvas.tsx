@@ -1,9 +1,10 @@
-import {useCallback} from 'react';
+import {useCallback, useState} from 'react';
 import ReactFlow, {
   Background,
   Connection,
   ConnectionMode,
   Controls,
+  ReactFlowInstance,
   addEdge,
   useEdgesState,
   useNodesState,
@@ -28,27 +29,62 @@ import {
 function Canvas() {
   const [nodes, setNotes, onNodesChange] = useNodesState(INITIAL_NODES);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
+    unknown,
+    unknown
+  > | null>(null);
 
   const onConnect = useCallback((connection: Connection) => {
     if (connection.targetHandle === NODE_TYPE.State)
       setEdges(edges => addEdge(connection, edges));
   }, []);
 
-  function addNewNode() {
+  function addNewNode(type: NODE_TYPE, position: {x: number; y: number}) {
     setNotes(nodes => [
       ...nodes,
       {
         id: crypto.randomUUID(),
-        type: 'square',
-        position: {x: 400, y: 400},
+        type: type,
+        position,
         data: {},
       },
     ]);
   }
 
+  const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const checkType = (type?: string) => {
+    if (type) return type && Object.values(NODE_TYPE).find(nt => nt === type);
+  };
+
+  const onDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      const eventType = event.dataTransfer.getData('application/reactflow');
+
+      // check if the dropped element is valid
+      const type = checkType(eventType);
+      if (!type) return;
+
+      if (reactFlowInstance) {
+        const position = reactFlowInstance.screenToFlowPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
+
+        addNewNode(type, position);
+      }
+    },
+    [reactFlowInstance],
+  );
+
   return (
     <div className="flex-1 bg-slate-100">
-      <div className="h-[80vh]">
+      <div className="h-[100vh]">
         <ReactFlow
           nodeTypes={NODE_TYPES}
           edgeTypes={EDGE_TYPES}
@@ -62,11 +98,14 @@ function Canvas() {
           connectionLineComponent={StraightConnectionLine}
           connectionLineStyle={connectionLineStyle}
           snapGrid={[12, 12]}
-          snapToGrid={true}>
+          snapToGrid={true}
+          onInit={e => setReactFlowInstance(e)}
+          onDrop={onDrop}
+          onDragOver={onDragOver}>
           <Background gap={12} size={2} color={zinc[200]} />
           <Controls position="bottom-right" />
         </ReactFlow>
-        <SideMenu addNewNode={addNewNode} />
+        <SideMenu />
         <SettingsDialog />
       </div>
     </div>
