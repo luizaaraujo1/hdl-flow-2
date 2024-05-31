@@ -4,7 +4,6 @@ import ReactFlow, {
   Connection,
   ConnectionMode,
   Controls,
-  Node,
   addEdge,
   useEdgesState,
   useNodesState,
@@ -14,38 +13,25 @@ import {zinc} from 'tailwindcss/colors';
 
 import SideMenu from '../components/canvas/SideMenu';
 import SettingsDialog from '../components/canvas/settings/SettingsDialog';
-import {DefaultEdge} from '../components/edges/DefaultEdge';
-import {Square} from '../components/nodes/Square';
-
-const NODE_TYPES = {
-  square: Square,
-};
-
-const EDGE_TYPES = {
-  default: DefaultEdge,
-};
-
-const INITIAL_NODES: Node[] = [
-  {
-    id: crypto.randomUUID(),
-    type: 'square',
-    position: {x: 0, y: 0},
-    data: {},
-  },
-  {
-    id: crypto.randomUUID(),
-    type: 'square',
-    position: {x: 400, y: 0},
-    data: {},
-  },
-];
+import StraightConnectionLine from '../components/edges/StraightConnectionLine';
+import {
+  EDGE_TYPES,
+  connectionLineStyle,
+  defaultEdgeOptions,
+} from '../constants/edges.constants';
+import {
+  INITIAL_NODES,
+  NODE_TYPE,
+  NODE_TYPES,
+} from '../constants/nodes.constants';
 
 function Canvas() {
   const [nodes, setNotes, onNodesChange] = useNodesState(INITIAL_NODES);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = useCallback((connection: Connection) => {
-    setEdges(edges => addEdge(connection, edges));
+    if (connection.targetHandle === NODE_TYPE.State)
+      setEdges(edges => addEdge(connection, edges));
   }, []);
 
   function addNewNode() {
@@ -72,7 +58,9 @@ function Canvas() {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           connectionMode={ConnectionMode.Loose}
-          defaultEdgeOptions={{type: 'default'}}
+          defaultEdgeOptions={defaultEdgeOptions}
+          connectionLineComponent={StraightConnectionLine}
+          connectionLineStyle={connectionLineStyle}
           snapGrid={[12, 12]}
           snapToGrid={true}>
           <Background gap={12} size={2} color={zinc[200]} />
