@@ -36,7 +36,7 @@ function CustomButton({
 }: CustomButtonProps) {
   return (
     <Toolbar.Button
-      className={`w-16 h-16 btn-canvas ${className}`}
+      className={`w-16 h-16 btn-canvas cursor-pointer ${className}`}
       onClick={onClick}
       {...rest}>
       {children}
@@ -73,6 +73,7 @@ function SideMenu() {
       <CustomButton
         onClick={() => {}}
         onDragStart={event => onDragStart(event, NODE_TYPE.State)}
+        className="cursor-grab"
         draggable>
         {<CustomIcon icon={<BoxModelIcon />} />}
       </CustomButton>
