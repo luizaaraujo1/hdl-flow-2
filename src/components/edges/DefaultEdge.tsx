@@ -24,7 +24,7 @@ function DefaultEdge({
       id={id}
       style={style}
       d={edgePath}
-      className="react-flow__edge-path stroke-2 stroke-zinc-300"
+      className="react-flow__edge-path"
       markerEnd={markerEnd}
     />
   );

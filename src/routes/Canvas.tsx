@@ -1,11 +1,13 @@
-import {useCallback, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import ReactFlow, {
   Background,
   Connection,
   ConnectionMode,
   Controls,
+  Edge,
   ReactFlowInstance,
   addEdge,
+  updateEdge,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
@@ -34,6 +36,7 @@ function Canvas() {
     unknown,
     unknown
   > | null>(null);
+  const edgeUpdateSuccessful = useRef(true);
 
   const isValidConnection = useCallback(
     (connection: Connection) => {
@@ -71,8 +74,11 @@ function Canvas() {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const checkType = (type?: string) => {
-    if (type) return type && Object.values(NODE_TYPE).find(nt => nt === type);
+  const checkNodeType = (nodeType?: string) => {
+    if (nodeType)
+      return (
+        nodeType && Object.values(NODE_TYPE).find(type => type === nodeType)
+      );
   };
 
   const onDrop = useCallback(
@@ -82,7 +88,7 @@ function Canvas() {
       const eventType = event.dataTransfer.getData('application/reactflow');
 
       // check if the dropped element is valid
-      const type = checkType(eventType);
+      const type = checkNodeType(eventType);
       if (!type) return;
 
       if (reactFlowInstance) {
@@ -97,6 +103,26 @@ function Canvas() {
     [reactFlowInstance],
   );
 
+  const onEdgeUpdateStart = useCallback(() => {
+    edgeUpdateSuccessful.current = false;
+  }, []);
+
+  const onEdgeUpdate = useCallback(
+    (oldEdge: Edge<unknown>, newConnection: Connection) => {
+      edgeUpdateSuccessful.current = true;
+      setEdges(els => updateEdge(oldEdge, newConnection, els));
+    },
+    [],
+  );
+
+  const onEdgeUpdateEnd = useCallback((_: unknown, edge: Edge<unknown>) => {
+    if (!edgeUpdateSuccessful.current) {
+      setEdges(eds => eds.filter(e => e.id !== edge.id));
+    }
+
+    edgeUpdateSuccessful.current = true;
+  }, []);
+
   return (
     <div className="flex-1 bg-slate-100">
       <div className="h-[100vh]">
@@ -107,8 +133,11 @@ function Canvas() {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onEdgeUpdateStart={onEdgeUpdateStart}
+          onEdgeUpdateEnd={onEdgeUpdateEnd}
+          onEdgeUpdate={onEdgeUpdate}
           onConnect={onConnect}
-          connectionMode={ConnectionMode.Loose}
+          connectionMode={ConnectionMode.Strict}
           isValidConnection={isValidConnection}
           defaultEdgeOptions={defaultEdgeOptions}
           connectionLineComponent={StraightConnectionLine}
@@ -117,7 +146,8 @@ function Canvas() {
           snapToGrid={true}
           onInit={e => setReactFlowInstance(e)}
           onDrop={onDrop}
-          onDragOver={onDragOver}>
+          onDragOver={onDragOver}
+          fitView>
           <Background gap={12} size={2} color={zinc[200]} />
           <Controls position="bottom-right" />
         </ReactFlow>
