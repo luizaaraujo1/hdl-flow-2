@@ -33,7 +33,7 @@ function PortSelectInput({
           event.preventDefault();
           onChange(event.target.value);
         }}
-        className={`input-canvas hover:cursor-pointer appearance-none ${className}`}
+        className={`input-canvas appearance-none hover:cursor-pointer ${className}`}
         required={required}
         disabled={disabled}>
         {options.map(value => (

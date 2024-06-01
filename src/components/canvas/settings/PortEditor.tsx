@@ -147,10 +147,10 @@ function PortEditor() {
   return (
     <Tabs.Root
       defaultValue={PORT_TABS[0].name}
-      className="flex flex-col flex-1 overflow-y-scroll">
+      className="flex flex-1 flex-col overflow-y-scroll">
       <Tabs.List
         aria-label="Select the type of Port"
-        className="flex flex-row bg-white sticky -top-0.5 border-r-2 border-b-2 w-fit pr-4 rounded-r-md">
+        className="sticky -top-0.5 flex w-fit flex-row rounded-r-md border-b-2 border-r-2 bg-white pr-4">
         {PORT_TABS.map((tab, index) => (
           <Tabs.Trigger
             key={`${tab.name}_trigger`}
@@ -164,7 +164,7 @@ function PortEditor() {
             key={`${tab.name}_label`}
             value={tab.name}
             className="flex items-center">
-            <h3 className="text-sm text-gray-500 ml-4">{`Here, you can edit your FSM's ${tab.name} Ports`}</h3>
+            <h3 className="ml-4 text-sm text-gray-500">{`Here, you can edit your FSM's ${tab.name} Ports`}</h3>
           </Tabs.Content>
         ))}
       </Tabs.List>
@@ -172,9 +172,9 @@ function PortEditor() {
         <Tabs.Content
           key={`${tab.name}_body`}
           value={tab.name}
-          className="rounded-md rounded-tl-none shadow-inner flex-1 p-4 pr-2 bg-gray-50">
+          className="flex-1 rounded-md rounded-tl-none bg-gray-50 p-4 pr-2 shadow-inner">
           <>
-            <div className="grid grid-cols-2 mr-16 gap-2">
+            <div className="mr-16 grid grid-cols-2 gap-2">
               {getList(tab.name).map(port => (
                 <PortElement
                   key={`element_${tab.name}_${port.id}`}
@@ -188,10 +188,10 @@ function PortEditor() {
               ))}
             </div>
             <button
-              className="fixed flex btn-canvas p-2 bottom-10 right-14"
+              className="btn-canvas fixed bottom-10 right-14 flex p-2"
               onClick={() => handleAddPort(tab.name)}>
               <PlusCircledIcon />
-              <h2 className="text-md font-semibold ml-2">Add New Port</h2>
+              <h2 className="text-md ml-2 font-semibold">Add New Port</h2>
             </button>
           </>
         </Tabs.Content>

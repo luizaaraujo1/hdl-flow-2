@@ -7,7 +7,7 @@ interface Props {
 function SimpleCard({title, subtitle, className}: Props) {
   return (
     <div className={`simple-card ${className}`}>
-      <h3 className="text-xl font-bold mb-4">{title}</h3>
+      <h3 className="mb-4 text-xl font-bold">{title}</h3>
       <p className="text-gray-700">{subtitle}</p>
     </div>
   );

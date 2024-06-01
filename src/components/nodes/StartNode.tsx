@@ -17,7 +17,7 @@ function StartNode({id}: NodeProps) {
 
   return (
     <div
-      className={`rounded-full w-[100px] h-[100px] border-2 border-black content-center transition-colors ${targetStyle}`}>
+      className={`h-[100px] w-[100px] content-center rounded-full border-2 border-black transition-colors ${targetStyle}`}>
       <h1 className="text-center font-semibold text-black">
         {isTarget ? 'NOT ALLOWED' : 'START'}
       </h1>

@@ -58,7 +58,7 @@ function PortTextInput({
         <textarea
           id={id}
           name={id}
-          className={`input-canvas focus:w-full transition-[width,height] ease-in-out resize-none max-h-9 focus:max-h-fit ${requirementStyle} ${disabledStyle} ${className}`}
+          className={`input-canvas max-h-9 resize-none transition-[width,height] ease-in-out focus:max-h-fit focus:w-full ${requirementStyle} ${disabledStyle} ${className}`}
           cols={20}
           rows={3}
           placeholder={placeholder}

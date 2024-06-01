@@ -13,13 +13,13 @@ const HiddenHandle = ({isConnecting, type}: Props) => {
       {' '}
       {!isConnecting && (
         <Handle
-          className="w-full h-full bg-blue-400 absolute top-0 left-0 transform-none border-none opacity-0"
+          className="absolute left-0 top-0 h-full w-full transform-none border-none bg-blue-400 opacity-0"
           position={Position.Right}
           type="source"
         />
       )}
       <Handle
-        className="w-full h-full bg-blue-500 absolute top-0 left-0 transform-none border-none opacity-0"
+        className="absolute left-0 top-0 h-full w-full transform-none border-none bg-blue-500 opacity-0"
         position={Position.Left}
         type="target"
         isConnectableStart={false}

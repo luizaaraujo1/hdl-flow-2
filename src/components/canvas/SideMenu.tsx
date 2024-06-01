@@ -36,7 +36,7 @@ function CustomButton({
 }: CustomButtonProps) {
   return (
     <Toolbar.Button
-      className={`w-16 h-16 btn-canvas cursor-pointer ${className}`}
+      className={`btn-canvas h-16 w-16 cursor-pointer ${className}`}
       onClick={onClick}
       {...rest}>
       {children}
@@ -63,7 +63,7 @@ function SideMenu() {
   return (
     <Toolbar.Root
       orientation="vertical"
-      className={`relative bottom-1/2 -translate-y-1/2 bg-white rounded-e-2xl shadow-lg border-zinc-300 py-8 px-2 h-96 w-20 flex flex-col gap-2 overflow-visible transition-transform ${open ? '' : '-translate-x-20'}`}>
+      className={`relative bottom-1/2 flex h-96 w-20 -translate-y-1/2 flex-col gap-2 overflow-visible rounded-e-2xl border-zinc-300 bg-white px-2 py-8 shadow-lg transition-transform ${open ? '' : '-translate-x-20'}`}>
       <CustomButton onClick={() => {}}>
         {<CustomIcon icon={<QuestionMarkIcon />} />}
       </CustomButton>

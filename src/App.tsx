@@ -10,7 +10,7 @@ import {GlobalContextProvider} from './contexts/GlobalContext';
 function App() {
   return (
     <GlobalContextProvider>
-      <div className="min-h-screen flex flex-col font-roboto bg-gray-800">
+      <div className="flex min-h-screen flex-col bg-gray-800 font-roboto">
         <Outlet />
         <SpeedInsights />
       </div>

@@ -47,16 +47,16 @@ function StateNode({id, selected}: NodeProps) {
   return (
     <div>
       <div
-        className={`absolute -top-2 left-1/2 h-[20px] w-[40px] -translate-x-1/2 z-10 transition-all rounded-md border-2 ${selectedStyle}`}
+        className={`absolute -top-2 left-1/2 z-10 h-[20px] w-[40px] -translate-x-1/2 rounded-md border-2 transition-all ${selectedStyle}`}
       />
       {isTarget && (
-        <div className="absolute -bottom-2 left-2/3 h-[20px] min-w-[20px] -translate-x-2/3 bg-red-500/50 z-10 border-2 border-black/80 rounded-full" />
+        <div className="absolute -bottom-2 left-2/3 z-10 h-[20px] min-w-[20px] -translate-x-2/3 rounded-full border-2 border-black/80 bg-red-500/50" />
       )}
       {isSource && (
-        <div className="absolute -bottom-2 left-1/3 h-[20px] w-[20px] -translate-x-1/3 bg-green-500/50 z-10 border-2 border-black/80 rounded-full" />
+        <div className="absolute -bottom-2 left-1/3 z-10 h-[20px] w-[20px] -translate-x-1/3 rounded-full border-2 border-black/80 bg-green-500/50" />
       )}
       <div
-        className={`w-[180px] h-[80px] border-2 border-black/80 relative overflow-hidden rounded-md flex justify-center items-center transition-colors ${targetStyle}`}>
+        className={`relative flex h-[80px] w-[180px] items-center justify-center overflow-hidden rounded-md border-2 border-black/80 transition-colors ${targetStyle}`}>
         <HiddenHandle isConnecting={isConnecting} type={NODE_TYPE.State} />
         <h1 className="text-center font-semibold text-black">
           {!isStartTryingToConnectAgain ? label : 'NOT ALLOWED'}

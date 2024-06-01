@@ -65,17 +65,17 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
 
   return (
     <div className="flex flex-col">
-      <fieldset className="flex justify-between rounded-md shadow-lg p-2 bg-white">
+      <fieldset className="flex justify-between rounded-md bg-white p-2 shadow-lg">
         <div className="flex items-center">
           <PortIcon portType={portType} />
-          <h3 className="text-sm font-semibold text-gray-500 ml-4">Name:</h3>
+          <h3 className="ml-4 text-sm font-semibold text-gray-500">Name:</h3>
           <h3
             className={`text-sm font-semibold ${isUnnamed ? 'text-red-500' : 'text-gray-500'} ml-2`}>
             {!isUnnamed ? port.name : 'Unnamed Port!'}
           </h3>
-          <h2 className="text-sm font-semibold text-gray-500 ml-4">-</h2>
-          <h3 className="text-sm font-semibold ml-4">Type:</h3>
-          <h3 className="text-sm font-semibold ml-2">{port.type}</h3>
+          <h2 className="ml-4 text-sm font-semibold text-gray-500">-</h2>
+          <h3 className="ml-4 text-sm font-semibold">Type:</h3>
+          <h3 className="ml-2 text-sm font-semibold">{port.type}</h3>
         </div>
         <div className="flex items-center gap-4">
           <button
@@ -86,15 +86,15 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
           <button
             onClick={onDelete}
             aria-selected={editing}
-            className="btn-canvas bg-rose-100 border-red-100 hover:border-red-300/60 active:bg-red-200 rounded-md p-1">
+            className="btn-canvas rounded-md border-red-100 bg-rose-100 p-1 hover:border-red-300/60 active:bg-red-200">
             <TrashIcon color={zinc[600]} />
           </button>
         </div>
       </fieldset>
       <div
-        className={`bg-zinc-600/20 rounded-b-md transition-[min-height] ease-in-out shadow-lg ${editingStyle}`}>
+        className={`rounded-b-md bg-zinc-600/20 shadow-lg transition-[min-height] ease-in-out ${editingStyle}`}>
         {editing && (
-          <fieldset className="flex flex-col p-2 gap-1" disabled={!editing}>
+          <fieldset className="flex flex-col gap-1 p-2" disabled={!editing}>
             <PortTextInput
               id="name_input"
               label="Name:"
