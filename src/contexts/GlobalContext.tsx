@@ -10,6 +10,7 @@ import {
 
 import {INITIAL_NODES} from '../constants/nodes.constants';
 import Port from '../models/port';
+import FSMState from '../models/state';
 
 export type GlobalContextType = {
   settingsOpen: boolean;
@@ -21,10 +22,8 @@ export type GlobalContextType = {
   outputList: Port[];
   setOutputList: React.Dispatch<React.SetStateAction<Port[]>>;
   nodeState: {
-    nodes: Node<unknown, string | undefined>[];
-    setNodes: React.Dispatch<
-      React.SetStateAction<Node<unknown, string | undefined>[]>
-    >;
+    nodes: Node<FSMState>[];
+    setNodes: React.Dispatch<React.SetStateAction<Node<FSMState>[]>>;
     onNodesChange: (changes: NodeChange[]) => void;
   };
   edgeState: {
@@ -49,7 +48,8 @@ export const GlobalContextProvider = ({
   const [inputList, setInputList] = useState<Port[]>([]);
   const [internalsList, setInternalsList] = useState<Port[]>([]);
   const [outputList, setOutputList] = useState<Port[]>([]);
-  const [nodes, setNodes, onNodesChange] = useNodesState(INITIAL_NODES);
+  const [nodes, setNodes, onNodesChange] =
+    useNodesState<FSMState>(INITIAL_NODES);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   return (
     <GlobalContext.Provider

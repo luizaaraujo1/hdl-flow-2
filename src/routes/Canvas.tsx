@@ -33,6 +33,7 @@ function Canvas() {
     edgeState: {edges, onEdgesChange, setEdges},
     nodeState: {nodes, onNodesChange, setNodes},
   } = useGlobal();
+  const [, setStateTotalCount] = useState(0);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
     unknown,
     unknown
@@ -58,17 +59,26 @@ function Canvas() {
     setEdges(edges => addEdge(connection, edges));
   }, []);
 
-  function addNewNode(type: NODE_TYPE, position: {x: number; y: number}) {
-    setNodes(nodes => [
-      ...nodes,
-      {
-        id: crypto.randomUUID(),
-        type: type,
-        position,
-        data: {},
-      },
-    ]);
-  }
+  const addNewNode = (type: NODE_TYPE, position: {x: number; y: number}) => {
+    setStateTotalCount(totalCount => {
+      const newCount = totalCount + 1;
+
+      setNodes(nodes => [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          type: type,
+          position,
+          data: {
+            stateNumber: newCount,
+            name: `State ${newCount}`,
+          },
+        },
+      ]);
+
+      return newCount;
+    });
+  };
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();

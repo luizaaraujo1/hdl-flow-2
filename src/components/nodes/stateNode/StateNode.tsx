@@ -3,14 +3,16 @@ import {NodeProps, useStore, ReactFlowState} from 'reactflow';
 
 import {START_NODE_ID} from '../../../constants/nodes.constants';
 import {useGlobal} from '../../../contexts/GlobalContext';
+import FSMState from '../../../models/state';
 import StateNodeHandler from './StateNodeHandler';
 import StateNodeHeader from './StateNodeHeader';
 
 const connectionNodeIdSelector = (state: ReactFlowState) =>
   state.connectionNodeId;
 
-function StateNode({id}: NodeProps) {
+function StateNode({id, data}: NodeProps<FSMState>) {
   const connectionNodeId = useStore(connectionNodeIdSelector);
+  const {stateNumber, name} = data;
   const {
     edgeState: {edges},
   } = useGlobal();
@@ -36,7 +38,7 @@ function StateNode({id}: NodeProps) {
   return (
     <div>
       <div className="min-h-[100px] min-w-[180px] rounded-t-md border-2 border-b-0 border-black bg-slate-100 shadow-md">
-        <StateNodeHeader stateNumber={0} name={'Name'} />
+        <StateNodeHeader stateNumber={stateNumber} name={name} />
       </div>
       <StateNodeHandler
         isConnecting={isConnecting}
