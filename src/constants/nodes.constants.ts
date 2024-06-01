@@ -40,6 +40,10 @@ export const INITIAL_NODES: Node<FSMState>[] = [
       stateNumber: -1,
       name: 'Start',
       isStart: true,
+      portLogic: {
+        outputs: {},
+        internals: {},
+      },
     },
   },
   {
@@ -52,6 +56,10 @@ export const INITIAL_NODES: Node<FSMState>[] = [
     data: {
       stateNumber: 0,
       name: 'State 0',
+      portLogic: {
+        outputs: {},
+        internals: {},
+      },
     },
   },
 ];

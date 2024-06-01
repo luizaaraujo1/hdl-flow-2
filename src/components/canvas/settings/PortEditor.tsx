@@ -1,7 +1,7 @@
 import {PlusCircledIcon} from '@radix-ui/react-icons';
 import * as Tabs from '@radix-ui/react-tabs';
 
-import {PortCategory, TabSchema} from '../../../constants/ports';
+import {PortCategory, TabSchema} from '../../../constants/ports.constants';
 import {useGlobal} from '../../../contexts/GlobalContext';
 import Port, {PortTypeEnum} from '../../../models/port';
 import {

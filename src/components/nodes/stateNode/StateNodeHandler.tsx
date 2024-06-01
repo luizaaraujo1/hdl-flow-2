@@ -31,7 +31,7 @@ const StateNodeHandler = ({
       </h1>
       {isConnected && (
         <h6 className="text-center font-sans text-sm font-thin text-slate-500">
-          Interact below to edit
+          Click below to edit
         </h6>
       )}
     </div>

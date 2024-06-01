@@ -8,8 +8,8 @@ import {
 import {cloneElement, useCallback, useState} from 'react';
 import {zinc} from 'tailwindcss/colors';
 
-import {PortCategory} from '../../../constants/ports';
-import Port, {PortDefault, PortTypeEnum} from '../../../models/port';
+import {PortCategory} from '../../../constants/ports.constants';
+import Port, {PortValue, PortTypeEnum} from '../../../models/port';
 import PortSelectInput from './PortSelectInput';
 import PortTextInput from './PortTextInput';
 
@@ -39,7 +39,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
     (
       type: PortTypeEnum,
       onChange: (value: string) => void,
-      value: PortDefault,
+      value: PortValue,
     ) => {
       const isLogic = type === PortTypeEnum.Logic;
       const sharedProps = {

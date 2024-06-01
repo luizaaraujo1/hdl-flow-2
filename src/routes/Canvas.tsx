@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useMemo, useRef, useState} from 'react';
 import ReactFlow, {
   Background,
   Connection,
@@ -27,11 +27,14 @@ import {
   START_NODE_ID,
 } from '../constants/nodes.constants';
 import {useGlobal} from '../contexts/GlobalContext';
+import {getPortLogicObjectFromPorts} from '../utils/port.utils';
 
 function Canvas() {
   const {
     edgeState: {edges, onEdgesChange, setEdges},
     nodeState: {nodes, onNodesChange, setNodes},
+    internalsList,
+    outputList,
   } = useGlobal();
   const [, setStateTotalCount] = useState(0);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
@@ -59,26 +62,43 @@ function Canvas() {
     setEdges(edges => addEdge(connection, edges));
   }, []);
 
-  const addNewNode = (type: NODE_TYPE, position: {x: number; y: number}) => {
-    setStateTotalCount(totalCount => {
-      const newCount = totalCount + 1;
+  const outputsLogic = useMemo(
+    () => getPortLogicObjectFromPorts(outputList),
+    [outputList],
+  );
 
-      setNodes(nodes => [
-        ...nodes,
-        {
-          id: crypto.randomUUID(),
-          type: type,
-          position,
-          data: {
-            stateNumber: newCount,
-            name: `State ${newCount}`,
+  const internalsLogic = useMemo(
+    () => getPortLogicObjectFromPorts(internalsList),
+    [internalsList],
+  );
+
+  const addNewNode = useCallback(
+    (type: NODE_TYPE, position: {x: number; y: number}) => {
+      setStateTotalCount(totalCount => {
+        const newCount = totalCount + 1;
+
+        setNodes(nodes => [
+          ...nodes,
+          {
+            id: crypto.randomUUID(),
+            type: type,
+            position,
+            data: {
+              stateNumber: newCount,
+              name: `State ${newCount}`,
+              portLogic: {
+                outputs: outputsLogic,
+                internals: internalsLogic,
+              },
+            },
           },
-        },
-      ]);
+        ]);
 
-      return newCount;
-    });
-  };
+        return newCount;
+      });
+    },
+    [internalsLogic, outputsLogic],
+  );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
