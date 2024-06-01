@@ -45,7 +45,7 @@ function StateNode({id, data}: NodeProps<FSMState>) {
 
   return (
     <div>
-      <div className="min-h-[100px] min-w-[180px] rounded-t-md border-2 border-b-0 border-black bg-slate-100 shadow-md">
+      <div className="min-w-[180px] rounded-t-md border-2 border-b-0 border-black bg-slate-100 shadow-md">
         <StateNodeHeader stateNumber={stateNumber} name={name} />
         <StateNodePortList
           outputsList={outputsList}

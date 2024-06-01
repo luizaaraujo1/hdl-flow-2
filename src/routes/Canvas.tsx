@@ -36,7 +36,7 @@ function Canvas() {
     internalsList,
     outputList,
   } = useGlobal();
-  const [, setStateTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
     unknown,
     unknown
@@ -74,30 +74,26 @@ function Canvas() {
 
   const addNewNode = useCallback(
     (type: NODE_TYPE, position: {x: number; y: number}) => {
-      setStateTotalCount(totalCount => {
-        const newCount = totalCount + 1;
-
-        setNodes(nodes => [
-          ...nodes,
-          {
-            id: crypto.randomUUID(),
-            type: type,
-            position,
-            data: {
-              stateNumber: newCount,
-              name: `State ${newCount}`,
-              portLogic: {
-                outputs: outputsLogic,
-                internals: internalsLogic,
-              },
+      const newCount = totalCount + 1;
+      setNodes(nodes => [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          type: type,
+          position,
+          data: {
+            stateNumber: newCount,
+            name: `State ${newCount}`,
+            portLogic: {
+              outputs: outputsLogic,
+              internals: internalsLogic,
             },
           },
-        ]);
-
-        return newCount;
-      });
+        },
+      ]);
+      setTotalCount(newCount);
     },
-    [internalsLogic, outputsLogic],
+    [internalsLogic, outputsLogic, totalCount],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -130,7 +126,7 @@ function Canvas() {
         addNewNode(type, position);
       }
     },
-    [reactFlowInstance],
+    [reactFlowInstance, addNewNode],
   );
 
   const onEdgeUpdateStart = useCallback(() => {
