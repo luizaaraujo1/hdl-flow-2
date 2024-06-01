@@ -1,6 +1,5 @@
 import {Node} from 'reactflow';
 
-import Square from '../components/nodes/Square';
 import StartNode from '../components/nodes/StartNode';
 import StateNode from '../components/nodes/stateNode/StateNode';
 import FSMState from '../models/state';
@@ -21,7 +20,6 @@ export enum NODE_TYPE {
 export const NODE_TYPES = {
   [NODE_TYPE.Start]: StartNode,
   [NODE_TYPE.State]: StateNode,
-  square: Square, //TODO: This will be removed
 };
 
 export const START_NODE_ID = 'start_id';
