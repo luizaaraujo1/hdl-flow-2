@@ -21,6 +21,7 @@ import {
   defaultEdgeOptions,
 } from '../constants/edges.constants';
 import {
+  DRAG_AND_DROP_EVENT_NAME,
   NODE_TYPE,
   NODE_TYPES,
   START_NODE_ID,
@@ -85,9 +86,8 @@ function Canvas() {
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
 
-      const eventType = event.dataTransfer.getData('application/reactflow');
+      const eventType = event.dataTransfer.getData(DRAG_AND_DROP_EVENT_NAME);
 
-      // check if the dropped element is valid
       const type = checkNodeType(eventType);
       if (!type) return;
 

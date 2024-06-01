@@ -8,7 +8,10 @@ import * as Toolbar from '@radix-ui/react-toolbar';
 import {cloneElement, useState} from 'react';
 import colors from 'tailwindcss/colors';
 
-import {NODE_TYPE} from '../../constants/nodes.constants';
+import {
+  DRAG_AND_DROP_EVENT_NAME,
+  NODE_TYPE,
+} from '../../constants/nodes.constants';
 import {useGlobal} from '../../contexts/GlobalContext';
 
 interface CustomIconProps {
@@ -56,7 +59,7 @@ function SideMenu() {
     event: React.DragEvent<HTMLButtonElement>,
     nodeType: NODE_TYPE,
   ) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.setData(DRAG_AND_DROP_EVENT_NAME, nodeType);
     event.dataTransfer.effectAllowed = 'move';
   };
 

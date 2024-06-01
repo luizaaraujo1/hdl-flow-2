@@ -8,7 +8,23 @@ import HiddenHandle from '../shared/HiddenHandle';
 const connectionNodeIdSelector = (state: ReactFlowState) =>
   state.connectionNodeId;
 
-function StateNode({id, selected}: NodeProps) {
+interface StateNodeProps {
+  stateNumber: number;
+  name: string;
+}
+
+function StateNodeHeader({stateNumber, name}: StateNodeProps) {
+  return (
+    <div className="flex justify-between border-b-2 border-black">
+      <div className="flex-1 border-r-[1px] border-black p-2 text-center font-bold">
+        {stateNumber}
+      </div>
+      <div className="flex-[5] border-l-[1px] border-black p-2">{name}</div>
+    </div>
+  );
+}
+
+function StateNode({id}: NodeProps) {
   const connectionNodeId = useStore(connectionNodeIdSelector);
   const {
     edgeState: {edges},
@@ -19,10 +35,6 @@ function StateNode({id, selected}: NodeProps) {
 
   const isTarget = useMemo(
     () => edges.find(edge => edge.target === id),
-    [edges],
-  );
-  const isSource = useMemo(
-    () => edges.find(edge => edge.source === id),
     [edges],
   );
   const isStartConnected = useMemo(
@@ -40,27 +52,22 @@ function StateNode({id, selected}: NodeProps) {
 
   const label = isPossibleTarget ? 'DROP HERE' : 'DRAG TO CONNECT';
 
-  const selectedStyle = selected
-    ? 'bg-blue-500 border-black'
-    : 'bg-blue-500/50 border-black/80';
-
   return (
     <div>
+      <div className="min-h-[100px] min-w-[180px] rounded-t-md border-2 border-b-0 border-black bg-slate-100 shadow-md">
+        <StateNodeHeader stateNumber={0} name={'Name'} />
+      </div>
       <div
-        className={`absolute -top-2 left-1/2 z-10 h-[20px] w-[40px] -translate-x-1/2 rounded-md border-2 transition-all ${selectedStyle}`}
-      />
-      {isTarget && (
-        <div className="absolute -bottom-2 left-2/3 z-10 h-[20px] min-w-[20px] -translate-x-2/3 rounded-full border-2 border-black/80 bg-red-500/50" />
-      )}
-      {isSource && (
-        <div className="absolute -bottom-2 left-1/3 z-10 h-[20px] w-[20px] -translate-x-1/3 rounded-full border-2 border-black/80 bg-green-500/50" />
-      )}
-      <div
-        className={`relative flex h-[80px] w-[180px] items-center justify-center overflow-hidden rounded-md border-2 border-black/80 transition-colors ${targetStyle}`}>
+        className={`relative flex flex-col rounded-b-md border-2 border-black/80 px-2 py-3 transition-colors ${targetStyle}`}>
         <HiddenHandle isConnecting={isConnecting} type={NODE_TYPE.State} />
         <h1 className="text-center font-semibold text-black">
           {!isStartTryingToConnectAgain ? label : 'NOT ALLOWED'}
         </h1>
+        {isTarget && (
+          <h6 className="text-center font-sans text-sm font-thin text-slate-500">
+            Interact below to edit
+          </h6>
+        )}
       </div>
     </div>
   );

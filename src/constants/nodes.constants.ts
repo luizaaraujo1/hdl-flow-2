@@ -25,6 +25,8 @@ export const NODE_TYPES = {
 
 export const START_NODE_ID = 'start_id';
 
+export const DRAG_AND_DROP_EVENT_NAME = 'application/reactflow';
+
 export const INITIAL_NODES: Node[] = [
   {
     id: START_NODE_ID,
