@@ -10,6 +10,7 @@ import {zinc} from 'tailwindcss/colors';
 
 import {PortCategory} from '../../../constants/ports.constants';
 import Port, {PortValue, PortTypeEnum} from '../../../models/port';
+import {logicalOnlyPattern, numericOnlyPattern} from '../../../utils/input';
 import PortSelectInput from './PortSelectInput';
 import PortTextInput from './PortTextInput';
 
@@ -42,19 +43,26 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
       value: PortValue,
     ) => {
       const isLogic = type === PortTypeEnum.Logic;
+      const isNumeric = type === PortTypeEnum.Integer;
       const sharedProps = {
         id: 'default_input',
-        label: 'Default Value:',
         required: true,
         value: String(value),
-        onChange,
+        onTextChange: onChange,
       };
+      const helperText = isNumeric ? '(numeric)' : '(binary)';
       return cloneElement(
         isLogic ? (
-          <PortSelectInput options={['false', 'true']} {...sharedProps} />
+          <PortSelectInput
+            options={['false', 'true']}
+            label="Default value:"
+            {...sharedProps}
+          />
         ) : (
           <PortTextInput
             placeholder="Set the Port's default value"
+            label={`Default value: ${helperText}`}
+            pattern={isNumeric ? numericOnlyPattern : logicalOnlyPattern}
             {...sharedProps}
           />
         ),
@@ -98,7 +106,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
             <PortTextInput
               id="name_input"
               label="Name:"
-              onChange={value => setPort('name', value)}
+              onTextChange={value => setPort('name', value)}
               value={port.name}
               placeholder="Write an unique name"
               required
@@ -106,7 +114,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
             <PortTextInput
               id="id_name_input"
               label="ID Name:"
-              onChange={value => setPort('id_name', value)}
+              onTextChange={value => setPort('id_name', value)}
               value={port.id_name}
               placeholder="Don't leave the name empty!"
               required
@@ -115,7 +123,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
             <PortSelectInput
               id="type_select"
               label="Select Port Type"
-              onChange={value => setPort('type', value)}
+              onTextChange={value => setPort('type', value)}
               value={port.type}
               options={[
                 PortTypeEnum.Logic,
@@ -132,7 +140,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
             <PortTextInput
               id="description_input"
               label="Description:"
-              onChange={value => setPort('description', value)}
+              onTextChange={value => setPort('description', value)}
               value={port.description}
               placeholder="(optional) Short description"
               expand

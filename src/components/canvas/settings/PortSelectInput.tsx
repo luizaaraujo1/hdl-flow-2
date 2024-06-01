@@ -10,7 +10,7 @@ type SelectInputProps = Omit<
 function PortSelectInput({
   id,
   label,
-  onChange,
+  onTextChange,
   value,
   options,
   className,
@@ -31,7 +31,7 @@ function PortSelectInput({
         value={value}
         onChange={event => {
           event.preventDefault();
-          onChange(event.target.value);
+          onTextChange(event.target.value);
         }}
         className={`input-canvas appearance-none hover:cursor-pointer ${className}`}
         required={required}

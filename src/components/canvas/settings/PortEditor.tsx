@@ -6,6 +6,8 @@ import {useGlobal} from '../../../contexts/GlobalContext';
 import Port, {PortTypeEnum} from '../../../models/port';
 import {
   changeSpacesIntoUnderlines,
+  removeAllNonLogical,
+  removeAllNonNumeric,
   removeForbiddenChars,
 } from '../../../utils/input';
 import PortElement from './PortElement';
@@ -131,6 +133,23 @@ function PortEditor() {
     updatePort(id, getList(tab), getListSetter(tab), 'type', value);
   };
 
+  const handlePortDefaultValueUpdate = (
+    id: string,
+    tab: PortCategory,
+    value: Port[keyof Port],
+  ) => {
+    let newValue = value;
+    const portList = getList(tab);
+    const port = portList.find(port => port.id === id);
+
+    if (port?.type === PortTypeEnum.Integer)
+      newValue = removeAllNonNumeric(String(value));
+    if (port?.type === PortTypeEnum.LogicVector)
+      newValue = removeAllNonLogical(String(value));
+
+    updatePort(id, portList, getListSetter(tab), 'defaultValue', newValue);
+  };
+
   const handlePortUpdate = (
     id: string,
     tab: PortCategory,
@@ -139,6 +158,7 @@ function PortEditor() {
   ) => {
     if (key === 'name') handlePortNameUpdate(id, tab, value);
     if (key === 'type') handlePortTypeUpdate(id, tab, value);
+    if (key === 'defaultValue') handlePortDefaultValueUpdate(id, tab, value);
     else {
       updatePort(id, getList(tab), getListSetter(tab), key, value);
     }

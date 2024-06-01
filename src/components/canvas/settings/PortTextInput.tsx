@@ -1,7 +1,7 @@
-export interface TextInputProps {
+export interface TextInputProps extends React.HTMLProps<HTMLInputElement> {
   id: string;
   label: string;
-  onChange: (value: string) => void;
+  onTextChange: (value: string) => void;
   value: string;
   placeholder?: string;
   className?: string;
@@ -17,7 +17,7 @@ const DEFAULT_INPUT_MAX_LENGTH = 20;
 function PortTextInput({
   id,
   label,
-  onChange,
+  onTextChange,
   value,
   placeholder,
   className,
@@ -48,7 +48,7 @@ function PortTextInput({
           value={value}
           onChange={event => {
             event.preventDefault();
-            onChange(event.target.value.slice(0, maxLength - 1));
+            onTextChange(event.target.value.slice(0, maxLength - 1));
           }}
           maxLength={maxLength}
           disabled={disabled}
@@ -65,7 +65,7 @@ function PortTextInput({
           value={value}
           onChange={event => {
             event.preventDefault();
-            onChange(event.target.value.slice(0, maxLength - 1));
+            onTextChange(event.target.value.slice(0, maxLength - 1));
           }}
           maxLength={maxLength}
           disabled={disabled}
