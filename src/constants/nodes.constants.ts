@@ -2,7 +2,7 @@ import {Node} from 'reactflow';
 
 import Square from '../components/nodes/Square';
 import StartNode from '../components/nodes/StartNode';
-import CustomNode from '../components/nodes/StateNode';
+import StateNode from '../components/nodes/stateNode/StateNode';
 
 function getWindowDimensions() {
   const {innerWidth: width, innerHeight: height} = window;
@@ -19,7 +19,7 @@ export enum NODE_TYPE {
 
 export const NODE_TYPES = {
   [NODE_TYPE.Start]: StartNode,
-  [NODE_TYPE.State]: CustomNode,
+  [NODE_TYPE.State]: StateNode,
   square: Square, //TODO: This will be removed
 };
 
