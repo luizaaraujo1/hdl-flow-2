@@ -1,7 +1,7 @@
-export interface TextInputProps {
+export interface TextInputProps extends React.HTMLProps<HTMLInputElement> {
   id: string;
   label: string;
-  onChange: (value: string) => void;
+  onTextChange: (value: string) => void;
   value: string;
   placeholder?: string;
   className?: string;
@@ -17,7 +17,7 @@ const DEFAULT_INPUT_MAX_LENGTH = 20;
 function PortTextInput({
   id,
   label,
-  onChange,
+  onTextChange,
   value,
   placeholder,
   className,
@@ -48,7 +48,7 @@ function PortTextInput({
           value={value}
           onChange={event => {
             event.preventDefault();
-            onChange(event.target.value.slice(0, maxLength - 1));
+            onTextChange(event.target.value.slice(0, maxLength - 1));
           }}
           maxLength={maxLength}
           disabled={disabled}
@@ -58,14 +58,14 @@ function PortTextInput({
         <textarea
           id={id}
           name={id}
-          className={`input-canvas focus:w-full transition-[width,height] ease-in-out resize-none max-h-9 focus:max-h-fit ${requirementStyle} ${disabledStyle} ${className}`}
+          className={`input-canvas max-h-9 resize-none transition-[width,height] ease-in-out focus:max-h-fit focus:w-full ${requirementStyle} ${disabledStyle} ${className}`}
           cols={20}
           rows={3}
           placeholder={placeholder}
           value={value}
           onChange={event => {
             event.preventDefault();
-            onChange(event.target.value.slice(0, maxLength - 1));
+            onTextChange(event.target.value.slice(0, maxLength - 1));
           }}
           maxLength={maxLength}
           disabled={disabled}
