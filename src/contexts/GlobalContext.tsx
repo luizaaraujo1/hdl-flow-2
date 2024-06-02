@@ -1,6 +1,16 @@
 import {createContext, useContext, useState} from 'react';
+import {
+  Edge,
+  EdgeChange,
+  Node,
+  NodeChange,
+  useEdgesState,
+  useNodesState,
+} from 'reactflow';
 
+import {INITIAL_NODES} from '../constants/nodes.constants';
 import Port from '../models/port';
+import FSMState from '../models/state';
 
 export type GlobalContextType = {
   settingsOpen: boolean;
@@ -11,6 +21,16 @@ export type GlobalContextType = {
   setInternalsList: React.Dispatch<React.SetStateAction<Port[]>>;
   outputList: Port[];
   setOutputList: React.Dispatch<React.SetStateAction<Port[]>>;
+  nodeState: {
+    nodes: Node<FSMState>[];
+    setNodes: React.Dispatch<React.SetStateAction<Node<FSMState>[]>>;
+    onNodesChange: (changes: NodeChange[]) => void;
+  };
+  edgeState: {
+    edges: Edge<unknown>[];
+    setEdges: React.Dispatch<React.SetStateAction<Edge<unknown>[]>>;
+    onEdgesChange: (changes: EdgeChange[]) => void;
+  };
 };
 
 export const GlobalContext = createContext<GlobalContextType | undefined>(
@@ -28,6 +48,9 @@ export const GlobalContextProvider = ({
   const [inputList, setInputList] = useState<Port[]>([]);
   const [internalsList, setInternalsList] = useState<Port[]>([]);
   const [outputList, setOutputList] = useState<Port[]>([]);
+  const [nodes, setNodes, onNodesChange] =
+    useNodesState<FSMState>(INITIAL_NODES);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   return (
     <GlobalContext.Provider
       value={{
@@ -39,6 +62,8 @@ export const GlobalContextProvider = ({
         setInputList,
         setInternalsList,
         setOutputList,
+        nodeState: {nodes, setNodes, onNodesChange},
+        edgeState: {edges, setEdges, onEdgesChange},
       }}>
       {children}
     </GlobalContext.Provider>

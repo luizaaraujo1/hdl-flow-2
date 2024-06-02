@@ -7,7 +7,7 @@ interface Props {
 function Testimonial({quote, name, role}: Props) {
   return (
     <div className="simple-card">
-      <blockquote className="text-gray-700 mb-4">
+      <blockquote className="mb-4 text-gray-700">
         &quot;{quote}&quot;
       </blockquote>
       <cite className="block text-gray-600">

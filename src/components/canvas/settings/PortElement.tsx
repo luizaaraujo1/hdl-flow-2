@@ -8,8 +8,9 @@ import {
 import {cloneElement, useCallback, useState} from 'react';
 import {zinc} from 'tailwindcss/colors';
 
-import {PortCategory} from '../../../constants/ports';
-import Port, {PortDefault, PortTypeEnum} from '../../../models/port';
+import {PortCategory} from '../../../constants/ports.constants';
+import Port, {PortValue, PortTypeEnum} from '../../../models/port';
+import {logicalOnlyPattern, numericOnlyPattern} from '../../../utils/input';
 import PortSelectInput from './PortSelectInput';
 import PortTextInput from './PortTextInput';
 
@@ -39,22 +40,29 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
     (
       type: PortTypeEnum,
       onChange: (value: string) => void,
-      value: PortDefault,
+      value: PortValue,
     ) => {
       const isLogic = type === PortTypeEnum.Logic;
+      const isNumeric = type === PortTypeEnum.Integer;
       const sharedProps = {
         id: 'default_input',
-        label: 'Default Value:',
         required: true,
         value: String(value),
-        onChange,
+        onTextChange: onChange,
       };
+      const helperText = isNumeric ? '(numeric)' : '(binary)';
       return cloneElement(
         isLogic ? (
-          <PortSelectInput options={['false', 'true']} {...sharedProps} />
+          <PortSelectInput
+            options={['false', 'true']}
+            label="Default value:"
+            {...sharedProps}
+          />
         ) : (
           <PortTextInput
             placeholder="Set the Port's default value"
+            label={`Default value: ${helperText}`}
+            pattern={isNumeric ? numericOnlyPattern : logicalOnlyPattern}
             {...sharedProps}
           />
         ),
@@ -65,17 +73,17 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
 
   return (
     <div className="flex flex-col">
-      <fieldset className="flex justify-between rounded-md shadow-lg p-2 bg-white">
+      <fieldset className="flex justify-between rounded-md bg-white p-2 shadow-lg">
         <div className="flex items-center">
           <PortIcon portType={portType} />
-          <h3 className="text-sm font-semibold text-gray-500 ml-4">Name:</h3>
+          <h3 className="ml-4 text-sm font-semibold text-gray-500">Name:</h3>
           <h3
             className={`text-sm font-semibold ${isUnnamed ? 'text-red-500' : 'text-gray-500'} ml-2`}>
             {!isUnnamed ? port.name : 'Unnamed Port!'}
           </h3>
-          <h2 className="text-sm font-semibold text-gray-500 ml-4">-</h2>
-          <h3 className="text-sm font-semibold ml-4">Type:</h3>
-          <h3 className="text-sm font-semibold ml-2">{port.type}</h3>
+          <h2 className="ml-4 text-sm font-semibold text-gray-500">-</h2>
+          <h3 className="ml-4 text-sm font-semibold">Type:</h3>
+          <h3 className="ml-2 text-sm font-semibold">{port.type}</h3>
         </div>
         <div className="flex items-center gap-4">
           <button
@@ -86,19 +94,19 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
           <button
             onClick={onDelete}
             aria-selected={editing}
-            className="btn-canvas bg-rose-100 border-red-100 hover:border-red-300/60 active:bg-red-200 rounded-md p-1">
+            className="btn-canvas rounded-md border-red-100 bg-rose-100 p-1 hover:border-red-300/60 active:bg-red-200">
             <TrashIcon color={zinc[600]} />
           </button>
         </div>
       </fieldset>
       <div
-        className={`bg-zinc-600/20 rounded-b-md transition-[min-height] ease-in-out shadow-lg ${editingStyle}`}>
+        className={`rounded-b-md bg-zinc-600/20 shadow-lg transition-[min-height] ease-in-out ${editingStyle}`}>
         {editing && (
-          <fieldset className="flex flex-col p-2 gap-1" disabled={!editing}>
+          <fieldset className="flex flex-col gap-1 p-2" disabled={!editing}>
             <PortTextInput
               id="name_input"
               label="Name:"
-              onChange={value => setPort('name', value)}
+              onTextChange={value => setPort('name', value)}
               value={port.name}
               placeholder="Write an unique name"
               required
@@ -106,7 +114,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
             <PortTextInput
               id="id_name_input"
               label="ID Name:"
-              onChange={value => setPort('id_name', value)}
+              onTextChange={value => setPort('id_name', value)}
               value={port.id_name}
               placeholder="Don't leave the name empty!"
               required
@@ -115,7 +123,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
             <PortSelectInput
               id="type_select"
               label="Select Port Type"
-              onChange={value => setPort('type', value)}
+              onTextChange={value => setPort('type', value)}
               value={port.type}
               options={[
                 PortTypeEnum.Logic,
@@ -132,7 +140,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
             <PortTextInput
               id="description_input"
               label="Description:"
-              onChange={value => setPort('description', value)}
+              onTextChange={value => setPort('description', value)}
               value={port.description}
               placeholder="(optional) Short description"
               expand

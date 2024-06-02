@@ -13,19 +13,19 @@ function SettingsDialog() {
     <Dialog.Root open={settingsOpen} defaultOpen={false}>
       <Dialog.Portal>
         <Dialog.Overlay
-          className="bg-black/50 fixed inset-0 cursor-pointer"
+          className="fixed inset-0 cursor-pointer bg-black/50"
           onClick={closeDialog}
         />
-        <Dialog.Content className="bg-white rounded-md shadow-lg center-fixed transition-all ease-in duration-150 w-4/5 max-w-[1400px] h-4/5 focus:outline-none p-8 flex flex-col">
+        <Dialog.Content className="center-fixed flex h-4/5 w-4/5 max-w-[1400px] flex-col rounded-md bg-white p-8 shadow-lg transition-all duration-150 ease-in focus:outline-none">
           <Dialog.Close
             onClick={closeDialog}
-            className="btn-canvas rounded-full w-8 h-8 fixed top-8 right-8">
+            className="btn-canvas fixed right-8 top-8 h-8 w-8 rounded-full">
             <Cross1Icon />
           </Dialog.Close>
-          <Dialog.Title className="text-lg font-semibold mb-2">
+          <Dialog.Title className="mb-2 text-lg font-semibold">
             Port Settings
           </Dialog.Title>
-          <Dialog.Description className="text-md font-light mb-4">
+          <Dialog.Description className="text-md mb-4 font-light">
             Use this menu to set up the Ports for your FSM
           </Dialog.Description>
           <PortEditor />

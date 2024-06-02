@@ -3,12 +3,12 @@ import SimpleSection from '../shared/SimpleSection';
 
 function JoinNow() {
   return (
-    <SimpleSection className="bg-gradient-to-tl from-gray-800 to-slate-700 text-gray-100 py-20 mt-16 shadow-lg">
+    <SimpleSection className="mt-16 bg-gradient-to-tl from-gray-800 to-slate-700 py-20 text-gray-100 shadow-lg">
       <div className="container mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-4">Join the HDL Flow team!</h2>
+        <h2 className="mb-4 text-3xl font-bold">Join the HDL Flow team!</h2>
         <a
           href={GITHUB_LINK}
-          className="bg-white text-gray-800 font-bold py-2 px-6 rounded-full inline-block hover:px-7 transition-all">
+          className="inline-block rounded-full bg-white px-6 py-2 font-bold text-gray-800 transition-all hover:px-7">
           Contribute
         </a>
       </div>

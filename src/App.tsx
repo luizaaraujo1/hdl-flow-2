@@ -5,17 +5,13 @@ import '@fontsource/roboto/700.css';
 import {SpeedInsights} from '@vercel/speed-insights/react';
 import {Outlet} from 'react-router-dom';
 
-import Footer from './components/Footer';
-import Header from './components/Header';
 import {GlobalContextProvider} from './contexts/GlobalContext';
 
 function App() {
   return (
     <GlobalContextProvider>
-      <div className="min-h-screen flex flex-col font-roboto bg-gray-800">
-        <Header />
+      <div className="flex min-h-screen flex-col bg-gray-800 font-roboto">
         <Outlet />
-        <Footer />
         <SpeedInsights />
       </div>
     </GlobalContextProvider>
