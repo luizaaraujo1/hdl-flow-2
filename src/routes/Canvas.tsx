@@ -179,6 +179,7 @@ function Canvas() {
           onInit={e => setReactFlowInstance(e)}
           onDrop={onDrop}
           onDragOver={onDragOver}
+          deleteKeyCode={['Delete', 'Shift']}
           fitView>
           <Background gap={12} size={2} color={zinc[200]} />
           <Controls position="bottom-right" />
