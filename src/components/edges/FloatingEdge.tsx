@@ -1,4 +1,3 @@
-import {CrossCircledIcon} from '@radix-ui/react-icons';
 import {useCallback} from 'react';
 import {
   useStore,
@@ -8,7 +7,9 @@ import {
 } from 'reactflow';
 
 import {useGlobal} from '../../contexts/GlobalContext';
+import FSMTransition from '../../models/transition';
 import {getEdgeParams} from '../../utils/edge.utils';
+import DeleteButton from '../shared/DeleteButton';
 
 function FloatingEdge({
   id,
@@ -17,7 +18,8 @@ function FloatingEdge({
   markerEnd,
   style,
   selected,
-}: EdgeProps) {
+  data,
+}: EdgeProps<FSMTransition>) {
   const {
     edgeState: {setEdges},
   } = useGlobal();
@@ -41,6 +43,9 @@ function FloatingEdge({
     targetY: ty,
   });
 
+  const handleDeleteEdge = () =>
+    setEdges(edges => edges.filter(e => e.id !== id));
+
   return (
     <>
       <path
@@ -56,19 +61,24 @@ function FloatingEdge({
       />
       <EdgeLabelRenderer>
         {selected && (
-          <div className="flex gap-2 rounded-md">
-            <button
-              onClick={() => setEdges(edges => edges.filter(e => e.id !== id))}
-              className="nodrag nopan btn-canvas -top-[50px] rounded-md p-2"
-              style={{
-                position: 'absolute',
-                transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
-                pointerEvents: 'all',
-              }}>
-              Delete <CrossCircledIcon className="ml-2" />
-            </button>
-          </div>
+          <DeleteButton
+            onDelete={handleDeleteEdge}
+            className="-top-[60px]"
+            style={{
+              position: 'absolute',
+              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+              pointerEvents: 'all',
+            }}
+          />
         )}
+        <div
+          style={{
+            position: 'absolute',
+            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+          }}
+          className="nodrag nopan rounded-md border-2 border-black bg-white p-2 text-lg font-semibold shadow-md">
+          {`T${data?.transitionNumber}`}
+        </div>
       </EdgeLabelRenderer>
       {/* Used for click area */}
       <path

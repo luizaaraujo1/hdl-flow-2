@@ -27,6 +27,7 @@ import {
   START_NODE_ID,
 } from '../constants/nodes.constants';
 import {useGlobal} from '../contexts/GlobalContext';
+import FSMTransition from '../models/transition';
 import {getPortLogicObjectFromPorts} from '../utils/port.utils';
 
 function Canvas() {
@@ -35,8 +36,10 @@ function Canvas() {
     nodeState: {nodes, onNodesChange, setNodes},
     internalsList,
     outputList,
+    inputList,
   } = useGlobal();
-  const [totalCount, setTotalCount] = useState(0);
+  const [nodeCount, setNodeCount] = useState(0);
+  const [transitionCount, setTransitionCount] = useState(0);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
     unknown,
     unknown
@@ -58,11 +61,9 @@ function Canvas() {
     [edges],
   );
 
-  const onConnect = useCallback(
-    (connection: Connection) => {
-      setEdges(edges => addEdge(connection, edges));
-    },
-    [setEdges],
+  const inputLogic = useMemo(
+    () => getPortLogicObjectFromPorts(inputList),
+    [inputList],
   );
 
   const outputsLogic = useMemo(
@@ -75,9 +76,36 @@ function Canvas() {
     [internalsList],
   );
 
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      if (connection.source && connection.target) {
+        //FIXME: Typescript shenanigans
+        const newCount = transitionCount + 1;
+        const newEdge: Edge<FSMTransition> = {
+          ...connection,
+          source: connection.source,
+          target: connection.target,
+          id: crypto.randomUUID().toString(),
+          data: {
+            transitionNumber: newCount,
+            name: `Transition ${newCount}`,
+            portLogic: {
+              inputs: inputLogic,
+              outputs: outputsLogic,
+              internals: internalsLogic,
+            },
+          },
+        };
+        setEdges(edges => addEdge(newEdge, edges));
+        setTransitionCount(newCount);
+      }
+    },
+    [inputLogic, internalsLogic, outputsLogic, setEdges, transitionCount],
+  );
+
   const addNewNode = useCallback(
     (type: NODE_TYPE, position: {x: number; y: number}) => {
-      const newCount = totalCount + 1;
+      const newCount = nodeCount + 1;
       setNodes(nodes => [
         ...nodes,
         {
@@ -94,9 +122,9 @@ function Canvas() {
           },
         },
       ]);
-      setTotalCount(newCount);
+      setNodeCount(newCount);
     },
-    [internalsLogic, outputsLogic, setNodes, totalCount],
+    [internalsLogic, outputsLogic, setNodes, nodeCount],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {

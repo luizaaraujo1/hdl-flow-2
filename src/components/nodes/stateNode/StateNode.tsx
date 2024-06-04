@@ -1,4 +1,3 @@
-import {CrossCircledIcon} from '@radix-ui/react-icons';
 import {useMemo} from 'react';
 import {
   NodeProps,
@@ -11,6 +10,7 @@ import {
 import {START_NODE_ID} from '../../../constants/nodes.constants';
 import {useGlobal} from '../../../contexts/GlobalContext';
 import FSMState from '../../../models/state';
+import DeleteButton from '../../shared/DeleteButton';
 import StateNodeHandler from './StateNodeHandler';
 import StateNodeHeader from './StateNodeHeader';
 import StateNodePortList from './StateNodePortList';
@@ -63,11 +63,7 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
   return (
     <div>
       <NodeToolbar isVisible={selected} position={Position.Top}>
-        <button
-          onClick={() => handleDeleteNode()}
-          className="nodrag nopan btn-canvas rounded-md p-2">
-          Delete <CrossCircledIcon className="ml-2" />
-        </button>
+        <DeleteButton onDelete={handleDeleteNode} />
       </NodeToolbar>
       <div
         className={`selection: min-w-[180px] rounded-t-md transition-[border-width] ${selectedStyle} border-b-0 border-black bg-slate-100 shadow-md`}>

@@ -1,6 +1,6 @@
 import Port, {PortValue} from './port';
 
-export enum PortLogicType {
+export enum LogicType {
   Equality = 'equality',
   LogicNot = 'logic_not',
   LogicOr = 'logic_or',
@@ -14,7 +14,7 @@ export enum PortLogicType {
 
 export interface PortLogic {
   port: Port;
-  type: PortLogicType;
+  type: LogicType;
   customValue?: PortValue;
 }
 

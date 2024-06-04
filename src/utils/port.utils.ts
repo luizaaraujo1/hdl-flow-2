@@ -1,5 +1,5 @@
 import Port from '../models/port';
-import {PortLogic, PortLogicType} from '../models/state';
+import {PortLogic, LogicType} from '../models/state';
 
 export function getPortLogicObjectFromPorts(ports: Port[]): {
   [key: string]: PortLogic;
@@ -8,7 +8,7 @@ export function getPortLogicObjectFromPorts(ports: Port[]): {
   ports.forEach(port => {
     portLogic = {
       ...portLogic,
-      [port.id]: {port, type: PortLogicType.Default},
+      [port.id]: {port, type: LogicType.Default},
     };
   });
   return portLogic;
