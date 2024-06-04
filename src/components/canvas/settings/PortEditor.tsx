@@ -23,6 +23,7 @@ function PortEditor() {
     setInternalsList,
     setOutputList,
     nodeState: {setNodes},
+    edgeState: {setEdges},
   } = useGlobal();
 
   const PORT_TABS: TabSchema[] = [
@@ -67,6 +68,11 @@ function PortEditor() {
     getListSetter(tab)(prev => [...prev, newPort]);
   };
 
+  const inputLogic = useMemo(
+    () => getPortLogicObjectFromPorts(inputList),
+    [inputList],
+  );
+
   const outputsLogic = useMemo(
     () => getPortLogicObjectFromPorts(outputList),
     [outputList],
@@ -92,9 +98,30 @@ function PortEditor() {
     );
   }, [internalsLogic, outputsLogic, setNodes]);
 
+  const updateEdgesState = useCallback(() => {
+    setEdges(prev =>
+      [...prev].map(edge => {
+        if (edge.data)
+          return {
+            ...edge,
+            data: {
+              ...edge.data,
+              portLogic: {
+                inputs: {...inputLogic},
+                internals: {...internalsLogic},
+                outputs: {...outputsLogic},
+              },
+            },
+          };
+        else return {...edge};
+      }),
+    );
+  }, [inputLogic, internalsLogic, outputsLogic, setEdges]);
+
   useEffect(() => {
     updateNodesState();
-  }, [updateNodesState]);
+    updateEdgesState();
+  }, [updateEdgesState, updateNodesState]);
 
   const deletePort = (
     id: string,

@@ -165,7 +165,7 @@ function Canvas() {
   }, []);
 
   const onEdgeUpdate = useCallback(
-    (oldEdge: Edge<unknown>, newConnection: Connection) => {
+    (oldEdge: Edge<FSMTransition>, newConnection: Connection) => {
       edgeUpdateSuccessful.current = true;
       setEdges(els => updateEdge(oldEdge, newConnection, els));
     },
@@ -173,7 +173,7 @@ function Canvas() {
   );
 
   const onEdgeUpdateEnd = useCallback(
-    (_: unknown, edge: Edge<unknown>) => {
+    (_: unknown, edge: Edge<FSMTransition>) => {
       if (!edgeUpdateSuccessful.current) {
         setEdges(eds => eds.filter(e => e.id !== edge.id));
       }

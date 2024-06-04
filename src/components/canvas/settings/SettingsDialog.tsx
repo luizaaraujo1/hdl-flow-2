@@ -33,8 +33,9 @@ function SettingsDialog() {
             in the Canvas.
           </Dialog.Description>
           <Dialog.Description className="mb-4 text-sm font-light text-slate-800">
-            Each update to this Dialog will reset your States. (This will change
-            in a new version. Currently work in progress...)
+            Each update to this Dialog will reset your edits to States and
+            Transitions. (This will change in a new version. Currently work in
+            progress...)
           </Dialog.Description>
           <PortEditor />
         </Dialog.Content>
