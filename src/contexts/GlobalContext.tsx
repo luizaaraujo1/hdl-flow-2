@@ -11,6 +11,7 @@ import {
 import {INITIAL_NODES} from '../constants/nodes.constants';
 import Port from '../models/port';
 import FSMState from '../models/state';
+import FSMTransition from '../models/transition';
 
 export type GlobalContextType = {
   settingsOpen: boolean;
@@ -27,8 +28,8 @@ export type GlobalContextType = {
     onNodesChange: (changes: NodeChange[]) => void;
   };
   edgeState: {
-    edges: Edge<unknown>[];
-    setEdges: React.Dispatch<React.SetStateAction<Edge<unknown>[]>>;
+    edges: Edge<FSMTransition>[];
+    setEdges: React.Dispatch<React.SetStateAction<Edge<FSMTransition>[]>>;
     onEdgesChange: (changes: EdgeChange[]) => void;
   };
 };

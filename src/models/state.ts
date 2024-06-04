@@ -1,6 +1,6 @@
 import Port, {PortValue} from './port';
 
-export enum PortLogicType {
+export enum LogicType {
   Equality = 'equality',
   LogicNot = 'logic_not',
   LogicOr = 'logic_or',
@@ -14,17 +14,19 @@ export enum PortLogicType {
 
 export interface PortLogic {
   port: Port;
-  type: PortLogicType;
+  type: LogicType;
   customValue?: PortValue;
+}
+
+export interface StatePortLogic {
+  outputs: {[key: string]: PortLogic};
+  internals: {[key: string]: PortLogic};
 }
 
 interface FSMState {
   stateNumber: number;
   name: string;
-  portLogic: {
-    outputs: {[key: string]: PortLogic};
-    internals: {[key: string]: PortLogic};
-  };
+  portLogic: StatePortLogic;
   isStart?: boolean;
 }
 
