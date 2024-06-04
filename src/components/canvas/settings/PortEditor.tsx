@@ -1,5 +1,6 @@
 import {PlusCircledIcon} from '@radix-ui/react-icons';
 import * as Tabs from '@radix-ui/react-tabs';
+import {useCallback, useEffect, useMemo} from 'react';
 
 import {PortCategory, TabSchema} from '../../../constants/ports.constants';
 import {useGlobal} from '../../../contexts/GlobalContext';
@@ -10,6 +11,7 @@ import {
   removeAllNonNumeric,
   removeForbiddenChars,
 } from '../../../utils/input';
+import {getPortLogicObjectFromPorts} from '../../../utils/port.utils';
 import PortElement from './PortElement';
 
 function PortEditor() {
@@ -20,6 +22,7 @@ function PortEditor() {
     setInputList,
     setInternalsList,
     setOutputList,
+    nodeState: {setNodes},
   } = useGlobal();
 
   const PORT_TABS: TabSchema[] = [
@@ -63,6 +66,35 @@ function PortEditor() {
     const newPort = getDefaultPortValues(getList(tab).length + 1, tab);
     getListSetter(tab)(prev => [...prev, newPort]);
   };
+
+  const outputsLogic = useMemo(
+    () => getPortLogicObjectFromPorts(outputList),
+    [outputList],
+  );
+
+  const internalsLogic = useMemo(
+    () => getPortLogicObjectFromPorts(internalsList),
+    [internalsList],
+  );
+
+  const updateNodesState = useCallback(() => {
+    setNodes(prev =>
+      [...prev].map(node => ({
+        ...node,
+        data: {
+          ...node.data,
+          portLogic: {
+            internals: {...internalsLogic},
+            outputs: {...outputsLogic},
+          },
+        },
+      })),
+    );
+  }, [internalsLogic, outputsLogic, setNodes]);
+
+  useEffect(() => {
+    updateNodesState();
+  }, [updateNodesState]);
 
   const deletePort = (
     id: string,

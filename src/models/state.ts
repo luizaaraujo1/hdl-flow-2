@@ -18,13 +18,15 @@ export interface PortLogic {
   customValue?: PortValue;
 }
 
+export interface StatePortLogic {
+  outputs: {[key: string]: PortLogic};
+  internals: {[key: string]: PortLogic};
+}
+
 interface FSMState {
   stateNumber: number;
   name: string;
-  portLogic: {
-    outputs: {[key: string]: PortLogic};
-    internals: {[key: string]: PortLogic};
-  };
+  portLogic: StatePortLogic;
   isStart?: boolean;
 }
 

@@ -58,9 +58,12 @@ function Canvas() {
     [edges],
   );
 
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges(edges => addEdge(connection, edges));
-  }, []);
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      setEdges(edges => addEdge(connection, edges));
+    },
+    [setEdges],
+  );
 
   const outputsLogic = useMemo(
     () => getPortLogicObjectFromPorts(outputList),
@@ -93,7 +96,7 @@ function Canvas() {
       ]);
       setTotalCount(newCount);
     },
-    [internalsLogic, outputsLogic, totalCount],
+    [internalsLogic, outputsLogic, setNodes, totalCount],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -138,16 +141,19 @@ function Canvas() {
       edgeUpdateSuccessful.current = true;
       setEdges(els => updateEdge(oldEdge, newConnection, els));
     },
-    [],
+    [setEdges],
   );
 
-  const onEdgeUpdateEnd = useCallback((_: unknown, edge: Edge<unknown>) => {
-    if (!edgeUpdateSuccessful.current) {
-      setEdges(eds => eds.filter(e => e.id !== edge.id));
-    }
+  const onEdgeUpdateEnd = useCallback(
+    (_: unknown, edge: Edge<unknown>) => {
+      if (!edgeUpdateSuccessful.current) {
+        setEdges(eds => eds.filter(e => e.id !== edge.id));
+      }
 
-    edgeUpdateSuccessful.current = true;
-  }, []);
+      edgeUpdateSuccessful.current = true;
+    },
+    [setEdges],
+  );
 
   return (
     <div className="flex-1 bg-slate-100">

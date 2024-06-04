@@ -28,6 +28,14 @@ function SettingsDialog() {
           <Dialog.Description className="text-md mb-4 font-light">
             Use this menu to set up the Ports for your FSM
           </Dialog.Description>
+          <Dialog.Description className="mb-2 text-sm font-light text-slate-800">
+            Warning! Set up all your FSM Ports BEFORE customizing yours States
+            in the Canvas.
+          </Dialog.Description>
+          <Dialog.Description className="mb-4 text-sm font-light text-slate-800">
+            Each update to this Dialog will reset your States. (This will change
+            in a new version. Currently work in progress...)
+          </Dialog.Description>
           <PortEditor />
         </Dialog.Content>
       </Dialog.Portal>

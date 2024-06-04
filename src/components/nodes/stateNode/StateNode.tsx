@@ -30,7 +30,7 @@ function StateNode({id, data}: NodeProps<FSMState>) {
 
   const isConnected = useMemo(
     () => !!edges.find(edge => edge.target === id),
-    [edges],
+    [edges, id],
   );
 
   const isStartConnected = useMemo(
