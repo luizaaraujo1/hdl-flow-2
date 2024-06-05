@@ -1,4 +1,4 @@
-import {TextInputProps} from './PortTextInput';
+import {TextInputProps} from '../../../shared/TextInput';
 
 type SelectInputProps = Omit<
   TextInputProps,

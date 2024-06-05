@@ -11,8 +11,8 @@ import {zinc} from 'tailwindcss/colors';
 import {PortCategory} from '../../../../constants/ports.constants';
 import Port, {PortValue, PortTypeEnum} from '../../../../models/port';
 import {logicalOnlyPattern, numericOnlyPattern} from '../../../../utils/input';
+import TextInput from '../../../shared/TextInput';
 import PortSelectInput from './PortSelectInput';
-import PortTextInput from './PortTextInput';
 
 interface Props {
   port: Port;
@@ -59,7 +59,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
             {...sharedProps}
           />
         ) : (
-          <PortTextInput
+          <TextInput
             placeholder="Set the Port's default value"
             label={`Default value: ${helperText}`}
             pattern={isNumeric ? numericOnlyPattern : logicalOnlyPattern}
@@ -103,7 +103,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
         className={`rounded-b-md bg-zinc-600/20 shadow-lg transition-[min-height] ease-in-out ${editingStyle}`}>
         {editing && (
           <fieldset className="flex flex-col gap-1 p-2" disabled={!editing}>
-            <PortTextInput
+            <TextInput
               id="name_input"
               label="Name:"
               onTextChange={value => setPort('name', value)}
@@ -111,7 +111,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
               placeholder="Write an unique name"
               required
             />
-            <PortTextInput
+            <TextInput
               id="id_name_input"
               label="ID Name:"
               onTextChange={value => setPort('id_name', value)}
@@ -137,7 +137,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
               value => setPort('defaultValue', value),
               port.defaultValue,
             )}
-            <PortTextInput
+            <TextInput
               id="description_input"
               label="Description:"
               onTextChange={value => setPort('description', value)}
