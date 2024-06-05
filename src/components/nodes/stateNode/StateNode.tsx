@@ -9,6 +9,7 @@ import {
 } from 'reactflow';
 
 import {START_NODE_ID} from '../../../constants/nodes.constants';
+import {useDialog} from '../../../contexts/DialogContext';
 import {useGlobal} from '../../../contexts/GlobalContext';
 import FSMState from '../../../models/state';
 import CanvasButton from '../../shared/DeleteButton';
@@ -30,6 +31,7 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
     edgeState: {edges, setEdges},
     nodeState: {setNodes},
   } = useGlobal();
+  const {setSelectedState, setStateSettingsOpen} = useDialog();
 
   const outputsList = Object.values(outputs);
   const internalsList = Object.values(internals);
@@ -62,7 +64,8 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
   };
 
   const handleOpenEditState = () => {
-    console.log('Open');
+    setSelectedState({nodeId: id, data});
+    setStateSettingsOpen(true);
   };
 
   return (

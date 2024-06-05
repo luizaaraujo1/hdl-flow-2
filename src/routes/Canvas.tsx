@@ -14,6 +14,8 @@ import {zinc} from 'tailwindcss/colors';
 
 import SideMenu from '../components/canvas/SideMenu';
 import PortSettingsDialog from '../components/canvas/settings/port/PortSettingsDialog';
+import StateSettingsDialog from '../components/canvas/settings/state/StateSettingsDialog';
+import TransitionSettingsDialog from '../components/canvas/settings/transition/TransitionSettingsDialog';
 import StraightConnectionLine from '../components/edges/StraightConnectionLine';
 import {
   EDGE_TYPES,
@@ -213,6 +215,8 @@ function Canvas() {
         </ReactFlow>
         <SideMenu />
         <PortSettingsDialog />
+        <StateSettingsDialog />
+        <TransitionSettingsDialog />
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import {
   EdgeLabelRenderer,
 } from 'reactflow';
 
+import {useDialog} from '../../contexts/DialogContext';
 import {useGlobal} from '../../contexts/GlobalContext';
 import FSMTransition from '../../models/transition';
 import {getEdgeParams} from '../../utils/edge.utils';
@@ -24,6 +25,7 @@ function FloatingEdge({
   const {
     edgeState: {setEdges},
   } = useGlobal();
+  const {setSelectedTransition, setTransitionSettingsOpen} = useDialog();
   const sourceNode = useStore(
     useCallback(store => store.nodeInternals.get(source), [source]),
   );
@@ -48,7 +50,10 @@ function FloatingEdge({
     setEdges(edges => edges.filter(e => e.id !== id));
 
   const handleOpenEditTransition = () => {
-    console.log('Open');
+    if (data) {
+      setSelectedTransition({transitionId: id, data});
+      setTransitionSettingsOpen(true);
+    }
   };
 
   return (

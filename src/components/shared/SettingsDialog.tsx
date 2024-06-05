@@ -8,6 +8,7 @@ interface SettingsDialogProps {
   description: string;
   children: React.ReactNode;
   disclaimers?: string[];
+  onClose?: () => void;
 }
 
 function SettingsDialog({
@@ -16,9 +17,13 @@ function SettingsDialog({
   title,
   description,
   disclaimers,
+  onClose,
   children,
 }: SettingsDialogProps) {
-  const closeDialog = () => setOpen(false);
+  const closeDialog = () => {
+    onClose && onClose();
+    setOpen(false);
+  };
 
   return (
     <Dialog.Root open={open} defaultOpen={false}>

@@ -1,23 +1,32 @@
 import {createContext, useContext, useState} from 'react';
-import {Node} from 'reactflow';
 
 import FSMState from '../models/state';
 import FSMTransition from '../models/transition';
+
+interface StateDialogValue {
+  data: FSMState;
+  nodeId: string;
+}
+
+interface TransitionDialogValue {
+  data: FSMTransition;
+  transitionId: string;
+}
 
 export type DialogContextType = {
   portSettingsOpen: boolean;
   setPortSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   stateSettingsOpen: boolean;
   setStateSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedState: Node<FSMState> | undefined;
+  selectedState: StateDialogValue | undefined;
   setSelectedState: React.Dispatch<
-    React.SetStateAction<Node<FSMState> | undefined>
+    React.SetStateAction<StateDialogValue | undefined>
   >;
   transitionSettingsOpen: boolean;
   setTransitionSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedTransition: Node<FSMTransition> | undefined;
+  selectedTransition: TransitionDialogValue | undefined;
   setSelectedTransition: React.Dispatch<
-    React.SetStateAction<Node<FSMTransition> | undefined>
+    React.SetStateAction<TransitionDialogValue | undefined>
   >;
 };
 
@@ -35,11 +44,11 @@ export const DialogContextProvider = ({
   const [portSettingsOpen, setPortSettingsOpen] = useState(false);
   const [stateSettingsOpen, setStateSettingsOpen] = useState(false);
   const [selectedState, setSelectedState] = useState<
-    Node<FSMState> | undefined
+    StateDialogValue | undefined
   >();
   const [transitionSettingsOpen, setTransitionSettingsOpen] = useState(false);
   const [selectedTransition, setSelectedTransition] = useState<
-    Node<FSMTransition> | undefined
+    TransitionDialogValue | undefined
   >();
   return (
     <DialogContext.Provider
