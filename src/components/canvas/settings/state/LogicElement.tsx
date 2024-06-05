@@ -31,12 +31,12 @@ const filterSamePort = (ports: Port[], id: string) => {
   return ports.filter(ports => ports.id !== id);
 };
 
-const LogicElement = ({
+function LogicElement({
   logic,
   onEditLogic,
   portCategory,
   logicType,
-}: LogicElement) => {
+}: LogicElement) {
   const {inputList, internalsList} = useGlobal();
   const isInternal = portCategory === 'Internal';
 
@@ -171,6 +171,6 @@ const LogicElement = ({
       </div>
     </div>
   );
-};
+}
 
 export default LogicElement;

@@ -9,7 +9,7 @@ import {numericOnlyPattern, removeAllNonNumeric} from '../../../../utils/input';
 import TextInput from '../../../shared/TextInput';
 import StateLogicEditor from './StateLogicEditor';
 
-const StateEditor = () => {
+function StateEditor() {
   const {selectedStateId} = useDialog();
   const {
     nodeState: {nodes, setNodes},
@@ -127,6 +127,6 @@ const StateEditor = () => {
       </div>
     </div>
   );
-};
+}
 
 export default StateEditor;

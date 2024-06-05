@@ -13,11 +13,11 @@ interface StateLogicEditorProps {
   ) => void;
 }
 
-const StateLogicEditor = ({
+function StateLogicEditor({
   outputsList,
   internalsList,
   onEditLogic,
-}: StateLogicEditorProps) => {
+}: StateLogicEditorProps) {
   const hasOutputs = !!outputsList && outputsList.length > 0;
   const hasInternals = !!internalsList && internalsList.length > 0;
   const marginStyle = hasOutputs ? 'mt-4' : '';
@@ -58,6 +58,6 @@ const StateLogicEditor = ({
       )}
     </fieldset>
   );
-};
+}
 
 export default StateLogicEditor;

@@ -5,14 +5,14 @@ function TransitionSettingsDialog() {
   const {
     transitionSettingsOpen,
     setTransitionSettingsOpen,
-    setSelectedTransition,
+    setSelectedTransitionId,
   } = useDialog();
 
   const TRANSITION_SETTINGS_DISCLAIMERS = [
     'Warning! If you change your Ports you will lose these changes',
   ];
 
-  const onClose = () => setSelectedTransition(undefined);
+  const onClose = () => setSelectedTransitionId(undefined);
 
   return (
     <SettingsDialog

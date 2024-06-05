@@ -25,7 +25,7 @@ function FloatingEdge({
   const {
     edgeState: {setEdges},
   } = useGlobal();
-  const {setSelectedTransition, setTransitionSettingsOpen} = useDialog();
+  const {setSelectedTransitionId, setTransitionSettingsOpen} = useDialog();
   const sourceNode = useStore(
     useCallback(store => store.nodeInternals.get(source), [source]),
   );
@@ -51,7 +51,7 @@ function FloatingEdge({
 
   const handleOpenEditTransition = () => {
     if (data) {
-      setSelectedTransition({transitionId: id, data});
+      setSelectedTransitionId(id);
       setTransitionSettingsOpen(true);
     }
   };
