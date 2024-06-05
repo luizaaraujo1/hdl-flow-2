@@ -8,9 +8,9 @@ import {
 import {cloneElement, useCallback, useState} from 'react';
 import {zinc} from 'tailwindcss/colors';
 
-import {PortCategory} from '../../../constants/ports.constants';
-import Port, {PortValue, PortTypeEnum} from '../../../models/port';
-import {logicalOnlyPattern, numericOnlyPattern} from '../../../utils/input';
+import {PortCategory} from '../../../../constants/ports.constants';
+import Port, {PortValue, PortTypeEnum} from '../../../../models/port';
+import {logicalOnlyPattern, numericOnlyPattern} from '../../../../utils/input';
 import PortSelectInput from './PortSelectInput';
 import PortTextInput from './PortTextInput';
 

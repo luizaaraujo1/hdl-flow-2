@@ -1,5 +1,5 @@
-import {useGlobal} from '../../../contexts/GlobalContext';
-import SettingsDialog from '../../shared/SettingsDialog';
+import {useGlobal} from '../../../../contexts/GlobalContext';
+import SettingsDialog from '../../../shared/SettingsDialog';
 import PortEditor from './PortEditor';
 
 function PortSettingsDialog() {

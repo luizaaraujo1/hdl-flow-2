@@ -1,10 +1,10 @@
-interface Props {
+interface TestimonialProps {
   quote: string;
   name: string;
   role: string;
 }
 
-function Testimonial({quote, name, role}: Props) {
+function Testimonial({quote, name, role}: TestimonialProps) {
   return (
     <div className="simple-card">
       <blockquote className="mb-4 text-gray-700">

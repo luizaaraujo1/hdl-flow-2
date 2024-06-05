@@ -13,7 +13,7 @@ import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
 
 import SideMenu from '../components/canvas/SideMenu';
-import PortSettingsDialog from '../components/canvas/settings/PortSettingsDialog';
+import PortSettingsDialog from '../components/canvas/settings/port/PortSettingsDialog';
 import StraightConnectionLine from '../components/edges/StraightConnectionLine';
 import {
   EDGE_TYPES,
@@ -80,15 +80,14 @@ function Canvas() {
     (connection: Connection) => {
       if (connection.source && connection.target) {
         //FIXME: Typescript shenanigans
-        const newCount = transitionCount + 1;
         const newEdge: Edge<FSMTransition> = {
           ...connection,
           source: connection.source,
           target: connection.target,
           id: crypto.randomUUID().toString(),
           data: {
-            transitionNumber: newCount,
-            name: `Transition ${newCount}`,
+            transitionNumber: transitionCount,
+            name: `Transition ${transitionCount}`,
             portLogic: {
               inputs: inputLogic,
               outputs: outputsLogic,
@@ -97,7 +96,7 @@ function Canvas() {
           },
         };
         setEdges(edges => addEdge(newEdge, edges));
-        setTransitionCount(newCount);
+        setTransitionCount(prev => prev + 1);
       }
     },
     [inputLogic, internalsLogic, outputsLogic, setEdges, transitionCount],

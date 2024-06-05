@@ -2,16 +2,16 @@ import {PlusCircledIcon} from '@radix-ui/react-icons';
 import * as Tabs from '@radix-ui/react-tabs';
 import {useCallback, useEffect, useMemo} from 'react';
 
-import {PortCategory, TabSchema} from '../../../constants/ports.constants';
-import {useGlobal} from '../../../contexts/GlobalContext';
-import Port, {PortTypeEnum} from '../../../models/port';
+import {PortCategory, TabSchema} from '../../../../constants/ports.constants';
+import {useGlobal} from '../../../../contexts/GlobalContext';
+import Port, {PortTypeEnum} from '../../../../models/port';
 import {
   changeSpacesIntoUnderlines,
   removeAllNonLogical,
   removeAllNonNumeric,
   removeForbiddenChars,
-} from '../../../utils/input';
-import {getPortLogicObjectFromPorts} from '../../../utils/port.utils';
+} from '../../../../utils/input';
+import {getPortLogicObjectFromPorts} from '../../../../utils/port.utils';
 import PortElement from './PortElement';
 
 function PortEditor() {
