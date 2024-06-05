@@ -8,6 +8,7 @@ function StateSettingsDialog() {
 
   const STATE_SETTINGS_DISCLAIMERS = [
     'Warning! If you change your Ports you will lose these changes',
+    'More port operations will be added in a future update (Work in progress)',
   ];
 
   const onClose = () => setSelectedStateId(undefined);
