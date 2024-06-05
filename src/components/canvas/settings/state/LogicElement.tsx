@@ -91,6 +91,9 @@ const LogicElement = ({
     if (logic.type === LogicType.Default && !!logic.customValue) {
       onEditLogic(logic.port.id, 'customValue', undefined);
     }
+    if (logic.type === LogicType.Custom && !logic.customValue) {
+      onEditLogic(logic.port.id, 'customValue', '');
+    }
   }, [
     customValueEqualityOptions,
     logic.customValue,

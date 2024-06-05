@@ -57,7 +57,7 @@ function PortElement({onDelete, portCategory, port, setPort}: Props) {
 
   return (
     <div className="flex flex-col">
-      <fieldset className="flex justify-between rounded-md bg-white p-2 shadow-lg">
+      <fieldset className="flex content-center justify-between rounded-md bg-white p-2 shadow-lg">
         <PortInfo port={port} portCategory={portCategory} />
         <div className="flex items-center gap-4">
           <button
