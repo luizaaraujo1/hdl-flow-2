@@ -1,3 +1,4 @@
+import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import {useCallback} from 'react';
 import {
   useStore,
@@ -9,7 +10,7 @@ import {
 import {useGlobal} from '../../contexts/GlobalContext';
 import FSMTransition from '../../models/transition';
 import {getEdgeParams} from '../../utils/edge.utils';
-import DeleteButton from '../shared/DeleteButton';
+import CanvasButton from '../shared/DeleteButton';
 
 function FloatingEdge({
   id,
@@ -46,6 +47,10 @@ function FloatingEdge({
   const handleDeleteEdge = () =>
     setEdges(edges => edges.filter(e => e.id !== id));
 
+  const handleOpenEditTransition = () => {
+    console.log('Open');
+  };
+
   return (
     <>
       <path
@@ -61,15 +66,27 @@ function FloatingEdge({
       />
       <EdgeLabelRenderer>
         {selected && (
-          <DeleteButton
-            onDelete={handleDeleteEdge}
-            className="-top-[60px]"
+          <div
+            className="-top-[60px] flex"
             style={{
               position: 'absolute',
               transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
               pointerEvents: 'all',
-            }}
-          />
+            }}>
+            <CanvasButton
+              onClick={handleDeleteEdge}
+              label="Delete"
+              className="bg-red-100"
+              displayMode="left"
+              icon={<CrossCircledIcon />}
+            />
+            <CanvasButton
+              onClick={handleOpenEditTransition}
+              label="Edit"
+              displayMode="right"
+              icon={<GearIcon />}
+            />
+          </div>
         )}
         <div
           style={{

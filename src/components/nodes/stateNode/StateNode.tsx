@@ -1,3 +1,4 @@
+import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import {useMemo} from 'react';
 import {
   NodeProps,
@@ -10,7 +11,7 @@ import {
 import {START_NODE_ID} from '../../../constants/nodes.constants';
 import {useGlobal} from '../../../contexts/GlobalContext';
 import FSMState from '../../../models/state';
-import DeleteButton from '../../shared/DeleteButton';
+import CanvasButton from '../../shared/DeleteButton';
 import StateNodeHandler from './StateNodeHandler';
 import StateNodeHeader from './StateNodeHeader';
 import StateNodePortList from './StateNodePortList';
@@ -60,10 +61,29 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
     );
   };
 
+  const handleOpenEditState = () => {
+    console.log('Open');
+  };
+
   return (
     <div>
-      <NodeToolbar isVisible={selected} position={Position.Top}>
-        <DeleteButton onDelete={handleDeleteNode} />
+      <NodeToolbar
+        isVisible={selected}
+        position={Position.Top}
+        className="flex">
+        <CanvasButton
+          onClick={handleDeleteNode}
+          label="Delete"
+          className="bg-red-100"
+          displayMode="left"
+          icon={<CrossCircledIcon />}
+        />
+        <CanvasButton
+          onClick={handleOpenEditState}
+          label="Edit"
+          displayMode="right"
+          icon={<GearIcon />}
+        />
       </NodeToolbar>
       <div
         className={`selection: min-w-[180px] rounded-t-md transition-[border-width] ${selectedStyle} border-b-0 border-black bg-slate-100 shadow-md`}>
