@@ -31,7 +31,7 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
     edgeState: {edges, setEdges},
     nodeState: {setNodes},
   } = useGlobal();
-  const {setSelectedState, setStateSettingsOpen} = useDialog();
+  const {setSelectedStateId, setStateSettingsOpen} = useDialog();
 
   const outputsList = Object.values(outputs);
   const internalsList = Object.values(internals);
@@ -64,7 +64,7 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
   };
 
   const handleOpenEditState = () => {
-    setSelectedState({nodeId: id, data});
+    setSelectedStateId(id);
     setStateSettingsOpen(true);
   };
 

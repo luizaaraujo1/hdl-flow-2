@@ -10,14 +10,14 @@ import TextInput from '../../../shared/TextInput';
 import StateLogicEditor from './StateLogicEditor';
 
 const StateEditor = () => {
-  const {selectedState} = useDialog();
+  const {selectedStateId} = useDialog();
   const {
     nodeState: {nodes, setNodes},
   } = useGlobal();
 
   const currentNode = useMemo(
-    () => nodes.find(node => node.id === selectedState?.nodeId),
-    [nodes, selectedState?.nodeId],
+    () => nodes.find(node => node.id === selectedStateId),
+    [nodes, selectedStateId],
   );
 
   const stateData = useMemo(() => currentNode?.data, [currentNode?.data]);
@@ -41,21 +41,19 @@ const StateEditor = () => {
       field: keyof Node<FSMState>,
       value: Node<FSMState>[keyof Node<FSMState>],
     ) => {
-      if (selectedState?.nodeId && currentNode) {
+      if (selectedStateId && currentNode) {
         const newNode = {...currentNode, [field]: value};
-        const newNodes = [...nodes].filter(
-          node => node.id !== selectedState.nodeId,
-        );
+        const newNodes = [...nodes].filter(node => node.id !== selectedStateId);
         newNodes.push(newNode);
         setNodes(newNodes);
       }
     },
-    [currentNode, nodes, selectedState?.nodeId, setNodes],
+    [currentNode, nodes, selectedStateId, setNodes],
   );
 
   const handleStateUpdate = useCallback(
     (field: keyof FSMState, value: FSMState[keyof FSMState]) => {
-      if (selectedState?.nodeId && currentNode) {
+      if (selectedStateId && currentNode) {
         let newValue = value;
         if (field === 'stateNumber')
           newValue = Number(removeAllNonNumeric(String(newValue)));
@@ -63,7 +61,7 @@ const StateEditor = () => {
         handleNodeUpdate('data', newData);
       }
     },
-    [currentNode, handleNodeUpdate, selectedState?.nodeId],
+    [currentNode, handleNodeUpdate, selectedStateId],
   );
 
   const editLogic = useCallback(

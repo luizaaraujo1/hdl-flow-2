@@ -3,14 +3,14 @@ import SettingsDialog from '../../../shared/SettingsDialog';
 import StateEditor from './StateEditor';
 
 function StateSettingsDialog() {
-  const {stateSettingsOpen, setStateSettingsOpen, setSelectedState} =
+  const {stateSettingsOpen, setStateSettingsOpen, setSelectedStateId} =
     useDialog();
 
   const STATE_SETTINGS_DISCLAIMERS = [
     'Warning! If you change your Ports you will lose these changes',
   ];
 
-  const onClose = () => setSelectedState(undefined);
+  const onClose = () => setSelectedStateId(undefined);
 
   return (
     <SettingsDialog
