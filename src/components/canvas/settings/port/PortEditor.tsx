@@ -257,7 +257,7 @@ function PortEditor() {
               {getList(tab.name).map(port => (
                 <PortElement
                   key={`element_${tab.name}_${port.id}`}
-                  portType={tab.name}
+                  portCategory={tab.name}
                   port={port}
                   onDelete={() => handlePortDelete(tab.name, port.id)}
                   setPort={(key, value) =>

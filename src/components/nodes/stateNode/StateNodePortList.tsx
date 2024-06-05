@@ -1,4 +1,4 @@
-import {PortLogic} from '../../../models/state';
+import {LogicType, PortLogic} from '../../../models/state';
 import StateNodeListElement from './StateNodeListElement';
 
 interface StateNodePortListProps {
@@ -23,7 +23,9 @@ function StateNodePortList({
               name={portLogic.port.id_name}
               className="bg-white"
               value={String(
-                portLogic.customValue ?? portLogic.port.defaultValue,
+                portLogic.type === LogicType.Default
+                  ? portLogic.port.defaultValue
+                  : portLogic.customValue,
               )}
               hideBottomBorder={
                 !hasOutputs &&
@@ -38,7 +40,9 @@ function StateNodePortList({
               name={portLogic.port.id_name}
               className="bg-slate-100"
               value={String(
-                portLogic.customValue ?? portLogic.port.defaultValue,
+                portLogic.type === LogicType.Default
+                  ? portLogic.port.defaultValue
+                  : portLogic.customValue,
               )}
               hideBottomBorder={
                 internalsList.length > 0 && index === internalsList.length - 1

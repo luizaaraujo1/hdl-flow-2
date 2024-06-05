@@ -1,13 +1,14 @@
-import {TextInputProps} from '../../../shared/TextInput';
+import {TextInputProps} from './TextInput';
 
 type SelectInputProps = Omit<
   TextInputProps,
   'expand' | 'maxLength' | 'placeholder'
 > & {
   options: string[];
+  defaultString?: string;
 };
 
-function PortSelectInput({
+function SelectInput({
   id,
   label,
   onTextChange,
@@ -17,6 +18,7 @@ function PortSelectInput({
   labelClassName,
   required,
   disabled,
+  defaultString,
 }: SelectInputProps) {
   return (
     <>
@@ -36,6 +38,11 @@ function PortSelectInput({
         className={`input-canvas appearance-none hover:cursor-pointer ${className}`}
         required={required}
         disabled={disabled}>
+        {defaultString && (
+          <option value={defaultString} disabled={disabled}>
+            {defaultString}
+          </option>
+        )}
         {options.map(value => (
           <option key={value} value={value}>
             {value}
@@ -46,4 +53,4 @@ function PortSelectInput({
   );
 }
 
-export default PortSelectInput;
+export default SelectInput;

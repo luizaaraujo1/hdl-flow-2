@@ -12,6 +12,12 @@ export enum LogicType {
   Default = 'default',
 }
 
+export const SUPPORTED_LOGIC_TYPES: LogicType[] = [
+  LogicType.Custom,
+  LogicType.Default,
+  LogicType.Equality,
+];
+
 export interface PortLogic {
   port: Port;
   type: LogicType;
