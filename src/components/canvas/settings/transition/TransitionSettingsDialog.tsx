@@ -20,7 +20,7 @@ function TransitionSettingsDialog() {
       setOpen={setTransitionSettingsOpen}
       title={'Transition Settings'}
       onClose={onClose}
-      description={'Use this menu to set up a Transition'}
+      description={'Use this menu to set up a Transition for your FSM'}
       disclaimers={TRANSITION_SETTINGS_DISCLAIMERS}>
       <></>
     </SettingsDialog>

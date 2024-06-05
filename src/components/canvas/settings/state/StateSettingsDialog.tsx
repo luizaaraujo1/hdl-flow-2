@@ -17,7 +17,7 @@ function StateSettingsDialog() {
       setOpen={setStateSettingsOpen}
       title={'State Settings'}
       onClose={onClose}
-      description={'Use this menu to set up a State'}
+      description={'Use this menu to set up a State for your FSM'}
       disclaimers={STATE_SETTINGS_DISCLAIMERS}>
       <></>
     </SettingsDialog>
