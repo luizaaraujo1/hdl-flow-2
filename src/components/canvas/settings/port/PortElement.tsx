@@ -20,6 +20,12 @@ function PortElement({onDelete, portCategory, port, setPort}: Props) {
   const [editing, setEditing] = useState(false);
   const editingStyle = editing ? 'min-h-[200px]' : 'min-h-0 h-0';
 
+  const portTypeOptions = [
+    {id: PortTypeEnum.Logic, value: PortTypeEnum.Logic},
+    {id: PortTypeEnum.LogicVector, value: PortTypeEnum.LogicVector},
+    {id: PortTypeEnum.Integer, value: PortTypeEnum.Integer},
+  ];
+
   const renderDefaultValueInput = useCallback(
     (
       type: PortTypeEnum,
@@ -34,11 +40,15 @@ function PortElement({onDelete, portCategory, port, setPort}: Props) {
         value: String(value),
         onTextChange: onChange,
       };
+      const logicOptions = [
+        {id: 'false', value: 'false'},
+        {id: 'true', value: 'true'},
+      ];
       const helperText = isNumeric ? '(numeric)' : '(binary)';
       return cloneElement(
         isLogic ? (
           <SelectInput
-            options={['false', 'true']}
+            options={logicOptions}
             label="Default value:"
             {...sharedProps}
           />
@@ -99,11 +109,7 @@ function PortElement({onDelete, portCategory, port, setPort}: Props) {
               label="Select Port Type"
               onTextChange={value => setPort('type', value)}
               value={port.type}
-              options={[
-                PortTypeEnum.Logic,
-                PortTypeEnum.LogicVector,
-                PortTypeEnum.Integer,
-              ]}
+              options={portTypeOptions}
               required
             />
             {renderDefaultValueInput(

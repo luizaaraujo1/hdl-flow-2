@@ -38,7 +38,6 @@ function Canvas() {
     nodeState: {nodes, onNodesChange, setNodes},
     internalsList,
     outputList,
-    inputList,
   } = useGlobal();
   const [nodeCount, setNodeCount] = useState(0);
   const [transitionCount, setTransitionCount] = useState(0);
@@ -61,11 +60,6 @@ function Canvas() {
       return true;
     },
     [edges],
-  );
-
-  const inputLogic = useMemo(
-    () => getPortLogicObjectFromPorts(inputList),
-    [inputList],
   );
 
   const outputsLogic = useMemo(
@@ -91,9 +85,8 @@ function Canvas() {
             transitionNumber: transitionCount,
             name: `Transition ${transitionCount}`,
             portLogic: {
-              inputs: inputLogic,
-              outputs: outputsLogic,
-              internals: internalsLogic,
+              inputs: {},
+              internals: {},
             },
           },
         };
@@ -101,7 +94,7 @@ function Canvas() {
         setTransitionCount(prev => prev + 1);
       }
     },
-    [inputLogic, internalsLogic, outputsLogic, setEdges, transitionCount],
+    [setEdges, transitionCount],
   );
 
   const addNewNode = useCallback(

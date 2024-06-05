@@ -1,5 +1,6 @@
 import {useDialog} from '../../../../contexts/DialogContext';
 import SettingsDialog from '../../../shared/SettingsDialog';
+import TransitionEditor from './TransitionEditor';
 
 function TransitionSettingsDialog() {
   const {
@@ -22,7 +23,7 @@ function TransitionSettingsDialog() {
       onClose={onClose}
       description={'Use this menu to set up a Transition for your FSM'}
       disclaimers={TRANSITION_SETTINGS_DISCLAIMERS}>
-      <></>
+      <TransitionEditor />
     </SettingsDialog>
   );
 }

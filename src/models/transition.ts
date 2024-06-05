@@ -1,7 +1,8 @@
-import {PortLogic, StatePortLogic} from './state';
+import {PortLogic} from './state';
 
-export interface TransitionPortLogic extends StatePortLogic {
+export interface TransitionPortLogic {
   inputs: {[key: string]: PortLogic};
+  internals: {[key: string]: PortLogic};
 }
 
 interface FSMTransition {

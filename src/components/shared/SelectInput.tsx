@@ -4,8 +4,8 @@ type SelectInputProps = Omit<
   TextInputProps,
   'expand' | 'maxLength' | 'placeholder'
 > & {
-  options: string[];
-  defaultString?: string;
+  options: {id: string; value: string}[];
+  defaultOption?: {id: string; value: string};
 };
 
 function SelectInput({
@@ -18,7 +18,7 @@ function SelectInput({
   labelClassName,
   required,
   disabled,
-  defaultString,
+  defaultOption,
 }: SelectInputProps) {
   return (
     <>
@@ -38,14 +38,14 @@ function SelectInput({
         className={`input-canvas appearance-none hover:cursor-pointer ${className}`}
         required={required}
         disabled={disabled}>
-        {defaultString && (
-          <option value={defaultString} disabled={disabled}>
-            {defaultString}
+        {defaultOption && (
+          <option value={defaultOption.id} disabled={disabled}>
+            {defaultOption.value}
           </option>
         )}
-        {options.map(value => (
-          <option key={value} value={value}>
-            {value}
+        {options.map(option => (
+          <option key={option.id} value={option.id}>
+            {option.value}
           </option>
         ))}
       </select>

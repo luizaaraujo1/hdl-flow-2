@@ -53,11 +53,11 @@ function LogicElement({
             logic.port.type,
           ),
           logic.port.id,
-        ).map(port => port.id_name);
+        ).map(port => ({id: port.id, value: port.id_name}));
       return filterSamePort(
         filterPortsOfDifferentType([...internalsList], logic.port.type),
         logic.port.id,
-      ).map(port => port.id_name);
+      ).map(port => ({id: port.id, value: port.id_name}));
     }
     return [];
   }, [
@@ -75,8 +75,8 @@ function LogicElement({
     ? 'bg-red-300/20 text-red-500'
     : '';
 
-  const defaultValue = !hasCustomValueEqualityOptions
-    ? 'None available'
+  const defaultOption = !hasCustomValueEqualityOptions
+    ? {id: 'null', value: 'None available'}
     : undefined;
 
   const MAX_CUSTOM_SIZE = 100;
@@ -87,7 +87,11 @@ function LogicElement({
       !logic.customValue &&
       customValueEqualityOptions.length > 0
     )
-      onEditLogic(logic.port.id, 'customValue', customValueEqualityOptions[0]);
+      onEditLogic(
+        logic.port.id,
+        'customValue',
+        customValueEqualityOptions[0].value,
+      );
     if (logic.type === LogicType.Default && !!logic.customValue) {
       onEditLogic(logic.port.id, 'customValue', undefined);
     }
@@ -129,8 +133,7 @@ function LogicElement({
                     onEditLogic(logic.port.id, 'customValue', newType)
                   }
                   value={String(logic.customValue)}
-                  defaultString={defaultValue}
-                  defaultValue={defaultValue}
+                  defaultOption={defaultOption}
                   options={customValueEqualityOptions}
                 />
               </div>

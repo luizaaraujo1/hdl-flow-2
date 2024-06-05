@@ -6,6 +6,7 @@ import {useDialog} from '../../../../contexts/DialogContext';
 import {useGlobal} from '../../../../contexts/GlobalContext';
 import FSMState, {PortLogic, StatePortLogic} from '../../../../models/state';
 import {numericOnlyPattern, removeAllNonNumeric} from '../../../../utils/input';
+import RoundedScrollContainer from '../../../shared/RoundedScrollContainer';
 import TextInput from '../../../shared/TextInput';
 import StateLogicEditor from './StateLogicEditor';
 
@@ -94,8 +95,8 @@ function StateEditor() {
   );
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-scroll">
-      <div className="flex-1 rounded-md rounded-tl-none bg-gray-50 p-4 pr-2 shadow-inner">
+    <RoundedScrollContainer>
+      <>
         <fieldset className="mb-4 mr-16 grid grid-cols-2 gap-2">
           <div className="flex flex-col">
             <TextInput
@@ -124,8 +125,8 @@ function StateEditor() {
           internalsList={internalsList}
           onEditLogic={editLogic}
         />
-      </div>
-    </div>
+      </>
+    </RoundedScrollContainer>
   );
 }
 
