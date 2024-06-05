@@ -40,8 +40,8 @@ const LogicElement = ({
   const isInternal = portCategory === 'Internal';
 
   const customValueEqualityLabel = isInternal
-    ? 'Select a matching typed Internal or Input Port'
-    : 'Select a matching typed Internal Port';
+    ? 'Select an Internal or Input Port'
+    : 'Select an Internal Port';
 
   const customValueEqualityOptions = useMemo(() => {
     if (logicType === 'State') {
@@ -68,7 +68,13 @@ const LogicElement = ({
     logicType,
   ]);
 
-  const defaultValue = !customValueEqualityOptions.length
+  const hasCustomValueEqualityOptions = !!customValueEqualityOptions.length;
+
+  const optionsStyle = !hasCustomValueEqualityOptions
+    ? 'bg-red-300/20 text-red-500'
+    : '';
+
+  const defaultValue = !hasCustomValueEqualityOptions
     ? 'None available'
     : undefined;
 
@@ -95,9 +101,9 @@ const LogicElement = ({
       <div className="grid grid-cols-3 rounded-md bg-white p-2 shadow-lg">
         <PortInfo port={logic.port} portCategory={portCategory} />
         <div className="flex items-center justify-center gap-2">
+          <h3 className="text-nowrap text-sm font-semibold">Port Value:</h3>
           {logic.type === LogicType.Default && (
             <>
-              <h3 className="text-sm font-semibold">Port Value:</h3>
               <h3 className="rounded-md bg-slate-200 p-2 font-semibold text-gray-600">
                 {String(logic.port.defaultValue)}
               </h3>
@@ -109,7 +115,7 @@ const LogicElement = ({
               <SelectInput
                 id="customValue_equality_select"
                 label={customValueEqualityLabel}
-                className="w-full"
+                className={`w-full ${optionsStyle}`}
                 onTextChange={newType =>
                   onEditLogic(logic.port.id, 'customValue', newType)
                 }
