@@ -1,16 +1,27 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import {Cross1Icon} from '@radix-ui/react-icons';
 
-import {useGlobal} from '../../../contexts/GlobalContext';
-import PortEditor from './PortEditor';
+interface SettingsDialogProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  disclaimers?: string[];
+}
 
-function SettingsDialog() {
-  const {setSettingsOpen, settingsOpen} = useGlobal();
-
-  const closeDialog = () => setSettingsOpen(false);
+function SettingsDialog({
+  open,
+  setOpen,
+  title,
+  description,
+  disclaimers,
+  children,
+}: SettingsDialogProps) {
+  const closeDialog = () => setOpen(false);
 
   return (
-    <Dialog.Root open={settingsOpen} defaultOpen={false}>
+    <Dialog.Root open={open} defaultOpen={false}>
       <Dialog.Portal>
         <Dialog.Overlay
           className="fixed inset-0 cursor-pointer bg-black/50"
@@ -23,21 +34,20 @@ function SettingsDialog() {
             <Cross1Icon />
           </Dialog.Close>
           <Dialog.Title className="mb-2 text-lg font-semibold">
-            Port Settings
+            {title}
           </Dialog.Title>
           <Dialog.Description className="text-md mb-4 font-light">
-            Use this menu to set up the Ports for your FSM
+            {description}
           </Dialog.Description>
-          <Dialog.Description className="mb-2 text-sm font-light text-slate-800">
-            Warning! Set up all your FSM Ports BEFORE customizing yours States
-            in the Canvas.
-          </Dialog.Description>
-          <Dialog.Description className="mb-4 text-sm font-light text-slate-800">
-            Each update to this Dialog will reset your edits to States and
-            Transitions. (This will change in a new version. Currently work in
-            progress...)
-          </Dialog.Description>
-          <PortEditor />
+          {disclaimers &&
+            disclaimers.map((disclaimer, index) => (
+              <Dialog.Description
+                key={`${disclaimer.split(' ')[0]}_${index}`}
+                className={`${index === disclaimers.length - 1 ? 'mb-4' : 'mb-2'} text-sm font-light text-slate-800`}>
+                {disclaimer}
+              </Dialog.Description>
+            ))}
+          {children}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

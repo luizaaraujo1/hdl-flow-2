@@ -13,7 +13,7 @@ import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
 
 import SideMenu from '../components/canvas/SideMenu';
-import SettingsDialog from '../components/canvas/settings/SettingsDialog';
+import PortSettingsDialog from '../components/canvas/settings/PortSettingsDialog';
 import StraightConnectionLine from '../components/edges/StraightConnectionLine';
 import {
   EDGE_TYPES,
@@ -213,7 +213,7 @@ function Canvas() {
           <Controls position="bottom-right" />
         </ReactFlow>
         <SideMenu />
-        <SettingsDialog />
+        <PortSettingsDialog />
       </div>
     </div>
   );
