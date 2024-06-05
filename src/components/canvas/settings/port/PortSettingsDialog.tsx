@@ -1,9 +1,9 @@
-import {useGlobal} from '../../../../contexts/GlobalContext';
+import {useDialog} from '../../../../contexts/DialogContext';
 import SettingsDialog from '../../../shared/SettingsDialog';
 import PortEditor from './PortEditor';
 
 function PortSettingsDialog() {
-  const {setSettingsOpen, settingsOpen} = useGlobal();
+  const {portSettingsOpen, setPortSettingsOpen} = useDialog();
 
   const PORT_SETTINGS_DISCLAIMERS = [
     'Warning! Set up all your FSM Ports BEFORE customizing yours States in the Canvas.',
@@ -12,8 +12,8 @@ function PortSettingsDialog() {
 
   return (
     <SettingsDialog
-      open={settingsOpen}
-      setOpen={setSettingsOpen}
+      open={portSettingsOpen}
+      setOpen={setPortSettingsOpen}
       title={'Port Settings'}
       description={'Use this menu to set up the Ports for your FSM'}
       disclaimers={PORT_SETTINGS_DISCLAIMERS}>
