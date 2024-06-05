@@ -89,7 +89,7 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
         />
       </NodeToolbar>
       <div
-        className={`selection: min-w-[180px] rounded-t-md transition-[border-width] ${selectedStyle} border-b-0 border-black bg-slate-100 shadow-md`}>
+        className={`min-w-[180px] rounded-t-md transition-[border-width] ${selectedStyle} border-b-0 border-black bg-slate-100 shadow-md`}>
         <StateNodeHeader stateNumber={stateNumber} name={name} />
         <StateNodePortList
           outputsList={outputsList}

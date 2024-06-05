@@ -9,6 +9,7 @@ import {
   SUPPORTED_LOGIC_TYPES,
 } from '../../../../models/state';
 import SelectInput from '../../../shared/SelectInput';
+import TextInput from '../../../shared/TextInput';
 import PortInfo from '../port/PortInfo';
 
 interface LogicElement {
@@ -78,6 +79,8 @@ const LogicElement = ({
     ? 'None available'
     : undefined;
 
+  const MAX_CUSTOM_SIZE = 100;
+
   useEffect(() => {
     if (
       logic.type === LogicType.Equality &&
@@ -98,33 +101,57 @@ const LogicElement = ({
 
   return (
     <div className="flex flex-col">
-      <div className="grid grid-cols-3 rounded-md bg-white p-2 shadow-lg">
+      <div className="flex flex-row content-center justify-between rounded-md bg-white p-2 shadow-lg">
         <PortInfo port={logic.port} portCategory={portCategory} />
         <div className="flex items-center justify-center gap-2">
-          <h3 className="text-nowrap text-sm font-semibold">Port Value:</h3>
+          <h3 className="text-nowrap text-sm font-semibold">
+            {`${logic.port.id_name} <=`}
+          </h3>
           {logic.type === LogicType.Default && (
             <>
               <h3 className="rounded-md bg-slate-200 p-2 font-semibold text-gray-600">
                 {String(logic.port.defaultValue)}
               </h3>
-              <h3 className="text-sm font-semibold">(default)</h3>
+              <h3 className="text-sm font-semibold">; (default)</h3>
             </>
           )}
           {logic.type === LogicType.Equality && (
-            <div className="flex flex-col items-end">
-              <SelectInput
-                id="customValue_equality_select"
-                label={customValueEqualityLabel}
-                className={`w-full ${optionsStyle}`}
-                onTextChange={newType =>
-                  onEditLogic(logic.port.id, 'customValue', newType)
-                }
-                value={String(logic.customValue)}
-                defaultString={defaultValue}
-                defaultValue={defaultValue}
-                options={customValueEqualityOptions}
-              />
-            </div>
+            <>
+              <div className="flex flex-col items-end">
+                <SelectInput
+                  id="customValue_equality_select"
+                  label={customValueEqualityLabel}
+                  className={`w-full ${optionsStyle}`}
+                  onTextChange={newType =>
+                    onEditLogic(logic.port.id, 'customValue', newType)
+                  }
+                  value={String(logic.customValue)}
+                  defaultString={defaultValue}
+                  defaultValue={defaultValue}
+                  options={customValueEqualityOptions}
+                />
+              </div>
+              <h3 className="text-nowrap text-sm font-semibold">;</h3>
+            </>
+          )}
+          {logic.type === LogicType.Custom && (
+            <>
+              <div className="flex flex-col items-end">
+                <TextInput
+                  id="customValue_custom_text"
+                  label="Write a custom VHDL line"
+                  className="w-full"
+                  onTextChange={text =>
+                    onEditLogic(logic.port.id, 'customValue', text)
+                  }
+                  placeholder="Don't leave it empty!"
+                  value={String(logic.customValue)}
+                  maxLength={MAX_CUSTOM_SIZE}
+                  required
+                />
+              </div>
+              <h3 className="text-nowrap text-sm font-semibold">;</h3>
+            </>
           )}
         </div>
         <div className="flex flex-col items-end">

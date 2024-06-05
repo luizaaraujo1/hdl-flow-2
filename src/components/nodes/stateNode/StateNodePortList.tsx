@@ -18,12 +18,11 @@ function StateNodePortList({
   const getElementClassName = (
     portCategory: PortCategory,
     logicType: LogicType,
-    defaultValue: PortValue,
     customValue: PortValue,
   ) => {
     const isInternal = portCategory === 'Internal';
     const elementStyle = isInternal ? 'bg-slate-100' : 'bg-white';
-    if (logicType === LogicType.Default && defaultValue) return elementStyle;
+    if (logicType === LogicType.Default) return elementStyle;
     if (customValue) {
       return elementStyle;
     }
@@ -41,7 +40,6 @@ function StateNodePortList({
               className={getElementClassName(
                 'Output',
                 portLogic.type,
-                portLogic.port.defaultValue,
                 portLogic.customValue,
               )}
               value={String(
@@ -63,7 +61,6 @@ function StateNodePortList({
               className={getElementClassName(
                 'Internal',
                 portLogic.type,
-                portLogic.port.defaultValue,
                 portLogic.customValue,
               )}
               value={String(
