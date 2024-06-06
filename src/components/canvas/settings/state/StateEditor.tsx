@@ -8,7 +8,7 @@ import FSMState, {PortLogic, StatePortLogic} from '../../../../models/state';
 import {numericOnlyPattern, removeAllNonNumeric} from '../../../../utils/input';
 import RoundedScrollContainer from '../../../shared/RoundedScrollContainer';
 import TextInput from '../../../shared/TextInput';
-import StateLogicEditor from './StateLogicEditor';
+import LogicEditor from '../logic/LogicEditor';
 
 function StateEditor() {
   const {selectedStateId} = useDialog();
@@ -23,14 +23,14 @@ function StateEditor() {
 
   const stateData = useMemo(() => currentNode?.data, [currentNode?.data]);
 
-  const outputsList = useMemo(() => {
+  const outputsLogicList = useMemo(() => {
     if (stateData?.portLogic.outputs) {
       return Object.values(stateData?.portLogic.outputs);
     }
     return [];
   }, [stateData?.portLogic.outputs]);
 
-  const internalsList = useMemo(() => {
+  const internalsLogicList = useMemo(() => {
     if (stateData?.portLogic.internals) {
       return Object.values(stateData?.portLogic.internals);
     }
@@ -120,10 +120,11 @@ function StateEditor() {
             />
           </div>
         </fieldset>
-        <StateLogicEditor
-          outputsList={outputsList}
-          internalsList={internalsList}
+        <LogicEditor
+          outputsLogicList={outputsLogicList}
+          internalsLogicList={internalsLogicList}
           onEditLogic={editLogic}
+          entityType="State"
         />
       </>
     </RoundedScrollContainer>

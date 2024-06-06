@@ -1,13 +1,21 @@
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {Node} from 'reactflow';
 
 import {PortCategory} from '../../../../constants/ports.constants';
 import {useDialog} from '../../../../contexts/DialogContext';
 import {useGlobal} from '../../../../contexts/GlobalContext';
-import FSMTransition from '../../../../models/transition';
+import Port from '../../../../models/port';
+import {PortLogic} from '../../../../models/state';
+import FSMTransition, {
+  LogicalOperator,
+  TransitionPortLogic,
+} from '../../../../models/transition';
 import {numericOnlyPattern, removeAllNonNumeric} from '../../../../utils/input';
+import {getPortLogicObjectFromPorts} from '../../../../utils/port.utils';
 import RoundedScrollContainer from '../../../shared/RoundedScrollContainer';
+import SelectInput from '../../../shared/SelectInput';
 import TextInput from '../../../shared/TextInput';
+import LogicEditor from '../logic/LogicEditor';
 import TransitionConditionAdder from './TransitionConditionAdder';
 
 function TransitionEditor() {
@@ -30,6 +38,20 @@ function TransitionEditor() {
   );
 
   const transitionData = useMemo(() => currentEdge?.data, [currentEdge?.data]);
+
+  const inputsLogicList = useMemo(() => {
+    if (transitionData?.portLogic.inputs) {
+      return Object.values(transitionData?.portLogic.inputs);
+    }
+    return [];
+  }, [transitionData?.portLogic.inputs]);
+
+  const internalsLogicList = useMemo(() => {
+    if (transitionData?.portLogic.internals) {
+      return Object.values(transitionData?.portLogic.internals);
+    }
+    return [];
+  }, [transitionData?.portLogic.internals]);
 
   const handleEdgeUpdate = useCallback(
     (
@@ -61,17 +83,109 @@ function TransitionEditor() {
     [currentEdge, handleEdgeUpdate, selectedTransitionId],
   );
 
-  const handleAddCondition = (portCategory: PortCategory) => {
-    if (portCategory === 'Input') {
-      console.log('Add Input');
-      return;
-    }
-    console.log('Add Internal');
-  };
+  const addLogic = useCallback(
+    (portId: string, portCategory: PortCategory) => {
+      const isInternal = portCategory === 'Internal';
+      const portLogicCategory: keyof TransitionPortLogic = isInternal
+        ? 'internals'
+        : 'inputs';
+      let newPort: Port | undefined;
+
+      if (isInternal) newPort = internalsList.find(port => port.id === portId);
+      else newPort = inputList.find(port => port.id === portId);
+
+      if (newPort) {
+        const newPortLogicValue = getPortLogicObjectFromPorts([newPort]);
+        if (transitionData) {
+          const currentPortLogicObject =
+            transitionData.portLogic[portLogicCategory];
+          const newPortLogic = {
+            ...currentPortLogicObject,
+            ...newPortLogicValue,
+          };
+          const newTransitionPortLogic: TransitionPortLogic = {
+            ...transitionData.portLogic,
+            [portLogicCategory]: newPortLogic,
+          };
+          handleTransitionUpdate('portLogic', newTransitionPortLogic);
+        }
+      }
+    },
+    [handleTransitionUpdate, inputList, internalsList, transitionData],
+  );
+
+  const editLogic = useCallback(
+    (
+      portId: string,
+      portCategory: PortCategory,
+      field: keyof PortLogic,
+      value: PortLogic[keyof PortLogic],
+    ) => {
+      const isInternal = portCategory === 'Internal';
+      const portLogicCategory: keyof TransitionPortLogic = isInternal
+        ? 'internals'
+        : 'inputs';
+
+      if (transitionData?.portLogic) {
+        const currentPortLogicObject =
+          transitionData.portLogic[portLogicCategory];
+        const oldPortLogic = currentPortLogicObject[portId];
+        const newPortLogic = {
+          ...currentPortLogicObject,
+          [portId]: {...oldPortLogic, [field]: value},
+        };
+        const newTransitionPortLogic: TransitionPortLogic = {
+          ...transitionData.portLogic,
+          [portLogicCategory]: newPortLogic,
+        };
+        handleTransitionUpdate('portLogic', newTransitionPortLogic);
+      }
+    },
+    [handleTransitionUpdate, transitionData?.portLogic],
+  );
+
+  const deleteLogic = useCallback(
+    (portId: string, portCategory: PortCategory) => {
+      const isInternal = portCategory === 'Internal';
+      const portLogicCategory: keyof TransitionPortLogic = isInternal
+        ? 'internals'
+        : 'inputs';
+
+      if (transitionData?.portLogic) {
+        const currentPortLogicObject =
+          transitionData.portLogic[portLogicCategory];
+        const newPortLogic = {...currentPortLogicObject};
+        delete newPortLogic[portId];
+        const newTransitionPortLogic: TransitionPortLogic = {
+          ...transitionData.portLogic,
+          [portLogicCategory]: newPortLogic,
+        };
+        handleTransitionUpdate('portLogic', newTransitionPortLogic);
+      }
+    },
+    [handleTransitionUpdate, transitionData?.portLogic],
+  );
+
+  const handleAddCondition = useCallback(
+    (portCategory: PortCategory) => {
+      if (selectedInputId && portCategory === 'Input') {
+        addLogic(selectedInputId, 'Input');
+      }
+      if (selectedInternalId && portCategory === 'Internal') {
+        addLogic(selectedInternalId, 'Internal');
+      }
+    },
+    [addLogic, selectedInputId, selectedInternalId],
+  );
 
   const handleSelectInput = (id: string) => setSelectedInputId(id);
 
   const handleSelectInternal = (id: string) => setSelectedInternalId(id);
+
+  const OPERATOR_OPTIONS = [
+    {id: LogicalOperator.And, value: 'All conditions must be valid'},
+    {id: LogicalOperator.Or, value: 'At least one condition must be valid'},
+  ];
 
   const INPUT_OPTIONS = useMemo(
     () =>
@@ -90,6 +204,13 @@ function TransitionEditor() {
       })),
     [internalsList],
   );
+
+  useEffect(() => {
+    if (INPUT_OPTIONS.length > 0 && !selectedInputId)
+      setSelectedInputId(INPUT_OPTIONS[0].id);
+    if (INTERNAL_OPTIONS.length > 0 && !selectedInternalId)
+      setSelectedInternalId(INTERNAL_OPTIONS[0].id);
+  }, [INPUT_OPTIONS, INTERNAL_OPTIONS, selectedInputId, selectedInternalId]);
 
   return (
     <RoundedScrollContainer>
@@ -117,7 +238,25 @@ function TransitionEditor() {
             required
           />
         </div>
+        <div className="flex flex-col">
+          <SelectInput
+            id="transition_operator"
+            label="Logic Operator"
+            className="w-fit"
+            options={OPERATOR_OPTIONS}
+            onTextChange={value => handleTransitionUpdate('operator', value)}
+            value={transitionData?.operator ?? ''}
+            required
+          />
+        </div>
       </fieldset>
+      <LogicEditor
+        inputLogicList={inputsLogicList}
+        internalsLogicList={internalsLogicList}
+        onEditLogic={editLogic}
+        onDelete={deleteLogic}
+        entityType="Transition"
+      />
       <TransitionConditionAdder
         selectLabel="Input Port"
         selectedId={selectedInputId ?? ''}

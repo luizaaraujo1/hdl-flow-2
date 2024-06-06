@@ -29,7 +29,7 @@ import {
   START_NODE_ID,
 } from '../constants/nodes.constants';
 import {useGlobal} from '../contexts/GlobalContext';
-import FSMTransition from '../models/transition';
+import FSMTransition, {LogicalOperator} from '../models/transition';
 import {getPortLogicObjectFromPorts} from '../utils/port.utils';
 
 function Canvas() {
@@ -84,6 +84,7 @@ function Canvas() {
           data: {
             transitionNumber: transitionCount,
             name: `Transition ${transitionCount}`,
+            operator: LogicalOperator.And,
             portLogic: {
               inputs: {},
               internals: {},

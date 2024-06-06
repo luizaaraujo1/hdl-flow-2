@@ -1,16 +1,23 @@
+import {TrashIcon} from '@radix-ui/react-icons';
 import {useEffect, useMemo} from 'react';
+import {zinc} from 'tailwindcss/colors';
 
 import {PortCategory} from '../../../../constants/ports.constants';
 import {useGlobal} from '../../../../contexts/GlobalContext';
-import Port, {PortTypeEnum} from '../../../../models/port';
 import {
   LogicType,
   PortLogic,
-  SUPPORTED_LOGIC_TYPES,
+  STATE_SUPPORTED_LOGIC_TYPES,
 } from '../../../../models/state';
+import {TRANSITION_SUPPORTED_LOGIC_TYPES} from '../../../../models/transition';
+import {
+  filterPortsOfDifferentType,
+  filterSamePort,
+} from '../../../../utils/port.utils';
 import SelectInput from '../../../shared/SelectInput';
 import TextInput from '../../../shared/TextInput';
 import PortInfo from '../port/PortInfo';
+import {EntityType} from './LogicEditor';
 
 interface LogicElement {
   logic: PortLogic;
@@ -20,56 +27,63 @@ interface LogicElement {
     value: PortLogic[keyof PortLogic],
   ) => void;
   portCategory: PortCategory;
-  logicType: 'State' | 'Transition';
+  entityType: EntityType;
+  onDelete?: (portId: string) => void;
 }
-
-const filterPortsOfDifferentType = (ports: Port[], type: PortTypeEnum) => {
-  return ports.filter(port => port.type === type);
-};
-
-const filterSamePort = (ports: Port[], id: string) => {
-  return ports.filter(ports => ports.id !== id);
-};
 
 function LogicElement({
   logic,
   onEditLogic,
+  onDelete,
   portCategory,
-  logicType,
+  entityType,
 }: LogicElement) {
-  const {inputList, internalsList} = useGlobal();
+  const {inputList, internalsList, outputList} = useGlobal();
   const isInternal = portCategory === 'Internal';
+  const isState = entityType === 'State';
+  const isInequality = logic.type === LogicType.Inequality;
+  const operator = isState ? '<=' : isInequality ? '/=' : '=';
 
   const customValueEqualityLabel = isInternal
     ? 'Select an Internal or Input Port'
-    : 'Select an Internal Port';
+    : isState
+      ? 'Select an Internal Port'
+      : 'Select an Internal or Output Port';
 
-  const customValueEqualityOptions = useMemo(() => {
-    if (logicType === 'State') {
-      if (isInternal)
-        return filterSamePort(
-          filterPortsOfDifferentType(
-            [...inputList, ...internalsList],
-            logic.port.type,
-          ),
-          logic.port.id,
-        ).map(port => ({id: port.id, value: port.id_name}));
+  const CUSTOM_VALUE_EQUALITY_OPTIONS = useMemo(() => {
+    if (isInternal)
+      return filterSamePort(
+        filterPortsOfDifferentType(
+          [...inputList, ...internalsList],
+          logic.port.type,
+        ),
+        logic.port.id,
+      ).map(port => ({id: port.id, value: port.id_name}));
+    if (isState) {
       return filterSamePort(
         filterPortsOfDifferentType([...internalsList], logic.port.type),
         logic.port.id,
       ).map(port => ({id: port.id, value: port.id_name}));
+    } else {
+      return filterSamePort(
+        filterPortsOfDifferentType(
+          [...outputList, ...internalsList],
+          logic.port.type,
+        ),
+        logic.port.id,
+      ).map(port => ({id: port.id, value: port.id_name}));
     }
-    return [];
   }, [
+    isInternal,
     inputList,
     internalsList,
-    isInternal,
-    logic.port.id,
     logic.port.type,
-    logicType,
+    logic.port.id,
+    isState,
+    outputList,
   ]);
 
-  const hasCustomValueEqualityOptions = !!customValueEqualityOptions.length;
+  const hasCustomValueEqualityOptions = !!CUSTOM_VALUE_EQUALITY_OPTIONS.length;
 
   const optionsStyle = !hasCustomValueEqualityOptions
     ? 'bg-red-300/20 text-red-500'
@@ -85,12 +99,12 @@ function LogicElement({
     if (
       logic.type === LogicType.Equality &&
       !logic.customValue &&
-      customValueEqualityOptions.length > 0
+      CUSTOM_VALUE_EQUALITY_OPTIONS.length > 0
     )
       onEditLogic(
         logic.port.id,
         'customValue',
-        customValueEqualityOptions[0].value,
+        CUSTOM_VALUE_EQUALITY_OPTIONS[0].value,
       );
     if (logic.type === LogicType.Default && !!logic.customValue) {
       onEditLogic(logic.port.id, 'customValue', undefined);
@@ -99,7 +113,7 @@ function LogicElement({
       onEditLogic(logic.port.id, 'customValue', '');
     }
   }, [
-    customValueEqualityOptions,
+    CUSTOM_VALUE_EQUALITY_OPTIONS,
     logic.customValue,
     logic.port.id,
     logic.type,
@@ -108,21 +122,21 @@ function LogicElement({
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row content-center justify-between rounded-md bg-white p-2 shadow-lg">
+      <div className="flex flex-row items-center justify-between rounded-md bg-white p-2 shadow-lg">
         <PortInfo port={logic.port} portCategory={portCategory} />
         <div className="flex items-center justify-center gap-2">
           <h3 className="text-nowrap text-sm font-semibold">
-            {`${logic.port.id_name} <=`}
+            {`${logic.port.id_name} ${operator}`}
           </h3>
           {logic.type === LogicType.Default && (
             <>
               <h3 className="rounded-md bg-slate-200 p-2 font-semibold text-gray-600">
                 {String(logic.port.defaultValue)}
               </h3>
-              <h3 className="text-sm font-semibold">; (default)</h3>
             </>
           )}
-          {logic.type === LogicType.Equality && (
+          {(logic.type === LogicType.Equality ||
+            logic.type === LogicType.Inequality) && (
             <>
               <div className="flex flex-col items-end">
                 <SelectInput
@@ -134,10 +148,9 @@ function LogicElement({
                   }
                   value={String(logic.customValue)}
                   defaultOption={defaultOption}
-                  options={customValueEqualityOptions}
+                  options={CUSTOM_VALUE_EQUALITY_OPTIONS}
                 />
               </div>
-              <h3 className="text-nowrap text-sm font-semibold">;</h3>
             </>
           )}
           {logic.type === LogicType.Custom && (
@@ -156,21 +169,33 @@ function LogicElement({
                   required
                 />
               </div>
-              <h3 className="text-nowrap text-sm font-semibold">;</h3>
             </>
           )}
+          <h3 className="text-nowrap text-sm font-semibold">;</h3>
         </div>
         <div className="flex flex-col items-end">
           <SelectInput
             id="type_select"
             label="Select port operation:"
+            className="w-full"
             onTextChange={newType =>
               onEditLogic(logic.port.id, 'type', newType)
             }
             value={logic.type}
-            options={SUPPORTED_LOGIC_TYPES}
+            options={
+              isState
+                ? STATE_SUPPORTED_LOGIC_TYPES
+                : TRANSITION_SUPPORTED_LOGIC_TYPES
+            }
           />
         </div>
+        {!!onDelete && (
+          <button
+            onClick={() => onDelete(logic.port.id)}
+            className="btn-canvas h-fit rounded-md border-red-100 bg-rose-100 p-1 hover:border-red-300/60 active:bg-red-200">
+            <TrashIcon color={zinc[600]} />
+          </button>
+        )}
       </div>
     </div>
   );

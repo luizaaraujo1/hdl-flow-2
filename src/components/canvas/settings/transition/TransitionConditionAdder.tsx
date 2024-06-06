@@ -28,6 +28,8 @@ function TransitionConditionAdder({
     ? {id: 'null', value: 'None available'}
     : undefined;
 
+  const disabledStyle = !hasOptions ? 'bg-gray-200 hover:shadow-md' : '';
+
   const inputOptionsStyle = !hasOptions ? 'bg-red-300/20 text-red-500' : '';
   return (
     <div className={`fixed bottom-10 ${alignStyle} flex rounded-3xl shadow-md`}>
@@ -43,8 +45,9 @@ function TransitionConditionAdder({
         />
       </div>
       <button
-        className="btn-canvas flex rounded-l-none p-2"
-        onClick={() => onAdd()}>
+        className={`btn-canvas flex rounded-l-none p-2 ${disabledStyle}`}
+        onClick={() => onAdd()}
+        disabled={!hasOptions}>
         <PlusCircledIcon />
         <h2 className="text-md ml-2 font-semibold">{addLabel}</h2>
       </button>

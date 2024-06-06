@@ -251,9 +251,9 @@ function PortEditor() {
         <Tabs.Content
           key={`${tab.name}_body`}
           value={tab.name}
-          className="flex-1 rounded-md rounded-tl-none bg-gray-50 p-4 pr-2 shadow-inner">
+          className="flex-1 rounded-md rounded-tl-none bg-gray-50 p-4 pb-20 pr-2 shadow-inner">
           <>
-            <div className="mr-16 grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {getList(tab.name).map(port => (
                 <PortElement
                   key={`element_${tab.name}_${port.id}`}
