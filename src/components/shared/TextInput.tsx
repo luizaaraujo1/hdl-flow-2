@@ -14,7 +14,7 @@ export interface TextInputProps extends React.HTMLProps<HTMLInputElement> {
 
 const DEFAULT_INPUT_MAX_LENGTH = 20;
 
-function PortTextInput({
+function TextInput({
   id,
   label,
   onTextChange,
@@ -76,4 +76,4 @@ function PortTextInput({
   );
 }
 
-export default PortTextInput;
+export default TextInput;

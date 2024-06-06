@@ -1,4 +1,6 @@
-import {PortLogic} from '../../../models/state';
+import {PortCategory} from '../../../constants/ports.constants';
+import {PortValue} from '../../../models/port';
+import {LogicType, PortLogic} from '../../../models/state';
 import StateNodeListElement from './StateNodeListElement';
 
 interface StateNodePortListProps {
@@ -13,6 +15,20 @@ function StateNodePortList({
   const hasOutputs = outputsList.length > 0;
   const hasInternals = internalsList.length > 0;
 
+  const getElementClassName = (
+    portCategory: PortCategory,
+    logicType: LogicType,
+    customValue: PortValue,
+  ) => {
+    const isInternal = portCategory === 'Internal';
+    const elementStyle = isInternal ? 'bg-slate-100' : 'bg-white';
+    if (logicType === LogicType.Default) return elementStyle;
+    if (customValue) {
+      return elementStyle;
+    }
+    return 'bg-red-300/20 text-red-500';
+  };
+
   return (
     <div className="nowheel max-h-[140px] overflow-y-auto">
       {(hasOutputs || hasInternals) && (
@@ -21,9 +37,15 @@ function StateNodePortList({
             <StateNodeListElement
               key={portLogic.port.id}
               name={portLogic.port.id_name}
-              className="bg-white"
+              className={getElementClassName(
+                'Output',
+                portLogic.type,
+                portLogic.customValue,
+              )}
               value={String(
-                portLogic.customValue ?? portLogic.port.defaultValue,
+                portLogic.type === LogicType.Default
+                  ? portLogic.port.defaultValue
+                  : portLogic.customValue,
               )}
               hideBottomBorder={
                 !hasOutputs &&
@@ -36,9 +58,15 @@ function StateNodePortList({
             <StateNodeListElement
               key={portLogic.port.id}
               name={portLogic.port.id_name}
-              className="bg-slate-100"
+              className={getElementClassName(
+                'Internal',
+                portLogic.type,
+                portLogic.customValue,
+              )}
               value={String(
-                portLogic.customValue ?? portLogic.port.defaultValue,
+                portLogic.type === LogicType.Default
+                  ? portLogic.port.defaultValue
+                  : portLogic.customValue,
               )}
               hideBottomBorder={
                 internalsList.length > 0 && index === internalsList.length - 1

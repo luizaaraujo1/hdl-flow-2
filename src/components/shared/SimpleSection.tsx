@@ -1,9 +1,9 @@
-interface Props {
+interface SimpleSectionProps {
   children: React.ReactNode;
   className?: string;
 }
 
-function SimpleSection({children, className}: Props) {
+function SimpleSection({children, className}: SimpleSectionProps) {
   return <section className={`pt-16 ${className}`}>{children}</section>;
 }
 

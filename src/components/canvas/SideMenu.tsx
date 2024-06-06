@@ -12,7 +12,7 @@ import {
   DRAG_AND_DROP_EVENT_NAME,
   NODE_TYPE,
 } from '../../constants/nodes.constants';
-import {useGlobal} from '../../contexts/GlobalContext';
+import {useDialog} from '../../contexts/DialogContext';
 
 interface CustomIconProps {
   icon: React.ReactElement;
@@ -49,10 +49,10 @@ function CustomButton({
 
 function SideMenu() {
   const [open, setOpen] = useState(true);
-  const {setSettingsOpen} = useGlobal();
+  const {setPortSettingsOpen} = useDialog();
 
   const toggleSettings = () => {
-    setSettingsOpen(prev => !prev);
+    setPortSettingsOpen(prev => !prev);
   };
 
   const onDragStart = (

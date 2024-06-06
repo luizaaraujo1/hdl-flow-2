@@ -2,16 +2,16 @@ import {PlusCircledIcon} from '@radix-ui/react-icons';
 import * as Tabs from '@radix-ui/react-tabs';
 import {useCallback, useEffect, useMemo} from 'react';
 
-import {PortCategory, TabSchema} from '../../../constants/ports.constants';
-import {useGlobal} from '../../../contexts/GlobalContext';
-import Port, {PortTypeEnum} from '../../../models/port';
+import {PortCategory, TabSchema} from '../../../../constants/ports.constants';
+import {useGlobal} from '../../../../contexts/GlobalContext';
+import Port, {PortTypeEnum} from '../../../../models/port';
 import {
   changeSpacesIntoUnderlines,
   removeAllNonLogical,
   removeAllNonNumeric,
   removeForbiddenChars,
-} from '../../../utils/input';
-import {getPortLogicObjectFromPorts} from '../../../utils/port.utils';
+} from '../../../../utils/input';
+import {getPortLogicObjectFromPorts} from '../../../../utils/port.utils';
 import PortElement from './PortElement';
 
 function PortEditor() {
@@ -251,13 +251,13 @@ function PortEditor() {
         <Tabs.Content
           key={`${tab.name}_body`}
           value={tab.name}
-          className="flex-1 rounded-md rounded-tl-none bg-gray-50 p-4 pr-2 shadow-inner">
+          className="flex-1 rounded-md rounded-tl-none bg-gray-50 p-4 pb-20 pr-2 shadow-inner">
           <>
-            <div className="mr-16 grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {getList(tab.name).map(port => (
                 <PortElement
                   key={`element_${tab.name}_${port.id}`}
-                  portType={tab.name}
+                  portCategory={tab.name}
                   port={port}
                   onDelete={() => handlePortDelete(tab.name, port.id)}
                   setPort={(key, value) =>

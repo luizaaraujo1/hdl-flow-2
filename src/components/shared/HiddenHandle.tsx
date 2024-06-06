@@ -2,12 +2,12 @@ import {Handle, Position} from 'reactflow';
 
 import {NODE_TYPE} from '../../constants/nodes.constants';
 
-interface Props {
+interface HiddenHandleProps {
   isConnecting: boolean;
   type: NODE_TYPE;
 }
 
-const HiddenHandle = ({isConnecting, type}: Props) => {
+const HiddenHandle = ({isConnecting, type}: HiddenHandleProps) => {
   return (
     <>
       {' '}

@@ -13,7 +13,9 @@ import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
 
 import SideMenu from '../components/canvas/SideMenu';
-import SettingsDialog from '../components/canvas/settings/SettingsDialog';
+import PortSettingsDialog from '../components/canvas/settings/port/PortSettingsDialog';
+import StateSettingsDialog from '../components/canvas/settings/state/StateSettingsDialog';
+import TransitionSettingsDialog from '../components/canvas/settings/transition/TransitionSettingsDialog';
 import StraightConnectionLine from '../components/edges/StraightConnectionLine';
 import {
   EDGE_TYPES,
@@ -27,7 +29,7 @@ import {
   START_NODE_ID,
 } from '../constants/nodes.constants';
 import {useGlobal} from '../contexts/GlobalContext';
-import FSMTransition from '../models/transition';
+import FSMTransition, {LogicalOperator} from '../models/transition';
 import {getPortLogicObjectFromPorts} from '../utils/port.utils';
 
 function Canvas() {
@@ -36,7 +38,6 @@ function Canvas() {
     nodeState: {nodes, onNodesChange, setNodes},
     internalsList,
     outputList,
-    inputList,
   } = useGlobal();
   const [nodeCount, setNodeCount] = useState(0);
   const [transitionCount, setTransitionCount] = useState(0);
@@ -61,11 +62,6 @@ function Canvas() {
     [edges],
   );
 
-  const inputLogic = useMemo(
-    () => getPortLogicObjectFromPorts(inputList),
-    [inputList],
-  );
-
   const outputsLogic = useMemo(
     () => getPortLogicObjectFromPorts(outputList),
     [outputList],
@@ -80,27 +76,26 @@ function Canvas() {
     (connection: Connection) => {
       if (connection.source && connection.target) {
         //FIXME: Typescript shenanigans
-        const newCount = transitionCount + 1;
         const newEdge: Edge<FSMTransition> = {
           ...connection,
           source: connection.source,
           target: connection.target,
           id: crypto.randomUUID().toString(),
           data: {
-            transitionNumber: newCount,
-            name: `Transition ${newCount}`,
+            transitionNumber: transitionCount,
+            name: `Transition ${transitionCount}`,
+            operator: LogicalOperator.And,
             portLogic: {
-              inputs: inputLogic,
-              outputs: outputsLogic,
-              internals: internalsLogic,
+              inputs: {},
+              internals: {},
             },
           },
         };
         setEdges(edges => addEdge(newEdge, edges));
-        setTransitionCount(newCount);
+        setTransitionCount(prev => prev + 1);
       }
     },
-    [inputLogic, internalsLogic, outputsLogic, setEdges, transitionCount],
+    [setEdges, transitionCount],
   );
 
   const addNewNode = useCallback(
@@ -213,7 +208,9 @@ function Canvas() {
           <Controls position="bottom-right" />
         </ReactFlow>
         <SideMenu />
-        <SettingsDialog />
+        <PortSettingsDialog />
+        <StateSettingsDialog />
+        <TransitionSettingsDialog />
       </div>
     </div>
   );

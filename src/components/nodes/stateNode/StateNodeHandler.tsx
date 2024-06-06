@@ -26,7 +26,7 @@ const StateNodeHandler = ({
 
   return (
     <div
-      className={`relative flex flex-col rounded-b-md border-black/80 px-2 py-3 transition-colors ${targetStyle} transition-[border-width] ${selectedStyle}`}>
+      className={`relative flex flex-col rounded-b-md border-black px-2 py-3 transition-colors ${targetStyle} transition-[border-width] ${selectedStyle}`}>
       <HiddenHandle isConnecting={isConnecting} type={NODE_TYPE.State} />
       <h1 className="text-center font-semibold uppercase text-black">
         {!isNotAllowed ? label : 'Not allowed'}

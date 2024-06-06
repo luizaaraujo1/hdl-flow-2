@@ -1,40 +1,30 @@
-import {
-  DownloadIcon,
-  GearIcon,
-  Link1Icon,
-  TrashIcon,
-  UploadIcon,
-} from '@radix-ui/react-icons';
+import {GearIcon, TrashIcon} from '@radix-ui/react-icons';
 import {cloneElement, useCallback, useState} from 'react';
 import {zinc} from 'tailwindcss/colors';
 
-import {PortCategory} from '../../../constants/ports.constants';
-import Port, {PortValue, PortTypeEnum} from '../../../models/port';
-import {logicalOnlyPattern, numericOnlyPattern} from '../../../utils/input';
-import PortSelectInput from './PortSelectInput';
-import PortTextInput from './PortTextInput';
+import {PortCategory} from '../../../../constants/ports.constants';
+import Port, {PortValue, PortTypeEnum} from '../../../../models/port';
+import {logicalOnlyPattern, numericOnlyPattern} from '../../../../utils/input';
+import SelectInput from '../../../shared/SelectInput';
+import TextInput from '../../../shared/TextInput';
+import PortInfo from './PortInfo';
 
 interface Props {
   port: Port;
-  portType: PortCategory;
+  portCategory: PortCategory;
   onDelete: () => void;
   setPort: (key: keyof Port, value: Port[keyof Port]) => void;
 }
 
-interface IconProps {
-  portType: PortCategory;
-}
-
-function PortIcon({portType}: IconProps) {
-  if (portType === 'Input') return <DownloadIcon />;
-  if (portType === 'Output') return <UploadIcon />;
-  return <Link1Icon />;
-}
-
-function PortElement({onDelete, portType, port, setPort}: Props) {
+function PortElement({onDelete, portCategory, port, setPort}: Props) {
   const [editing, setEditing] = useState(false);
-  const isUnnamed = port.name === '';
   const editingStyle = editing ? 'min-h-[200px]' : 'min-h-0 h-0';
+
+  const PORT_TYPE_OPTIONS = [
+    {id: PortTypeEnum.Logic, value: PortTypeEnum.Logic},
+    {id: PortTypeEnum.LogicVector, value: PortTypeEnum.LogicVector},
+    {id: PortTypeEnum.Integer, value: PortTypeEnum.Integer},
+  ];
 
   const renderDefaultValueInput = useCallback(
     (
@@ -50,16 +40,20 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
         value: String(value),
         onTextChange: onChange,
       };
+      const LOGICAL_OPTIONS = [
+        {id: 'false', value: 'false'},
+        {id: 'true', value: 'true'},
+      ];
       const helperText = isNumeric ? '(numeric)' : '(binary)';
       return cloneElement(
         isLogic ? (
-          <PortSelectInput
-            options={['false', 'true']}
+          <SelectInput
+            options={LOGICAL_OPTIONS}
             label="Default value:"
             {...sharedProps}
           />
         ) : (
-          <PortTextInput
+          <TextInput
             placeholder="Set the Port's default value"
             label={`Default value: ${helperText}`}
             pattern={isNumeric ? numericOnlyPattern : logicalOnlyPattern}
@@ -73,18 +67,8 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
 
   return (
     <div className="flex flex-col">
-      <fieldset className="flex justify-between rounded-md bg-white p-2 shadow-lg">
-        <div className="flex items-center">
-          <PortIcon portType={portType} />
-          <h3 className="ml-4 text-sm font-semibold text-gray-500">Name:</h3>
-          <h3
-            className={`text-sm font-semibold ${isUnnamed ? 'text-red-500' : 'text-gray-500'} ml-2`}>
-            {!isUnnamed ? port.name : 'Unnamed Port!'}
-          </h3>
-          <h2 className="ml-4 text-sm font-semibold text-gray-500">-</h2>
-          <h3 className="ml-4 text-sm font-semibold">Type:</h3>
-          <h3 className="ml-2 text-sm font-semibold">{port.type}</h3>
-        </div>
+      <fieldset className="flex content-center justify-between rounded-md bg-white p-2 shadow-lg">
+        <PortInfo port={port} portCategory={portCategory} />
         <div className="flex items-center gap-4">
           <button
             className="btn-canvas rounded-md p-1"
@@ -103,7 +87,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
         className={`rounded-b-md bg-zinc-600/20 shadow-lg transition-[min-height] ease-in-out ${editingStyle}`}>
         {editing && (
           <fieldset className="flex flex-col gap-1 p-2" disabled={!editing}>
-            <PortTextInput
+            <TextInput
               id="name_input"
               label="Name:"
               onTextChange={value => setPort('name', value)}
@@ -111,7 +95,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
               placeholder="Write an unique name"
               required
             />
-            <PortTextInput
+            <TextInput
               id="id_name_input"
               label="ID Name:"
               onTextChange={value => setPort('id_name', value)}
@@ -120,16 +104,12 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
               required
               disabled
             />
-            <PortSelectInput
+            <SelectInput
               id="type_select"
               label="Select Port Type"
               onTextChange={value => setPort('type', value)}
               value={port.type}
-              options={[
-                PortTypeEnum.Logic,
-                PortTypeEnum.LogicVector,
-                PortTypeEnum.Integer,
-              ]}
+              options={PORT_TYPE_OPTIONS}
               required
             />
             {renderDefaultValueInput(
@@ -137,7 +117,7 @@ function PortElement({onDelete, portType, port, setPort}: Props) {
               value => setPort('defaultValue', value),
               port.defaultValue,
             )}
-            <PortTextInput
+            <TextInput
               id="description_input"
               label="Description:"
               onTextChange={value => setPort('description', value)}

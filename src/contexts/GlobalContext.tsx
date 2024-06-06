@@ -14,8 +14,6 @@ import FSMState from '../models/state';
 import FSMTransition from '../models/transition';
 
 export type GlobalContextType = {
-  settingsOpen: boolean;
-  setSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   inputList: Port[];
   setInputList: React.Dispatch<React.SetStateAction<Port[]>>;
   internalsList: Port[];
@@ -45,7 +43,6 @@ interface GlobalContextProviderProps {
 export const GlobalContextProvider = ({
   children,
 }: GlobalContextProviderProps) => {
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [inputList, setInputList] = useState<Port[]>([]);
   const [internalsList, setInternalsList] = useState<Port[]>([]);
   const [outputList, setOutputList] = useState<Port[]>([]);
@@ -55,8 +52,6 @@ export const GlobalContextProvider = ({
   return (
     <GlobalContext.Provider
       value={{
-        settingsOpen,
-        setSettingsOpen,
         inputList,
         internalsList,
         outputList,
