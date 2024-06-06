@@ -34,6 +34,10 @@ export const INITIAL_NODES: Node<FSMState>[] = [
       x: getWindowDimensions().width / 2 - 200,
       y: (getWindowDimensions().height * 0.8) / 2,
     },
+    draggable: false,
+    deletable: false,
+    selectable: false,
+    focusable: false,
     data: {
       stateNumber: -1,
       name: 'Start',

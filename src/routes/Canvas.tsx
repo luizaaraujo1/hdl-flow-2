@@ -204,7 +204,7 @@ function Canvas() {
   return (
     <div className="flex-1 bg-slate-100">
       <Link to={ROUTE_PATHS.Home}>
-        <header className="fixed z-10 flex w-fit items-center justify-center rounded-br-lg bg-gray-800 p-4 px-10 text-gray-100 shadow-lg hover:cursor-pointer hover:bg-slate-900 hover:shadow-xl">
+        <header className="fixed z-10 flex w-fit items-center justify-center rounded-br-lg bg-gray-800 p-4 px-10 text-gray-100 shadow-md hover:cursor-pointer hover:bg-slate-900 hover:shadow-lg">
           <h1 className="text-center text-2xl font-bold text-white">
             HDL Flow
           </h1>
