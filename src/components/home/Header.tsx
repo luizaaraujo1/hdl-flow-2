@@ -5,7 +5,7 @@ import ROUTE_PATHS from '../../constants/routePaths';
 
 function Header() {
   return (
-    <header className="bg-gray-800 text-gray-100 shadow-lg">
+    <header className="bg-gray-800 px-10 text-gray-100 shadow-lg">
       <div className="container mx-auto flex items-center justify-between py-4">
         <h1 className="text-2xl font-bold">
           <Link to={ROUTE_PATHS.Home}>HDL Flow</Link>

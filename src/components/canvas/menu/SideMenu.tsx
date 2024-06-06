@@ -1,7 +1,8 @@
 import {
-  BoxModelIcon,
+  ActivityLogIcon,
   ChevronLeftIcon,
-  HamburgerMenuIcon,
+  FilePlusIcon,
+  GearIcon,
   QuestionMarkIcon,
 } from '@radix-ui/react-icons';
 import * as Toolbar from '@radix-ui/react-toolbar';
@@ -11,17 +12,12 @@ import colors from 'tailwindcss/colors';
 import {
   DRAG_AND_DROP_EVENT_NAME,
   NODE_TYPE,
-} from '../../constants/nodes.constants';
-import {useDialog} from '../../contexts/DialogContext';
+} from '../../../constants/nodes.constants';
+import {useDialog} from '../../../contexts/DialogContext';
+import MenuButton from './MenuButton';
 
 interface CustomIconProps {
   icon: React.ReactElement;
-}
-
-interface CustomButtonProps extends Toolbar.ToolbarButtonProps {
-  onClick: () => void;
-  children?: React.ReactNode;
-  className?: string;
 }
 
 function CustomIcon({icon}: CustomIconProps) {
@@ -29,22 +25,6 @@ function CustomIcon({icon}: CustomIconProps) {
     color: colors.zinc['600'],
     className: 'relative h-1/2 w-1/2',
   });
-}
-
-function CustomButton({
-  children,
-  onClick,
-  className,
-  ...rest
-}: CustomButtonProps) {
-  return (
-    <Toolbar.Button
-      className={`btn-canvas h-16 w-16 cursor-pointer ${className}`}
-      onClick={onClick}
-      {...rest}>
-      {children}
-    </Toolbar.Button>
-  );
 }
 
 function SideMenu() {
@@ -67,24 +47,28 @@ function SideMenu() {
     <Toolbar.Root
       orientation="vertical"
       className={`relative bottom-1/2 flex h-96 w-20 -translate-y-1/2 flex-col gap-2 overflow-visible rounded-e-2xl border-zinc-300 bg-white px-2 py-8 shadow-lg transition-transform ${open ? '' : '-translate-x-20'}`}>
-      <CustomButton onClick={() => {}}>
+      <MenuButton onClick={() => {}} label="Project Settings">
+        {<CustomIcon icon={<GearIcon />} />}
+      </MenuButton>
+      <MenuButton onClick={() => {}} label="How to use">
         {<CustomIcon icon={<QuestionMarkIcon />} />}
-      </CustomButton>
-      <CustomButton onClick={toggleSettings}>
-        {<CustomIcon icon={<HamburgerMenuIcon />} />}
-      </CustomButton>
-      <CustomButton
+      </MenuButton>
+      <MenuButton onClick={toggleSettings} label="Open Port editor">
+        {<CustomIcon icon={<ActivityLogIcon />} />}
+      </MenuButton>
+      <MenuButton
         onClick={() => {}}
         onDragStart={event => onDragStart(event, NODE_TYPE.State)}
-        className="cursor-grab"
+        className="hover:cursor-grab"
+        label="Drag to add State"
         draggable>
-        {<CustomIcon icon={<BoxModelIcon />} />}
-      </CustomButton>
-      <CustomButton
+        {<CustomIcon icon={<FilePlusIcon />} />}
+      </MenuButton>
+      <MenuButton
         onClick={() => setOpen(prev => !prev)}
         className={`${open ? '' : 'translate-x-14 -rotate-180'} transition-transform`}>
         {<CustomIcon icon={<ChevronLeftIcon />} />}
-      </CustomButton>
+      </MenuButton>
     </Toolbar.Root>
   );
 }
