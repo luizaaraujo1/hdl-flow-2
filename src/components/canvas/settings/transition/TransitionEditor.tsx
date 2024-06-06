@@ -108,6 +108,8 @@ function TransitionEditor() {
             [portLogicCategory]: newPortLogic,
           };
           handleTransitionUpdate('portLogic', newTransitionPortLogic);
+          if (isInternal) setSelectedInternalId(undefined);
+          else setSelectedInputId(undefined);
         }
       }
     },
@@ -189,20 +191,30 @@ function TransitionEditor() {
 
   const INPUT_OPTIONS = useMemo(
     () =>
-      [...inputList].map(port => ({
-        id: port.id,
-        value: port.id_name,
-      })),
-    [inputList],
+      [...inputList]
+        .map(port => ({
+          id: port.id,
+          value: port.id_name,
+        }))
+        .filter(
+          element =>
+            !inputsLogicList.find(logic => logic.port.id === element.id),
+        ),
+    [inputList, inputsLogicList],
   );
 
   const INTERNAL_OPTIONS = useMemo(
     () =>
-      [...internalsList].map(port => ({
-        id: port.id,
-        value: port.id_name,
-      })),
-    [internalsList],
+      [...internalsList]
+        .map(port => ({
+          id: port.id,
+          value: port.id_name,
+        }))
+        .filter(
+          element =>
+            !internalsLogicList.find(logic => logic.port.id === element.id),
+        ),
+    [internalsList, internalsLogicList],
   );
 
   useEffect(() => {
