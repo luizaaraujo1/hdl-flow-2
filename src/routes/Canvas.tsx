@@ -49,11 +49,15 @@ function Canvas() {
   const {
     edgeState: {edges, onEdgesChange, setEdges},
     nodeState: {nodes, onNodesChange, setNodes},
+    counterState: {
+      nodeCount,
+      setNodeCount,
+      setTransitionCount,
+      transitionCount,
+    },
     internalsList,
     outputList,
   } = useGlobal();
-  const [nodeCount, setNodeCount] = useState(0);
-  const [transitionCount, setTransitionCount] = useState(0);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
     unknown,
     unknown
@@ -108,7 +112,7 @@ function Canvas() {
         setTransitionCount(prev => prev + 1);
       }
     },
-    [setEdges, transitionCount],
+    [setEdges, setTransitionCount, transitionCount],
   );
 
   const addNewNode = useCallback(
@@ -132,7 +136,13 @@ function Canvas() {
       ]);
       setNodeCount(newCount);
     },
-    [internalsLogicObject, outputsLogicObject, setNodes, nodeCount],
+    [
+      nodeCount,
+      setNodes,
+      setNodeCount,
+      outputsLogicObject,
+      internalsLogicObject,
+    ],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
