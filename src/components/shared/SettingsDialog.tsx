@@ -29,10 +29,10 @@ function SettingsDialog({
     <Dialog.Root open={open} defaultOpen={false}>
       <Dialog.Portal>
         <Dialog.Overlay
-          className="fixed inset-0 cursor-pointer bg-black/50"
+          className="fixed inset-0 z-10 cursor-pointer bg-black/50"
           onClick={closeDialog}
         />
-        <Dialog.Content className="center-fixed flex h-4/5 w-4/5 max-w-[1400px] flex-col rounded-md bg-white p-8 shadow-lg transition-all duration-150 ease-in focus:outline-none">
+        <Dialog.Content className="center-fixed z-20 flex h-4/5 w-4/5 max-w-[1400px] flex-col rounded-md bg-white p-8 shadow-lg transition-all duration-150 ease-in focus:outline-none">
           <Dialog.Close
             onClick={closeDialog}
             className="btn-canvas fixed right-8 top-8 h-8 w-8 rounded-full">

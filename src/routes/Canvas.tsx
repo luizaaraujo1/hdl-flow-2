@@ -1,4 +1,5 @@
 import {useCallback, useMemo, useRef, useState} from 'react';
+import {Link} from 'react-router-dom';
 import ReactFlow, {
   Background,
   Connection,
@@ -12,11 +13,12 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
 
-import SideMenu from '../components/canvas/SideMenu';
+import SideMenu from '../components/canvas/menu/SideMenu';
 import PortSettingsDialog from '../components/canvas/settings/port/PortSettingsDialog';
 import StateSettingsDialog from '../components/canvas/settings/state/StateSettingsDialog';
 import TransitionSettingsDialog from '../components/canvas/settings/transition/TransitionSettingsDialog';
 import StraightConnectionLine from '../components/edges/StraightConnectionLine';
+import ErrorPage from '../components/shared/ErrorPage';
 import {
   EDGE_TYPES,
   connectionLineStyle,
@@ -28,19 +30,34 @@ import {
   NODE_TYPES,
   START_NODE_ID,
 } from '../constants/nodes.constants';
+import ROUTE_PATHS from '../constants/routePaths';
 import {useGlobal} from '../contexts/GlobalContext';
 import FSMTransition, {LogicalOperator} from '../models/transition';
 import {getPortLogicObjectFromPorts} from '../utils/port.utils';
 
 function Canvas() {
+  if (window.screen.width < 768) {
+    return (
+      <ErrorPage
+        title="Sorry! We're not on mobile yet"
+        subtitle="(Work in progress)"
+        buttonText="Go Home"
+      />
+    );
+  }
+
   const {
     edgeState: {edges, onEdgesChange, setEdges},
     nodeState: {nodes, onNodesChange, setNodes},
+    counterState: {
+      nodeCount,
+      setNodeCount,
+      setTransitionCount,
+      transitionCount,
+    },
     internalsList,
     outputList,
   } = useGlobal();
-  const [nodeCount, setNodeCount] = useState(0);
-  const [transitionCount, setTransitionCount] = useState(0);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
     unknown,
     unknown
@@ -62,12 +79,12 @@ function Canvas() {
     [edges],
   );
 
-  const outputsLogic = useMemo(
+  const outputsLogicObject = useMemo(
     () => getPortLogicObjectFromPorts(outputList),
     [outputList],
   );
 
-  const internalsLogic = useMemo(
+  const internalsLogicObject = useMemo(
     () => getPortLogicObjectFromPorts(internalsList),
     [internalsList],
   );
@@ -95,7 +112,7 @@ function Canvas() {
         setTransitionCount(prev => prev + 1);
       }
     },
-    [setEdges, transitionCount],
+    [setEdges, setTransitionCount, transitionCount],
   );
 
   const addNewNode = useCallback(
@@ -111,15 +128,21 @@ function Canvas() {
             stateNumber: newCount,
             name: `State ${newCount}`,
             portLogic: {
-              outputs: outputsLogic,
-              internals: internalsLogic,
+              outputs: outputsLogicObject,
+              internals: internalsLogicObject,
             },
           },
         },
       ]);
       setNodeCount(newCount);
     },
-    [internalsLogic, outputsLogic, setNodes, nodeCount],
+    [
+      nodeCount,
+      setNodes,
+      setNodeCount,
+      outputsLogicObject,
+      internalsLogicObject,
+    ],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -180,6 +203,13 @@ function Canvas() {
 
   return (
     <div className="flex-1 bg-slate-100">
+      <Link to={ROUTE_PATHS.Home}>
+        <header className="fixed z-10 flex w-fit items-center justify-center rounded-br-lg bg-gray-800 p-4 px-10 text-gray-100 shadow-md hover:cursor-pointer hover:bg-slate-900 hover:shadow-lg">
+          <h1 className="text-center text-2xl font-bold text-white">
+            HDL Flow
+          </h1>
+        </header>
+      </Link>
       <div className="h-[100vh]">
         <ReactFlow
           nodeTypes={NODE_TYPES}

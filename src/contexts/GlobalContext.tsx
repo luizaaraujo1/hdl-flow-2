@@ -20,6 +20,12 @@ export type GlobalContextType = {
   setInternalsList: React.Dispatch<React.SetStateAction<Port[]>>;
   outputList: Port[];
   setOutputList: React.Dispatch<React.SetStateAction<Port[]>>;
+  counterState: {
+    nodeCount: number;
+    setNodeCount: React.Dispatch<React.SetStateAction<number>>;
+    transitionCount: number;
+    setTransitionCount: React.Dispatch<React.SetStateAction<number>>;
+  };
   nodeState: {
     nodes: Node<FSMState>[];
     setNodes: React.Dispatch<React.SetStateAction<Node<FSMState>[]>>;
@@ -49,6 +55,8 @@ export const GlobalContextProvider = ({
   const [nodes, setNodes, onNodesChange] =
     useNodesState<FSMState>(INITIAL_NODES);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodeCount, setNodeCount] = useState(0);
+  const [transitionCount, setTransitionCount] = useState(0);
   return (
     <GlobalContext.Provider
       value={{
@@ -58,6 +66,12 @@ export const GlobalContextProvider = ({
         setInputList,
         setInternalsList,
         setOutputList,
+        counterState: {
+          nodeCount,
+          setNodeCount,
+          transitionCount,
+          setTransitionCount,
+        },
         nodeState: {nodes, setNodes, onNodesChange},
         edgeState: {edges, setEdges, onEdgesChange},
       }}>

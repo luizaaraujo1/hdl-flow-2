@@ -68,17 +68,17 @@ function PortEditor() {
     getListSetter(tab)(prev => [...prev, newPort]);
   };
 
-  const inputLogic = useMemo(
+  const inputLogicObject = useMemo(
     () => getPortLogicObjectFromPorts(inputList),
     [inputList],
   );
 
-  const outputsLogic = useMemo(
+  const outputsLogicObject = useMemo(
     () => getPortLogicObjectFromPorts(outputList),
     [outputList],
   );
 
-  const internalsLogic = useMemo(
+  const internalsLogicObject = useMemo(
     () => getPortLogicObjectFromPorts(internalsList),
     [internalsList],
   );
@@ -90,13 +90,13 @@ function PortEditor() {
         data: {
           ...node.data,
           portLogic: {
-            internals: {...internalsLogic},
-            outputs: {...outputsLogic},
+            internals: {...internalsLogicObject},
+            outputs: {...outputsLogicObject},
           },
         },
       })),
     );
-  }, [internalsLogic, outputsLogic, setNodes]);
+  }, [internalsLogicObject, outputsLogicObject, setNodes]);
 
   const updateEdgesState = useCallback(() => {
     setEdges(prev =>
@@ -107,16 +107,16 @@ function PortEditor() {
             data: {
               ...edge.data,
               portLogic: {
-                inputs: {...inputLogic},
-                internals: {...internalsLogic},
-                outputs: {...outputsLogic},
+                inputs: {...inputLogicObject},
+                internals: {...internalsLogicObject},
+                outputs: {...outputsLogicObject},
               },
             },
           };
         else return {...edge};
       }),
     );
-  }, [inputLogic, internalsLogic, outputsLogic, setEdges]);
+  }, [inputLogicObject, internalsLogicObject, outputsLogicObject, setEdges]);
 
   useEffect(() => {
     updateNodesState();
