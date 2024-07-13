@@ -29,10 +29,14 @@ function CustomIcon({icon}: CustomIconProps) {
 
 function SideMenu() {
   const [open, setOpen] = useState(true);
-  const {setPortSettingsOpen} = useDialog();
+  const {setPortSettingsOpen, setCodeSettingsOpen} = useDialog();
 
-  const toggleSettings = () => {
+  const togglePortSettings = () => {
     setPortSettingsOpen(prev => !prev);
+  };
+
+  const toggleCodeSettings = () => {
+    setCodeSettingsOpen(prev => !prev);
   };
 
   const onDragStart = (
@@ -50,7 +54,7 @@ function SideMenu() {
       <MenuButton onClick={() => {}} label="How to use">
         {<CustomIcon icon={<QuestionMarkIcon />} />}
       </MenuButton>
-      <MenuButton onClick={toggleSettings} label="Open Port editor">
+      <MenuButton onClick={togglePortSettings} label="Open Port editor">
         {<CustomIcon icon={<ActivityLogIcon />} />}
       </MenuButton>
       <MenuButton
@@ -61,7 +65,7 @@ function SideMenu() {
         draggable>
         {<CustomIcon icon={<FilePlusIcon />} />}
       </MenuButton>
-      <MenuButton onClick={() => {}} label="Code editor">
+      <MenuButton onClick={toggleCodeSettings} label="Code editor">
         {<CustomIcon icon={<CodeIcon />} />}
       </MenuButton>
       <MenuButton
