@@ -1,14 +1,14 @@
 import {useCallback, useMemo} from 'react';
 import {Node} from 'reactflow';
 
-import {PortCategory} from '../../../../constants/ports.constants';
-import {useDialog} from '../../../../contexts/DialogContext';
-import {useGlobal} from '../../../../contexts/GlobalContext';
-import FSMState, {PortLogic, StatePortLogic} from '../../../../models/state';
-import {numericOnlyPattern, removeAllNonNumeric} from '../../../../utils/input';
-import RoundedScrollContainer from '../../../shared/RoundedScrollContainer';
-import TextInput from '../../../shared/TextInput';
-import LogicEditor from '../logic/LogicEditor';
+import LogicEditor from '@components/canvas/settings/logic/LogicEditor';
+import {PortCategory} from '@constants/ports.constants';
+import {useDialog} from '@contexts/DialogContext';
+import {useGlobal} from '@contexts/GlobalContext';
+import FSMState, {PortLogic, StatePortLogic} from '@models/state';
+import RoundedScrollContainer from '@shared/RoundedScrollContainer';
+import TextInput from '@shared/TextInput';
+import {numericOnlyPattern, removeAllNonNumeric} from '@utils/input';
 
 function StateEditor() {
   const {selectedStateId} = useDialog();

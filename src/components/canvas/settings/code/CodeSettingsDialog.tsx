@@ -1,5 +1,6 @@
-import {useDialog} from '../../../../contexts/DialogContext';
-import SettingsDialog from '../../../shared/SettingsDialog';
+import {useDialog} from '@contexts/DialogContext';
+import SettingsDialog from '@shared/SettingsDialog';
+
 import CodeWorkspace from './CodeWorkspace';
 
 function CodeSettingsDialog() {

@@ -2,7 +2,7 @@
   "bracketSpacing": false,
   "bracketSameLine": true,
   "singleQuote": true,
-  "importOrder": ["^components/(.*)$", "^[./]"],
+  "importOrder": ["^@(.*)$", "^[./]"],
   "importOrderSeparation": true,
   "importOrderSpecifiers": true,
   "trailingComma": "all",

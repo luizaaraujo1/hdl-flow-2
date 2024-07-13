@@ -1,7 +1,7 @@
 import {Link} from 'react-router-dom';
 
-import ROUTE_PATHS from '../../constants/routePaths';
-import SimpleSection from '../shared/SimpleSection';
+import ROUTE_PATHS from '@constants/routePaths';
+import SimpleSection from '@shared/SimpleSection';
 
 function Hero() {
   return (

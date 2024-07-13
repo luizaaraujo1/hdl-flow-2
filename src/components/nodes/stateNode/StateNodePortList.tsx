@@ -1,6 +1,7 @@
-import {PortCategory} from '../../../constants/ports.constants';
-import {PortValue} from '../../../models/port';
-import {LogicType, PortLogic} from '../../../models/state';
+import {PortCategory} from '@constants/ports.constants';
+import {PortValue} from '@models/port';
+import {LogicType, PortLogic} from '@models/state';
+
 import StateNodeListElement from './StateNodeListElement';
 
 interface StateNodePortListProps {

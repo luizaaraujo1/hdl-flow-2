@@ -1,4 +1,4 @@
-import RoundedScrollContainer from '../../../shared/RoundedScrollContainer';
+import RoundedScrollContainer from '@shared/RoundedScrollContainer';
 
 function CodeWorkspace() {
   return (

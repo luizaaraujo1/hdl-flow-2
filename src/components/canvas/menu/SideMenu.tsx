@@ -1,3 +1,8 @@
+import {cloneElement, useState} from 'react';
+import colors from 'tailwindcss/colors';
+
+import {DRAG_AND_DROP_EVENT_NAME, NODE_TYPE} from '@constants/nodes.constants';
+import {useDialog} from '@contexts/DialogContext';
 import {
   ActivityLogIcon,
   ChevronLeftIcon,
@@ -6,14 +11,7 @@ import {
   QuestionMarkIcon,
 } from '@radix-ui/react-icons';
 import * as Toolbar from '@radix-ui/react-toolbar';
-import {cloneElement, useState} from 'react';
-import colors from 'tailwindcss/colors';
 
-import {
-  DRAG_AND_DROP_EVENT_NAME,
-  NODE_TYPE,
-} from '../../../constants/nodes.constants';
-import {useDialog} from '../../../contexts/DialogContext';
 import MenuButton from './MenuButton';
 
 interface CustomIconProps {

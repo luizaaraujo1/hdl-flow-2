@@ -1,7 +1,7 @@
 import {Link} from 'react-router-dom';
 
-import {GITHUB_LINK} from '../../constants/links';
-import ROUTE_PATHS from '../../constants/routePaths';
+import {GITHUB_LINK} from '@constants/links';
+import ROUTE_PATHS from '@constants/routePaths';
 
 function Header() {
   return (

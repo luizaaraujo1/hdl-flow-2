@@ -1,6 +1,5 @@
 import {PlusCircledIcon} from '@radix-ui/react-icons';
-
-import SelectInput from '../../../shared/SelectInput';
+import SelectInput from '@shared/SelectInput';
 
 interface TransitionConditionAdderProps {
   selectLabel: string;

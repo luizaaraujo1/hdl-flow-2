@@ -1,6 +1,6 @@
-import {PortCategory} from '../../../../constants/ports.constants';
-import Port from '../../../../models/port';
-import PortIcon from '../../../shared/PortIcon';
+import {PortCategory} from '@constants/ports.constants';
+import Port from '@models/port';
+import PortIcon from '@shared/PortIcon';
 
 interface PortInfoProps {
   port: Port;

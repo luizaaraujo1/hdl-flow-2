@@ -1,5 +1,6 @@
-import {PortCategory} from '../../../../constants/ports.constants';
-import {PortLogic} from '../../../../models/state';
+import {PortCategory} from '@constants/ports.constants';
+import {PortLogic} from '@models/state';
+
 import LogicElement from './LogicElement';
 
 export type EntityType = 'State' | 'Transition';

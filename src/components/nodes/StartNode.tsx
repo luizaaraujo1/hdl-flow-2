@@ -1,7 +1,7 @@
 import {NodeProps, ReactFlowState, useStore} from 'reactflow';
 
-import {NODE_TYPE} from '../../constants/nodes.constants';
-import HiddenHandle from '../shared/HiddenHandle';
+import {NODE_TYPE} from '@constants/nodes.constants';
+import HiddenHandle from '@shared/HiddenHandle';
 
 const connectionNodeIdSelector = (state: ReactFlowState) =>
   state.connectionNodeId;

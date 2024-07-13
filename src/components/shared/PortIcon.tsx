@@ -1,6 +1,5 @@
+import {PortCategory} from '@constants/ports.constants';
 import {DownloadIcon, Link1Icon, UploadIcon} from '@radix-ui/react-icons';
-
-import {PortCategory} from '../../constants/ports.constants';
 
 interface IconProps {
   portCategory: PortCategory;
