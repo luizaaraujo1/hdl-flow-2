@@ -1,5 +1,6 @@
 import {useDialog} from '../../../../contexts/DialogContext';
 import SettingsDialog from '../../../shared/SettingsDialog';
+import CodeWorkspace from './CodeWorkspace';
 
 function CodeSettingsDialog() {
   const {codeSettingsOpen, setCodeSettingsOpen} = useDialog();
@@ -10,7 +11,7 @@ function CodeSettingsDialog() {
       setOpen={setCodeSettingsOpen}
       title={'Code Settings'}
       description={'Use this menu to see the resulting code for your FSM'}>
-      <></>
+      <CodeWorkspace />
     </SettingsDialog>
   );
 }
