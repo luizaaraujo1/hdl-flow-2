@@ -1,5 +1,9 @@
 import {createContext, useContext, useState} from 'react';
 
+import PortSettingsDialog from '../components/canvas/settings/port/PortSettingsDialog';
+import StateSettingsDialog from '../components/canvas/settings/state/StateSettingsDialog';
+import TransitionSettingsDialog from '../components/canvas/settings/transition/TransitionSettingsDialog';
+
 export type DialogContextType = {
   portSettingsOpen: boolean;
   setPortSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -48,6 +52,9 @@ export const DialogContextProvider = ({
         setSelectedTransitionId,
       }}>
       {children}
+      <PortSettingsDialog />
+      <StateSettingsDialog />
+      <TransitionSettingsDialog />
     </DialogContext.Provider>
   );
 };

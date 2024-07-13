@@ -1,8 +1,8 @@
 import {
   ActivityLogIcon,
   ChevronLeftIcon,
+  CodeIcon,
   FilePlusIcon,
-  GearIcon,
   QuestionMarkIcon,
 } from '@radix-ui/react-icons';
 import * as Toolbar from '@radix-ui/react-toolbar';
@@ -47,9 +47,6 @@ function SideMenu() {
     <Toolbar.Root
       orientation="vertical"
       className={`relative bottom-1/2 flex h-96 w-20 -translate-y-1/2 flex-col gap-2 overflow-visible rounded-e-2xl border-zinc-300 bg-white px-2 py-8 shadow-lg transition-transform ${open ? '' : '-translate-x-20'}`}>
-      <MenuButton onClick={() => {}} label="Project Settings">
-        {<CustomIcon icon={<GearIcon />} />}
-      </MenuButton>
       <MenuButton onClick={() => {}} label="How to use">
         {<CustomIcon icon={<QuestionMarkIcon />} />}
       </MenuButton>
@@ -63,6 +60,9 @@ function SideMenu() {
         label="Drag to add State"
         draggable>
         {<CustomIcon icon={<FilePlusIcon />} />}
+      </MenuButton>
+      <MenuButton onClick={() => {}} label="Code editor">
+        {<CustomIcon icon={<CodeIcon />} />}
       </MenuButton>
       <MenuButton
         onClick={() => setOpen(prev => !prev)}

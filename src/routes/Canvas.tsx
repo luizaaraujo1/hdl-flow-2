@@ -14,9 +14,6 @@ import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
 
 import SideMenu from '../components/canvas/menu/SideMenu';
-import PortSettingsDialog from '../components/canvas/settings/port/PortSettingsDialog';
-import StateSettingsDialog from '../components/canvas/settings/state/StateSettingsDialog';
-import TransitionSettingsDialog from '../components/canvas/settings/transition/TransitionSettingsDialog';
 import StraightConnectionLine from '../components/edges/StraightConnectionLine';
 import ErrorPage from '../components/shared/ErrorPage';
 import {
@@ -238,9 +235,6 @@ function Canvas() {
           <Controls position="bottom-right" />
         </ReactFlow>
         <SideMenu />
-        <PortSettingsDialog />
-        <StateSettingsDialog />
-        <TransitionSettingsDialog />
       </div>
     </div>
   );
