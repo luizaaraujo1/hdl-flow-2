@@ -1,4 +1,3 @@
-import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import {useCallback} from 'react';
 import {
   useStore,
@@ -7,11 +6,12 @@ import {
   EdgeLabelRenderer,
 } from 'reactflow';
 
-import {useDialog} from '../../contexts/DialogContext';
-import {useGlobal} from '../../contexts/GlobalContext';
-import FSMTransition from '../../models/transition';
-import {getEdgeParams} from '../../utils/edge.utils';
-import CanvasButton from '../shared/DeleteButton';
+import {useDialog} from '@contexts/DialogContext';
+import {useGlobal} from '@contexts/GlobalContext';
+import FSMTransition from '@models/transition';
+import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
+import CanvasButton from '@shared/DeleteButton';
+import {getEdgeParams} from '@utils/edge.utils';
 
 function FloatingEdge({
   id,

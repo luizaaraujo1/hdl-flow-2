@@ -1,22 +1,16 @@
-import {TrashIcon} from '@radix-ui/react-icons';
 import {useEffect, useMemo} from 'react';
 import {zinc} from 'tailwindcss/colors';
 
-import {PortCategory} from '../../../../constants/ports.constants';
-import {useGlobal} from '../../../../contexts/GlobalContext';
-import {
-  LogicType,
-  PortLogic,
-  STATE_SUPPORTED_LOGIC_TYPES,
-} from '../../../../models/state';
-import {TRANSITION_SUPPORTED_LOGIC_TYPES} from '../../../../models/transition';
-import {
-  filterPortsOfDifferentType,
-  filterSamePort,
-} from '../../../../utils/port.utils';
-import SelectInput from '../../../shared/SelectInput';
-import TextInput from '../../../shared/TextInput';
-import PortInfo from '../port/PortInfo';
+import PortInfo from '@components/canvas/settings/port/PortInfo';
+import {PortCategory} from '@constants/ports.constants';
+import {useGlobal} from '@contexts/GlobalContext';
+import {LogicType, PortLogic, STATE_SUPPORTED_LOGIC_TYPES} from '@models/state';
+import {TRANSITION_SUPPORTED_LOGIC_TYPES} from '@models/transition';
+import {TrashIcon} from '@radix-ui/react-icons';
+import SelectInput from '@shared/SelectInput';
+import TextInput from '@shared/TextInput';
+import {filterPortsOfDifferentType, filterSamePort} from '@utils/port.utils';
+
 import {EntityType} from './LogicEditor';
 
 interface LogicElement {

@@ -1,5 +1,5 @@
-import SimpleCard from '../shared/SimpleCard';
-import SimpleSection from '../shared/SimpleSection';
+import SimpleCard from '@shared/SimpleCard';
+import SimpleSection from '@shared/SimpleSection';
 
 function Features() {
   return (

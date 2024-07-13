@@ -1,4 +1,5 @@
-import SimpleSection from '../../shared/SimpleSection';
+import SimpleSection from '@shared/SimpleSection';
+
 import Testimonial from './Testimonial';
 
 function SocialProof() {

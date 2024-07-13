@@ -1,4 +1,4 @@
-import Port from '../models/port';
+import Port from '@models/port';
 
 export type PortCategory = 'Input' | 'Output' | 'Internal';
 

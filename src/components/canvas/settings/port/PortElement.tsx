@@ -1,12 +1,13 @@
-import {GearIcon, TrashIcon} from '@radix-ui/react-icons';
 import {cloneElement, useCallback, useState} from 'react';
 import {zinc} from 'tailwindcss/colors';
 
-import {PortCategory} from '../../../../constants/ports.constants';
-import Port, {PortValue, PortTypeEnum} from '../../../../models/port';
-import {logicalOnlyPattern, numericOnlyPattern} from '../../../../utils/input';
-import SelectInput from '../../../shared/SelectInput';
-import TextInput from '../../../shared/TextInput';
+import {PortCategory} from '@constants/ports.constants';
+import Port, {PortValue, PortTypeEnum} from '@models/port';
+import {GearIcon, TrashIcon} from '@radix-ui/react-icons';
+import SelectInput from '@shared/SelectInput';
+import TextInput from '@shared/TextInput';
+import {logicalOnlyPattern, numericOnlyPattern} from '@utils/input';
+
 import PortInfo from './PortInfo';
 
 interface Props {

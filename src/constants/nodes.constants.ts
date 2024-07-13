@@ -1,8 +1,8 @@
 import {Node} from 'reactflow';
 
-import StartNode from '../components/nodes/StartNode';
-import StateNode from '../components/nodes/stateNode/StateNode';
-import FSMState from '../models/state';
+import StartNode from '@components/nodes/StartNode';
+import StateNode from '@components/nodes/stateNode/StateNode';
+import FSMState from '@models/state';
 
 function getWindowDimensions() {
   const {innerWidth: width, innerHeight: height} = window;

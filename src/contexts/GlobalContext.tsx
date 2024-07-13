@@ -8,10 +8,10 @@ import {
   useNodesState,
 } from 'reactflow';
 
-import {INITIAL_NODES} from '../constants/nodes.constants';
-import Port from '../models/port';
-import FSMState from '../models/state';
-import FSMTransition from '../models/transition';
+import {INITIAL_NODES} from '@constants/nodes.constants';
+import Port from '@models/port';
+import FSMState from '@models/state';
+import FSMTransition from '@models/transition';
 
 export type GlobalContextType = {
   inputList: Port[];

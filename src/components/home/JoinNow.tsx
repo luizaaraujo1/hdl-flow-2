@@ -1,5 +1,5 @@
-import {GITHUB_LINK} from '../../constants/links';
-import SimpleSection from '../shared/SimpleSection';
+import {GITHUB_LINK} from '@constants/links';
+import SimpleSection from '@shared/SimpleSection';
 
 function JoinNow() {
   return (

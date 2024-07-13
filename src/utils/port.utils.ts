@@ -1,5 +1,5 @@
-import Port, {PortTypeEnum} from '../models/port';
-import {PortLogic, LogicType} from '../models/state';
+import Port, {PortTypeEnum} from '@models/port';
+import {PortLogic, LogicType} from '@models/state';
 
 export function getPortLogicObjectFromPorts(ports: Port[]): {
   [key: string]: PortLogic;
