@@ -1,3 +1,5 @@
+import {DEFAULT_INPUT_MAX_LENGTH} from '@constants/input';
+
 export interface TextInputProps extends React.HTMLProps<HTMLInputElement> {
   id: string;
   label: string;
@@ -11,8 +13,6 @@ export interface TextInputProps extends React.HTMLProps<HTMLInputElement> {
   expand?: boolean;
   maxLength?: number;
 }
-
-const DEFAULT_INPUT_MAX_LENGTH = 20;
 
 function TextInput({
   id,
