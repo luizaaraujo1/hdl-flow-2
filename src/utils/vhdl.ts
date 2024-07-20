@@ -1,5 +1,9 @@
 import {DEFAULT_INPUT_MAX_LENGTH} from '@constants/input';
-import {PortCategory} from '@constants/ports.constants';
+import {
+  DEFAULT_CLK_PORT,
+  DEFAULT_RESET_PORT,
+  PortCategory,
+} from '@constants/ports.constants';
 import {
   VHDL_FSM_ENTITY_FOOTER,
   VHDL_FSM_ENTITY_HEADER,
@@ -65,19 +69,10 @@ export function getEntityPortType(port: Port) {
   }
 }
 
-export function getEmptyVhdlFsmEntityContent() {
-  return getVhdlCodeLine(
-    'Add ports in the Port Editor to see them here',
-    2,
-    true,
-    true,
-  );
-}
-
 function getEntityPortListContent(port: Port, portCategory: PortCategory) {
   return (
     port.id_name +
-    getNSpaces(2 * (DEFAULT_INPUT_MAX_LENGTH + 1 - port.id_name.length)) +
+    getNSpaces(DEFAULT_INPUT_MAX_LENGTH - port.id_name.length) +
     ': ' +
     getEntityPortCategory(portCategory) +
     ' ' +
@@ -110,14 +105,15 @@ export function generateVhdlFsmEntity(
   internalsList: Port[],
   outputList: Port[],
 ) {
+  const defaults = getEntityPortList(
+    [DEFAULT_CLK_PORT, DEFAULT_RESET_PORT],
+    'Input',
+  );
   const inputs = getEntityPortList(inputList, 'Input');
   const internals = getEntityPortList(internalsList, 'Internal');
   const outputs = getEntityPortList(outputList, 'Output');
   const content = inputs + internals + outputs;
-  if (content.length > 0) {
-    return getWrappedVhdlFsmEntityContent(content);
-  }
-  return getWrappedVhdlFsmEntityContent(getEmptyVhdlFsmEntityContent());
+  return getWrappedVhdlFsmEntityContent(defaults + content);
 }
 
 export function generateVhdlCode(
