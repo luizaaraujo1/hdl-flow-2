@@ -19,31 +19,39 @@ import {
   VHDL_FSM_ARCHITECTURE_SIGNALS,
   VHDL_BEGIN,
   VHDL_BEGIN_PROCESS,
-  VHDL_FSM_STATE_PROCESS_LINE_1,
-  VHDL_FSM_STATE_PROCESS_LINE_2,
-  VHDL_FSM_STATE_PROCESS_LINE_3,
-  VHDL_FSM_STATE_PROCESS_LINE_4,
-  VHDL_FSM_STATE_PROCESS_LINE_5,
+  VHDL_FSM_CLOCK_PROCESS_LINE_1,
+  VHDL_FSM_CLOCK_PROCESS_LINE_2,
+  VHDL_FSM_CLOCK_PROCESS_LINE_3,
+  VHDL_FSM_CLOCK_PROCESS_LINE_4,
   VHDL_END_PROCESS,
   VHDL_STATE_PREFIX,
+  VHDL_END_IF,
+  VHDL_FSM_ARCHITECTURE_FOOTER,
+  VHDL_FSM_STATE_PROCESS_HEADER,
+  VHDL_FSM_STATE_PROCESS_FOOTER,
+  VHDL_WHEN,
+  VHDL_DEFINITION_ARROW,
+  VHDL_FSM_STATE_PROCESS_WHEN_OTHERS,
+  VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN,
+  VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT,
 } from '@constants/vhdl';
 import Port, {PortTypeEnum} from '@models/port';
 import FSMState from '@models/state';
 import FSMTransition from '@models/transition';
 
-export function getNSpaces(ammount: number) {
-  return ' '.repeat(ammount);
+function getNSpaces(amount: number) {
+  return ' '.repeat(amount);
 }
 
-export function getNTabs(ammount: number) {
-  return VHDL_TAB.repeat(ammount);
+function getNTabs(amount: number) {
+  return VHDL_TAB.repeat(amount);
 }
 
-export function getVhdlCommentLine(comment: string) {
+function getVhdlCommentLine(comment: string) {
   return getNTabs(1) + VHDL_LINE_COMMENT + comment;
 }
 
-export function getVhdlCodeLine(
+function getVhdlCodeLine(
   content: string,
   tabDepth = 0,
   hasSemicolon = true,
@@ -58,7 +66,7 @@ export function getVhdlCodeLine(
   );
 }
 
-export function generateVhdlImports() {
+function generateVhdlImports() {
   return (
     getVhdlCodeLine('Resulting VHDL code from HDL Flow', 0, true, true) +
     getVhdlCodeLine('library IEEE') +
@@ -66,11 +74,11 @@ export function generateVhdlImports() {
   );
 }
 
-export function getEntityPortCategory(portCategory: PortCategory) {
+function getEntityPortCategory(portCategory: PortCategory) {
   return portCategory === 'Output' ? 'out' : 'in';
 }
 
-export function getEntityPortType(port: Port) {
+function getEntityPortType(port: Port) {
   switch (port.type) {
     case PortTypeEnum.LogicVector:
       return (
@@ -98,16 +106,17 @@ function getEntityPortListContent(port: Port, portCategory: PortCategory) {
   );
 }
 
-export function getEntityPortList(ports: Port[], portCategory: PortCategory) {
+function getEntityPortList(ports: Port[], portCategory: PortCategory) {
   const portList = ports
     .map(port =>
       getVhdlCodeLine(getEntityPortListContent(port, portCategory), 2),
     )
     .join('');
+
   return portList;
 }
 
-export function getWrappedVhdlFsmEntityContent(content: string) {
+function getWrappedVhdlFsmEntityContent(content: string) {
   return (
     getVhdlCodeLine(VHDL_FSM_ENTITY_HEADER, 0, false) +
     getVhdlCodeLine(VHDL_FSM_ENTITY_PORT_HEADER, 1, false) +
@@ -117,7 +126,7 @@ export function getWrappedVhdlFsmEntityContent(content: string) {
   );
 }
 
-export function generateVhdlFsmEntity(
+function generateVhdlFsmEntity(
   inputList: Port[],
   internalsList: Port[],
   outputList: Port[],
@@ -137,9 +146,12 @@ function getVhdlStateName(stateNumber: number) {
   return VHDL_STATE_PREFIX + stateNumber;
 }
 
+function getStatesFromNodes(nodes: Node<FSMState>[]) {
+  return nodes.filter(node => node.id !== START_NODE_ID);
+}
+
 function getVhdlArchitectureStateList(nodes: Node<FSMState>[]) {
-  return nodes
-    .filter(node => node.id !== START_NODE_ID)
+  return getStatesFromNodes(nodes)
     .sort(node => node.data.stateNumber)
     .map(node => getVhdlStateName(node.data.stateNumber))
     .join(', ');
@@ -147,6 +159,7 @@ function getVhdlArchitectureStateList(nodes: Node<FSMState>[]) {
 
 function getVhdlFsmArchitectureDefinitions(nodes: Node<FSMState>[]) {
   const stateList = getVhdlArchitectureStateList(nodes);
+
   return (
     getVhdlCodeLine(
       VHDL_FSM_ARCHITECTURE_TYPE + stateList + VHDL_FSM_END_SECTION,
@@ -159,6 +172,18 @@ function getStateByNodeId(nodes: Node<FSMState>[], nodeId: string) {
   return nodes.find(node => node.id === nodeId);
 }
 
+function getVhdlFsmFirstStateName(
+  nodes: Node<FSMState>[],
+  edges: Edge<FSMTransition>[],
+) {
+  const firstTransition = edges.find(edge => edge.source === START_NODE_ID);
+  return firstTransition
+    ? getVhdlStateName(
+        getStateByNodeId(nodes, firstTransition.target)?.data.stateNumber ?? 0,
+      )
+    : VHDL_LINE_COMMENT + 'Error! Start node is not connected to anything';
+}
+
 function getVhdlFsmArchitectureClockProcess(
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
@@ -166,12 +191,8 @@ function getVhdlFsmArchitectureClockProcess(
   const clockProcessPortList = [DEFAULT_CLK_PORT, DEFAULT_RESET_PORT]
     .map(port => port.id_name)
     .join(', ');
-  const firstTransition = edges.find(edge => edge.source === START_NODE_ID);
-  const firstState = firstTransition
-    ? getVhdlStateName(
-        getStateByNodeId(nodes, firstTransition.target)?.data.stateNumber ?? 0,
-      )
-    : VHDL_LINE_COMMENT + 'Error! Start node is not connected to anything';
+  const firstState = getVhdlFsmFirstStateName(nodes, edges);
+
   return (
     getVhdlCodeLine(
       VHDL_BEGIN_PROCESS + clockProcessPortList + VHDL_FSM_END_SECTION,
@@ -180,26 +201,113 @@ function getVhdlFsmArchitectureClockProcess(
       false,
     ) +
     getVhdlCodeLine(VHDL_BEGIN, 1, false) +
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_LINE_1, 2, false) +
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_LINE_2 + firstState, 3) +
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_LINE_3, 2, false) +
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_LINE_4, 3) +
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_LINE_5, 2, false) +
+    getVhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_1, 2, false) +
+    getVhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_2 + firstState, 3) +
+    getVhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_3, 2, false) +
+    getVhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_4, 3) +
+    getVhdlCodeLine(VHDL_END_IF, 2, false) +
+    getVhdlCodeLine(VHDL_END_PROCESS, 1)
+  );
+}
+
+function getVhdlFsmArchitectureStateAssignments() {
+  return '';
+}
+
+function getVhdlFsmArchitectureStateTransition() {
+  return '';
+}
+
+function getVhdlFsmArchitectureStateCase(state: Node<FSMState>) {
+  const definitions = getVhdlFsmArchitectureStateAssignments();
+  const transition = getVhdlFsmArchitectureStateTransition();
+  const whenLine =
+    VHDL_WHEN +
+    getVhdlStateName(state.data.stateNumber) +
+    VHDL_DEFINITION_ARROW;
+
+  return getVhdlCodeLine(whenLine, 3, false) + definitions + '\n' + transition;
+}
+
+function getVhdlFsmArchitectureStateProcessCases(
+  nodes: Node<FSMState>[],
+  edges: Edge<FSMTransition>[],
+) {
+  const firstState = getVhdlFsmFirstStateName(nodes, edges);
+  const states = getStatesFromNodes(nodes);
+
+  return (
+    states.map(state => getVhdlFsmArchitectureStateCase(state)).join('\n') +
+    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_WHEN_OTHERS, 3, false) +
+    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT, 4, false, true) +
+    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + firstState, 4)
+  );
+}
+
+function getVhdlFsmArchitectureStateProcessCaseSection(
+  nodes: Node<FSMState>[],
+  edges: Edge<FSMTransition>[],
+) {
+  const cases = getVhdlFsmArchitectureStateProcessCases(nodes, edges);
+
+  return (
+    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_HEADER, 2, false) +
+    cases +
+    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_FOOTER, 2)
+  );
+}
+
+function getVhdlFsmArchitectureStateProcess(
+  inputList: Port[],
+  internalsList: Port[],
+  nodes: Node<FSMState>[],
+  edges: Edge<FSMTransition>[],
+) {
+  const stateProcessPortList = [
+    ...inputList.map(input => input.id_name),
+    ...internalsList.map(internal => internal.id_name),
+  ].join(', ');
+  const caseSection = getVhdlFsmArchitectureStateProcessCaseSection(
+    nodes,
+    edges,
+  );
+
+  return (
+    getVhdlCodeLine(
+      VHDL_BEGIN_PROCESS + stateProcessPortList + VHDL_FSM_END_SECTION,
+      1,
+      false,
+      false,
+    ) +
+    getVhdlCodeLine(VHDL_BEGIN, 1, false) +
+    caseSection +
     getVhdlCodeLine(VHDL_END_PROCESS, 1)
   );
 }
 
 function generateVhdlFsmArchitecture(
+  inputList: Port[],
+  internalsList: Port[],
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
 ) {
   const definitions = getVhdlFsmArchitectureDefinitions(nodes);
   const clockProcess = getVhdlFsmArchitectureClockProcess(nodes, edges);
+  const stateProcess = getVhdlFsmArchitectureStateProcess(
+    inputList,
+    internalsList,
+    nodes,
+    edges,
+  );
+
   return (
     getVhdlCodeLine(VHDL_FSM_ARCHITECTURE_HEADER, 0, false) +
     definitions +
     getVhdlCodeLine(VHDL_BEGIN, 0, false) +
-    clockProcess
+    clockProcess +
+    '\n' +
+    stateProcess +
+    getVhdlCodeLine(VHDL_FSM_ARCHITECTURE_FOOTER, 0)
   );
 }
 
@@ -212,6 +320,12 @@ export function generateVhdlCode(
 ) {
   const imports = generateVhdlImports();
   const entity = generateVhdlFsmEntity(inputList, internalsList, outputList);
-  const architecture = generateVhdlFsmArchitecture(nodes, edges);
+  const architecture = generateVhdlFsmArchitecture(
+    inputList,
+    internalsList,
+    nodes,
+    edges,
+  );
+
   return imports + '\n' + entity + '\n' + architecture;
 }
