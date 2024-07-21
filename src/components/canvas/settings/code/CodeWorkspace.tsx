@@ -1,3 +1,4 @@
+import {useMemo} from 'react';
 import {CopyBlock, dracula} from 'react-code-blocks';
 import {Edge, Node} from 'reactflow';
 
@@ -26,12 +27,10 @@ function CodeWorkspace() {
     nodeState: {nodes},
     edgeState: {edges},
   } = useGlobal();
-  const resultCode = generateResultingCode(
-    inputList,
-    internalsList,
-    outputList,
-    nodes,
-    edges,
+  const resultCode = useMemo(
+    () =>
+      generateResultingCode(inputList, internalsList, outputList, nodes, edges),
+    [edges, inputList, internalsList, nodes, outputList],
   );
   return (
     <RoundedScrollContainer>

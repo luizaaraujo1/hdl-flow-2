@@ -8,6 +8,7 @@ export const VHDL_END_IF = 'end if';
 export const VHDL_STATE_PREFIX = 'STATE_';
 export const VHDL_WHEN = 'when ';
 export const VHDL_DEFINITION_ARROW = '=>';
+export const VHDL_ASSIGNMENT_ARROW = ' <= ';
 
 export const VHDL_FSM_ENTITY_HEADER = 'entity FSM is';
 export const VHDL_FSM_ENTITY_PORT_HEADER = 'port (';

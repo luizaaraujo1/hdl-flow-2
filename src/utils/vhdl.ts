@@ -34,9 +34,10 @@ import {
   VHDL_FSM_STATE_PROCESS_WHEN_OTHERS,
   VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN,
   VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT,
+  VHDL_ASSIGNMENT_ARROW,
 } from '@constants/vhdl';
 import Port, {PortTypeEnum} from '@models/port';
-import FSMState from '@models/state';
+import FSMState, {LogicType, PortLogic} from '@models/state';
 import FSMTransition from '@models/transition';
 
 function getNSpaces(amount: number) {
@@ -210,8 +211,57 @@ function getVhdlFsmArchitectureClockProcess(
   );
 }
 
-function getVhdlFsmArchitectureStateAssignments() {
-  return '';
+function getPortDefaultValue(port: Port) {
+  switch (port.type) {
+    case PortTypeEnum.Logic:
+      return port.defaultValue ? "'1'" : "'0'";
+    case PortTypeEnum.Integer:
+      return '"' + Number(port.defaultValue).toString(2) + '"';
+    case PortTypeEnum.LogicVector:
+      return '"' + String(port.defaultValue) + '"';
+  }
+}
+
+function getVhdlFsmArchitecturePortValue(portLogic: PortLogic) {
+  switch (portLogic.type) {
+    case LogicType.Equality:
+    case LogicType.Custom:
+      return portLogic.customValue;
+    case LogicType.LogicalCustom: // Not supported yet
+    case LogicType.Inequality: // Not supported yet
+    case LogicType.LogicalNot: // Not supported yet
+    case LogicType.LogicalOr: // Not supported yet
+    case LogicType.LogicalAnd: // Not supported yet
+    case LogicType.IntegerSubtract: // Not supported yet
+    case LogicType.IntegerSum: // Not supported yet
+    case LogicType.Default:
+    default:
+      return getPortDefaultValue(portLogic.port);
+  }
+}
+
+function getVhdlFsmArchitecturePortLogicAssignment(portLogic: PortLogic) {
+  const assignment =
+    portLogic.port.id_name +
+    VHDL_ASSIGNMENT_ARROW +
+    getVhdlFsmArchitecturePortValue(portLogic);
+  return getVhdlCodeLine(assignment, 4);
+}
+
+function getVhdlFsmArchitectureStateAssignments(state: Node<FSMState>) {
+  const {internals, outputs} = state.data.portLogic;
+  return (
+    Object.keys(internals)
+      .map(internalKey =>
+        getVhdlFsmArchitecturePortLogicAssignment(internals[internalKey]),
+      )
+      .join('') +
+    Object.keys(outputs)
+      .map(outputKey =>
+        getVhdlFsmArchitecturePortLogicAssignment(outputs[outputKey]),
+      )
+      .join('')
+  );
 }
 
 function getVhdlFsmArchitectureStateTransition() {
@@ -219,7 +269,7 @@ function getVhdlFsmArchitectureStateTransition() {
 }
 
 function getVhdlFsmArchitectureStateCase(state: Node<FSMState>) {
-  const definitions = getVhdlFsmArchitectureStateAssignments();
+  const definitions = getVhdlFsmArchitectureStateAssignments(state);
   const transition = getVhdlFsmArchitectureStateTransition();
   const whenLine =
     VHDL_WHEN +
