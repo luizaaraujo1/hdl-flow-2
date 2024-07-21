@@ -1,4 +1,4 @@
-import {Edge, Node} from 'reactflow';
+import {Edge, getConnectedEdges, Node} from 'reactflow';
 
 import {DEFAULT_INPUT_MAX_LENGTH} from '@constants/input';
 import {START_NODE_ID} from '@constants/nodes.constants';
@@ -35,10 +35,18 @@ import {
   VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN,
   VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT,
   VHDL_ASSIGNMENT_ARROW,
+  VHDL_TAB_DEPTH,
+  VHDL_ELSE,
+  VHDL_IF,
+  VHDL_ELSIF,
+  VHDL_THEN,
+  VHDL_FSM_STATE_PROCESS_INTERNALS_COMMENT,
+  VHDL_FSM_STATE_PROCESS_OUTPUTS_COMMENT,
+  VHDL_FSM_STATE_PROCESS_DEAD_COMMENT,
 } from '@constants/vhdl';
 import Port, {PortTypeEnum} from '@models/port';
 import FSMState, {LogicType, PortLogic} from '@models/state';
-import FSMTransition from '@models/transition';
+import FSMTransition, {LogicalOperator} from '@models/transition';
 
 function getNSpaces(amount: number) {
   return ' '.repeat(amount);
@@ -49,12 +57,12 @@ function getNTabs(amount: number) {
 }
 
 function getVhdlCommentLine(comment: string) {
-  return getNTabs(1) + VHDL_LINE_COMMENT + comment;
+  return getNTabs(VHDL_TAB_DEPTH.ONE_TAB) + VHDL_LINE_COMMENT + comment;
 }
 
-function getVhdlCodeLine(
+function vhdlCodeLine(
   content: string,
-  tabDepth = 0,
+  tabDepth = VHDL_TAB_DEPTH.NO_TAB,
   hasSemicolon = true,
   commented = false,
 ) {
@@ -69,9 +77,14 @@ function getVhdlCodeLine(
 
 function generateVhdlImports() {
   return (
-    getVhdlCodeLine('Resulting VHDL code from HDL Flow', 0, true, true) +
-    getVhdlCodeLine('library IEEE') +
-    getVhdlCodeLine('use IEEE.std_logic_1164.all')
+    vhdlCodeLine(
+      'Resulting VHDL code from HDL Flow',
+      VHDL_TAB_DEPTH.NO_TAB,
+      true,
+      true,
+    ) +
+    vhdlCodeLine('library IEEE') +
+    vhdlCodeLine('use IEEE.std_logic_1164.all')
   );
 }
 
@@ -110,7 +123,10 @@ function getEntityPortListContent(port: Port, portCategory: PortCategory) {
 function getEntityPortList(ports: Port[], portCategory: PortCategory) {
   const portList = ports
     .map(port =>
-      getVhdlCodeLine(getEntityPortListContent(port, portCategory), 2),
+      vhdlCodeLine(
+        getEntityPortListContent(port, portCategory),
+        VHDL_TAB_DEPTH.TWO_TABS,
+      ),
     )
     .join('');
 
@@ -119,11 +135,11 @@ function getEntityPortList(ports: Port[], portCategory: PortCategory) {
 
 function getWrappedVhdlFsmEntityContent(content: string) {
   return (
-    getVhdlCodeLine(VHDL_FSM_ENTITY_HEADER, 0, false) +
-    getVhdlCodeLine(VHDL_FSM_ENTITY_PORT_HEADER, 1, false) +
+    vhdlCodeLine(VHDL_FSM_ENTITY_HEADER, VHDL_TAB_DEPTH.NO_TAB, false) +
+    vhdlCodeLine(VHDL_FSM_ENTITY_PORT_HEADER, VHDL_TAB_DEPTH.ONE_TAB, false) +
     content +
-    getVhdlCodeLine(VHDL_FSM_END_SECTION, 1) +
-    getVhdlCodeLine(VHDL_FSM_ENTITY_FOOTER)
+    vhdlCodeLine(VHDL_FSM_END_SECTION, VHDL_TAB_DEPTH.ONE_TAB) +
+    vhdlCodeLine(VHDL_FSM_ENTITY_FOOTER)
   );
 }
 
@@ -143,8 +159,8 @@ function generateVhdlFsmEntity(
   return getWrappedVhdlFsmEntityContent(defaults + content);
 }
 
-function getVhdlStateName(stateNumber: number) {
-  return VHDL_STATE_PREFIX + stateNumber;
+function getVhdlStateName(state: Node<FSMState>) {
+  return VHDL_STATE_PREFIX + state.data.stateNumber;
 }
 
 function getStatesFromNodes(nodes: Node<FSMState>[]) {
@@ -154,7 +170,7 @@ function getStatesFromNodes(nodes: Node<FSMState>[]) {
 function getVhdlArchitectureStateList(nodes: Node<FSMState>[]) {
   return getStatesFromNodes(nodes)
     .sort(node => node.data.stateNumber)
-    .map(node => getVhdlStateName(node.data.stateNumber))
+    .map(node => getVhdlStateName(node))
     .join(', ');
 }
 
@@ -162,10 +178,10 @@ function getVhdlFsmArchitectureDefinitions(nodes: Node<FSMState>[]) {
   const stateList = getVhdlArchitectureStateList(nodes);
 
   return (
-    getVhdlCodeLine(
+    vhdlCodeLine(
       VHDL_FSM_ARCHITECTURE_TYPE + stateList + VHDL_FSM_END_SECTION,
-      1,
-    ) + getVhdlCodeLine(VHDL_FSM_ARCHITECTURE_SIGNALS, 1)
+      VHDL_TAB_DEPTH.ONE_TAB,
+    ) + vhdlCodeLine(VHDL_FSM_ARCHITECTURE_SIGNALS, VHDL_TAB_DEPTH.ONE_TAB)
   );
 }
 
@@ -178,11 +194,13 @@ function getVhdlFsmFirstStateName(
   edges: Edge<FSMTransition>[],
 ) {
   const firstTransition = edges.find(edge => edge.source === START_NODE_ID);
-  return firstTransition
-    ? getVhdlStateName(
-        getStateByNodeId(nodes, firstTransition.target)?.data.stateNumber ?? 0,
-      )
-    : VHDL_LINE_COMMENT + 'Error! Start node is not connected to anything';
+  if (firstTransition) {
+    const state = getStateByNodeId(nodes, firstTransition.target);
+    return state
+      ? getVhdlStateName(state)
+      : VHDL_LINE_COMMENT + 'Error! Start node connection is invalid';
+  }
+  return VHDL_LINE_COMMENT + 'Error! Start node is not connected to anything';
 }
 
 function getVhdlFsmArchitectureClockProcess(
@@ -195,19 +213,30 @@ function getVhdlFsmArchitectureClockProcess(
   const firstState = getVhdlFsmFirstStateName(nodes, edges);
 
   return (
-    getVhdlCodeLine(
+    vhdlCodeLine(
       VHDL_BEGIN_PROCESS + clockProcessPortList + VHDL_FSM_END_SECTION,
-      1,
+      VHDL_TAB_DEPTH.ONE_TAB,
       false,
       false,
     ) +
-    getVhdlCodeLine(VHDL_BEGIN, 1, false) +
-    getVhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_1, 2, false) +
-    getVhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_2 + firstState, 3) +
-    getVhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_3, 2, false) +
-    getVhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_4, 3) +
-    getVhdlCodeLine(VHDL_END_IF, 2, false) +
-    getVhdlCodeLine(VHDL_END_PROCESS, 1)
+    vhdlCodeLine(VHDL_BEGIN, VHDL_TAB_DEPTH.ONE_TAB, false) +
+    vhdlCodeLine(
+      VHDL_FSM_CLOCK_PROCESS_LINE_1,
+      VHDL_TAB_DEPTH.TWO_TABS,
+      false,
+    ) +
+    vhdlCodeLine(
+      VHDL_FSM_CLOCK_PROCESS_LINE_2 + firstState,
+      VHDL_TAB_DEPTH.THREE_TABS,
+    ) +
+    vhdlCodeLine(
+      VHDL_FSM_CLOCK_PROCESS_LINE_3,
+      VHDL_TAB_DEPTH.TWO_TABS,
+      false,
+    ) +
+    vhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_4, VHDL_TAB_DEPTH.THREE_TABS) +
+    vhdlCodeLine(VHDL_END_IF, VHDL_TAB_DEPTH.TWO_TABS, false) +
+    vhdlCodeLine(VHDL_END_PROCESS, VHDL_TAB_DEPTH.ONE_TAB)
   );
 }
 
@@ -225,10 +254,10 @@ function getPortDefaultValue(port: Port) {
 function getVhdlFsmArchitecturePortValue(portLogic: PortLogic) {
   switch (portLogic.type) {
     case LogicType.Equality:
+    case LogicType.Inequality:
     case LogicType.Custom:
       return portLogic.customValue;
     case LogicType.LogicalCustom: // Not supported yet
-    case LogicType.Inequality: // Not supported yet
     case LogicType.LogicalNot: // Not supported yet
     case LogicType.LogicalOr: // Not supported yet
     case LogicType.LogicalAnd: // Not supported yet
@@ -245,38 +274,151 @@ function getVhdlFsmArchitecturePortLogicAssignment(portLogic: PortLogic) {
     portLogic.port.id_name +
     VHDL_ASSIGNMENT_ARROW +
     getVhdlFsmArchitecturePortValue(portLogic);
-  return getVhdlCodeLine(assignment, 4);
+  return vhdlCodeLine(assignment, VHDL_TAB_DEPTH.FOUR_TABS);
+}
+
+function getVhdlFsmArchitectureStateAssignmentLines(portLogic: {
+  [key: string]: PortLogic;
+}) {
+  const logicKeys = Object.keys(portLogic);
+  if (logicKeys.length === 0) return '';
+  return logicKeys
+    .map(key => getVhdlFsmArchitecturePortLogicAssignment(portLogic[key]))
+    .join('');
 }
 
 function getVhdlFsmArchitectureStateAssignments(state: Node<FSMState>) {
   const {internals, outputs} = state.data.portLogic;
+  let internalLines = getVhdlFsmArchitectureStateAssignmentLines(internals);
+  let outputLines = getVhdlFsmArchitectureStateAssignmentLines(outputs);
+  if (internalLines === '')
+    internalLines = vhdlCodeLine(
+      VHDL_FSM_STATE_PROCESS_INTERNALS_COMMENT,
+      VHDL_TAB_DEPTH.FOUR_TABS,
+      false,
+      true,
+    );
+  if (outputLines === '')
+    outputLines = vhdlCodeLine(
+      VHDL_FSM_STATE_PROCESS_OUTPUTS_COMMENT,
+      VHDL_TAB_DEPTH.FOUR_TABS,
+      false,
+      true,
+    );
+  return internalLines + outputLines;
+}
+
+function getVhdlFsmArchitectureStateTransitionElseCase(state: Node<FSMState>) {
   return (
-    Object.keys(internals)
-      .map(internalKey =>
-        getVhdlFsmArchitecturePortLogicAssignment(internals[internalKey]),
-      )
-      .join('') +
-    Object.keys(outputs)
-      .map(outputKey =>
-        getVhdlFsmArchitecturePortLogicAssignment(outputs[outputKey]),
-      )
-      .join('')
+    vhdlCodeLine(VHDL_ELSE, VHDL_TAB_DEPTH.FOUR_TABS, false) +
+    vhdlCodeLine(
+      VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + getVhdlStateName(state),
+      VHDL_TAB_DEPTH.FIVE_TABS,
+    ) +
+    vhdlCodeLine(VHDL_END_IF, VHDL_TAB_DEPTH.FOUR_TABS)
   );
 }
 
-function getVhdlFsmArchitectureStateTransition() {
+function getVhdlAndOperationAndCondition(edge: Edge<FSMTransition>) {
+  if (edge.data) {
+    const {portLogic} = edge.data;
+    const {inputs, internals} = portLogic;
+    const inputKeys = Object.keys(inputs);
+    const internalKeys = Object.keys(internals);
+
+    return (
+      inputKeys.map(inputKey => inputs[inputKey].customValue).join('') +
+      internalKeys
+        .map(internalKey => internals[internalKey].customValue)
+        .join('')
+    );
+  }
   return '';
 }
 
-function getVhdlFsmArchitectureStateCase(state: Node<FSMState>) {
-  const definitions = getVhdlFsmArchitectureStateAssignments(state);
-  const transition = getVhdlFsmArchitectureStateTransition();
-  const whenLine =
-    VHDL_WHEN +
-    getVhdlStateName(state.data.stateNumber) +
-    VHDL_DEFINITION_ARROW;
+function getVhdlAndOperationOrConditionLines(
+  edge: Edge<FSMTransition>,
+  isFirst: boolean,
+) {
+  console.log('🚀 ~ isFirst:', isFirst);
+  if (edge.data) {
+    return '';
+  }
+  return '';
+}
 
-  return getVhdlCodeLine(whenLine, 3, false) + definitions + '\n' + transition;
+function getVhdlFsmArchitectureStateTransitionConditionLines(
+  state: Node<FSMState>,
+  currentEdges: Edge<FSMTransition>[],
+) {
+  const elseCase = getVhdlFsmArchitectureStateTransitionElseCase(state);
+
+  if (currentEdges.length === 0) {
+    return (
+      vhdlCodeLine(
+        VHDL_FSM_STATE_PROCESS_DEAD_COMMENT,
+        VHDL_TAB_DEPTH.FOUR_TABS,
+        false,
+        true,
+      ) + elseCase
+    );
+  } else {
+    return currentEdges
+      .map((edge, index) => {
+        const isFirst = index === 0;
+        const lineText = isFirst ? VHDL_IF : VHDL_ELSIF;
+        if (edge.data) {
+          if (edge.data.operator === LogicalOperator.And) {
+            const condition = getVhdlAndOperationAndCondition(edge);
+            return vhdlCodeLine(
+              lineText + condition + VHDL_THEN,
+              VHDL_TAB_DEPTH.FOUR_TABS,
+              false,
+            );
+          } else {
+            return getVhdlAndOperationOrConditionLines(edge, isFirst);
+          }
+        }
+      })
+      .join('');
+  }
+}
+
+function getVhdlFsmArchitectureStateTransition(
+  state: Node<FSMState>,
+  edges: Edge<FSMTransition>[],
+) {
+  const currentEdges = getConnectedEdges([state], edges).filter(
+    edge => edge.source === state.id,
+  );
+
+  if (currentEdges.length === 0) {
+    return vhdlCodeLine(
+      VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + getVhdlStateName(state),
+      VHDL_TAB_DEPTH.FOUR_TABS,
+    );
+  } else {
+    return getVhdlFsmArchitectureStateTransitionConditionLines(
+      state,
+      currentEdges,
+    );
+  }
+}
+
+function getVhdlFsmArchitectureStateCase(
+  state: Node<FSMState>,
+  edges: Edge<FSMTransition>[],
+) {
+  const definitions = getVhdlFsmArchitectureStateAssignments(state);
+  const transition = getVhdlFsmArchitectureStateTransition(state, edges);
+  const whenLine = VHDL_WHEN + getVhdlStateName(state) + VHDL_DEFINITION_ARROW;
+
+  return (
+    vhdlCodeLine(whenLine, VHDL_TAB_DEPTH.THREE_TABS, false) +
+    definitions +
+    '\n' +
+    transition
+  );
 }
 
 function getVhdlFsmArchitectureStateProcessCases(
@@ -285,12 +427,27 @@ function getVhdlFsmArchitectureStateProcessCases(
 ) {
   const firstState = getVhdlFsmFirstStateName(nodes, edges);
   const states = getStatesFromNodes(nodes);
+  const stateCases = states
+    .map(state => getVhdlFsmArchitectureStateCase(state, edges))
+    .join('\n');
 
   return (
-    states.map(state => getVhdlFsmArchitectureStateCase(state)).join('\n') +
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_WHEN_OTHERS, 3, false) +
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT, 4, false, true) +
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + firstState, 4)
+    stateCases +
+    vhdlCodeLine(
+      VHDL_FSM_STATE_PROCESS_WHEN_OTHERS,
+      VHDL_TAB_DEPTH.THREE_TABS,
+      false,
+    ) +
+    vhdlCodeLine(
+      VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT,
+      VHDL_TAB_DEPTH.FOUR_TABS,
+      false,
+      true,
+    ) +
+    vhdlCodeLine(
+      VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + firstState,
+      VHDL_TAB_DEPTH.FOUR_TABS,
+    )
   );
 }
 
@@ -301,9 +458,13 @@ function getVhdlFsmArchitectureStateProcessCaseSection(
   const cases = getVhdlFsmArchitectureStateProcessCases(nodes, edges);
 
   return (
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_HEADER, 2, false) +
+    vhdlCodeLine(
+      VHDL_FSM_STATE_PROCESS_HEADER,
+      VHDL_TAB_DEPTH.TWO_TABS,
+      false,
+    ) +
     cases +
-    getVhdlCodeLine(VHDL_FSM_STATE_PROCESS_FOOTER, 2)
+    vhdlCodeLine(VHDL_FSM_STATE_PROCESS_FOOTER, VHDL_TAB_DEPTH.TWO_TABS)
   );
 }
 
@@ -323,15 +484,15 @@ function getVhdlFsmArchitectureStateProcess(
   );
 
   return (
-    getVhdlCodeLine(
+    vhdlCodeLine(
       VHDL_BEGIN_PROCESS + stateProcessPortList + VHDL_FSM_END_SECTION,
-      1,
+      VHDL_TAB_DEPTH.ONE_TAB,
       false,
       false,
     ) +
-    getVhdlCodeLine(VHDL_BEGIN, 1, false) +
+    vhdlCodeLine(VHDL_BEGIN, VHDL_TAB_DEPTH.ONE_TAB, false) +
     caseSection +
-    getVhdlCodeLine(VHDL_END_PROCESS, 1)
+    vhdlCodeLine(VHDL_END_PROCESS, 1)
   );
 }
 
@@ -351,13 +512,13 @@ function generateVhdlFsmArchitecture(
   );
 
   return (
-    getVhdlCodeLine(VHDL_FSM_ARCHITECTURE_HEADER, 0, false) +
+    vhdlCodeLine(VHDL_FSM_ARCHITECTURE_HEADER, VHDL_TAB_DEPTH.NO_TAB, false) +
     definitions +
-    getVhdlCodeLine(VHDL_BEGIN, 0, false) +
+    vhdlCodeLine(VHDL_BEGIN, VHDL_TAB_DEPTH.NO_TAB, false) +
     clockProcess +
     '\n' +
     stateProcess +
-    getVhdlCodeLine(VHDL_FSM_ARCHITECTURE_FOOTER, 0)
+    vhdlCodeLine(VHDL_FSM_ARCHITECTURE_FOOTER, VHDL_TAB_DEPTH.NO_TAB)
   );
 }
 

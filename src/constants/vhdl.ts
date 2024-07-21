@@ -4,11 +4,15 @@ export const VHDL_FSM_END_SECTION = ')';
 export const VHDL_BEGIN = 'begin';
 export const VHDL_BEGIN_PROCESS = 'process (';
 export const VHDL_END_PROCESS = 'end process';
+export const VHDL_IF = 'if ';
+export const VHDL_ELSIF = 'elsif ';
 export const VHDL_END_IF = 'end if';
+export const VHDL_THEN = ' then';
 export const VHDL_STATE_PREFIX = 'STATE_';
 export const VHDL_WHEN = 'when ';
 export const VHDL_DEFINITION_ARROW = '=>';
 export const VHDL_ASSIGNMENT_ARROW = ' <= ';
+export const VHDL_ELSE = 'else';
 
 export const VHDL_FSM_ENTITY_HEADER = 'entity FSM is';
 export const VHDL_FSM_ENTITY_PORT_HEADER = 'port (';
@@ -32,3 +36,18 @@ export const VHDL_FSM_STATE_PROCESS_WHEN_OTHERS = 'when others =>';
 export const VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN = 'next_state <= ';
 export const VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT =
   'Default state defined as first state';
+export const VHDL_FSM_STATE_PROCESS_INTERNALS_COMMENT =
+  'Note: Declare inputs on the Port Editor';
+export const VHDL_FSM_STATE_PROCESS_OUTPUTS_COMMENT =
+  'Note: Declare outputs on the Port Editor';
+export const VHDL_FSM_STATE_PROCESS_DEAD_COMMENT =
+  'Warning! This is a dead state';
+
+export enum VHDL_TAB_DEPTH {
+  NO_TAB,
+  ONE_TAB,
+  TWO_TABS,
+  THREE_TABS,
+  FOUR_TABS,
+  FIVE_TABS,
+}
