@@ -7,7 +7,7 @@ import Port from '@models/port';
 import FSMState from '@models/state';
 import FSMTransition from '@models/transition';
 import RoundedScrollContainer from '@shared/RoundedScrollContainer';
-import {generateVhdlCode} from '@utils/vhdl';
+import generateVhdlCode from '@utils/vhdl';
 
 function generateResultingCode(
   inputList: Port[],

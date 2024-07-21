@@ -1,19 +1,10 @@
 import {Edge, getConnectedEdges, Node} from 'reactflow';
 
-import {DEFAULT_INPUT_MAX_LENGTH} from '@constants/input';
 import {START_NODE_ID} from '@constants/nodes.constants';
+import {DEFAULT_CLK_PORT, DEFAULT_RESET_PORT} from '@constants/ports.constants';
 import {
-  DEFAULT_CLK_PORT,
-  DEFAULT_RESET_PORT,
-  PortCategory,
-} from '@constants/ports.constants';
-import {
-  VHDL_FSM_ENTITY_FOOTER,
-  VHDL_FSM_ENTITY_HEADER,
   VHDL_FSM_END_SECTION,
-  VHDL_FSM_ENTITY_PORT_HEADER,
-  VHDL_LINE_COMMENT,
-  VHDL_TAB,
+  VHDL_INLINE_COMMENT,
   VHDL_FSM_ARCHITECTURE_HEADER,
   VHDL_FSM_ARCHITECTURE_TYPE,
   VHDL_FSM_ARCHITECTURE_SIGNALS,
@@ -49,119 +40,39 @@ import {
   VHDL_OR,
   VHDL_FSM_STATE_PROCESS_TRANSITION_ERROR,
 } from '@constants/vhdl';
-import Port, {PortTypeEnum} from '@models/port';
-import FSMState, {LogicType, PortLogic} from '@models/state';
-import FSMTransition, {LogicalOperator} from '@models/transition';
+import Port from '@models/port';
+import {PortTypeEnum} from '@models/port';
+import FSMState from '@models/state';
+import {LogicType, PortLogic} from '@models/state';
+import FSMTransition from '@models/transition';
+import {LogicalOperator} from '@models/transition';
 
-function getNSpaces(amount: number) {
-  return ' '.repeat(amount);
-}
+import {vhdlCodeLine} from './utils';
 
-function getNTabs(amount: number) {
-  return VHDL_TAB.repeat(amount);
-}
-
-function getVhdlCommentLine(comment: string) {
-  return getNTabs(VHDL_TAB_DEPTH.ONE_TAB) + VHDL_LINE_COMMENT + comment;
-}
-
-function vhdlCodeLine(
-  content: string,
-  tabDepth = VHDL_TAB_DEPTH.NO_TAB,
-  hasSemicolon = true,
-  commented = false,
-) {
-  return (
-    getNTabs(tabDepth) +
-    (commented ? VHDL_LINE_COMMENT : '') +
-    content +
-    (hasSemicolon ? ';' : '') +
-    '\n'
-  );
-}
-
-function generateVhdlImports() {
-  return (
-    vhdlCodeLine(
-      'Resulting VHDL code from HDL Flow',
-      VHDL_TAB_DEPTH.NO_TAB,
-      true,
-      true,
-    ) +
-    vhdlCodeLine('library IEEE') +
-    vhdlCodeLine('use IEEE.std_logic_1164.all')
-  );
-}
-
-function getEntityPortCategory(portCategory: PortCategory) {
-  return portCategory === 'Output' ? 'out' : 'in';
-}
-
-function getEntityPortType(port: Port) {
-  switch (port.type) {
-    case PortTypeEnum.LogicVector:
-      return (
-        'std_logic_vector(' +
-        String(String(port.defaultValue).length - 1) +
-        ' downto 0)'
-      );
-    case PortTypeEnum.Logic:
-      return 'std_logic';
-    case PortTypeEnum.Integer:
-    default:
-      return 'std_logic_vector(8 downto 0)';
-  }
-}
-
-function getEntityPortListContent(port: Port, portCategory: PortCategory) {
-  return (
-    port.id_name +
-    getNSpaces(DEFAULT_INPUT_MAX_LENGTH - port.id_name.length) +
-    ': ' +
-    getEntityPortCategory(portCategory) +
-    ' ' +
-    getEntityPortType(port) +
-    (port.description.length > 0 ? getVhdlCommentLine(port.description) : '')
-  );
-}
-
-function getEntityPortList(ports: Port[], portCategory: PortCategory) {
-  const portList = ports
-    .map(port =>
-      vhdlCodeLine(
-        getEntityPortListContent(port, portCategory),
-        VHDL_TAB_DEPTH.TWO_TABS,
-      ),
-    )
-    .join('');
-
-  return portList;
-}
-
-function getWrappedVhdlFsmEntityContent(content: string) {
-  return (
-    vhdlCodeLine(VHDL_FSM_ENTITY_HEADER, VHDL_TAB_DEPTH.NO_TAB, false) +
-    vhdlCodeLine(VHDL_FSM_ENTITY_PORT_HEADER, VHDL_TAB_DEPTH.ONE_TAB, false) +
-    content +
-    vhdlCodeLine(VHDL_FSM_END_SECTION, VHDL_TAB_DEPTH.ONE_TAB) +
-    vhdlCodeLine(VHDL_FSM_ENTITY_FOOTER)
-  );
-}
-
-function generateVhdlFsmEntity(
+export function generateVhdlFsmArchitecture(
   inputList: Port[],
   internalsList: Port[],
-  outputList: Port[],
+  nodes: Node<FSMState>[],
+  edges: Edge<FSMTransition>[],
 ) {
-  const defaults = getEntityPortList(
-    [DEFAULT_CLK_PORT, DEFAULT_RESET_PORT],
-    'Input',
+  const definitions = getVhdlFsmArchitectureDefinitions(nodes);
+  const clockProcess = getVhdlFsmArchitectureClockProcess(nodes, edges);
+  const stateProcess = getVhdlFsmArchitectureStateProcess(
+    inputList,
+    internalsList,
+    nodes,
+    edges,
   );
-  const inputs = getEntityPortList(inputList, 'Input');
-  const internals = getEntityPortList(internalsList, 'Internal');
-  const outputs = getEntityPortList(outputList, 'Output');
-  const content = inputs + internals + outputs;
-  return getWrappedVhdlFsmEntityContent(defaults + content);
+
+  return (
+    vhdlCodeLine(VHDL_FSM_ARCHITECTURE_HEADER, VHDL_TAB_DEPTH.NO_TAB, false) +
+    definitions +
+    vhdlCodeLine(VHDL_BEGIN, VHDL_TAB_DEPTH.NO_TAB, false) +
+    clockProcess +
+    '\n' +
+    stateProcess +
+    vhdlCodeLine(VHDL_FSM_ARCHITECTURE_FOOTER, VHDL_TAB_DEPTH.NO_TAB)
+  );
 }
 
 function getVhdlStateName(state: Node<FSMState>) {
@@ -203,9 +114,9 @@ function getVhdlFsmFirstStateName(
     const state = getStateByNodeId(nodes, firstTransition.target);
     return state
       ? getVhdlStateName(state)
-      : VHDL_LINE_COMMENT + 'Error! Start node connection is invalid';
+      : VHDL_INLINE_COMMENT + 'Error! Start node connection is invalid';
   }
-  return VHDL_LINE_COMMENT + 'Error! Start node is not connected to anything';
+  return VHDL_INLINE_COMMENT + 'Error! Start node is not connected to anything';
 }
 
 function getVhdlFsmArchitectureClockProcess(
@@ -563,49 +474,4 @@ function getVhdlFsmArchitectureStateProcess(
     caseSection +
     vhdlCodeLine(VHDL_END_PROCESS, 1)
   );
-}
-
-function generateVhdlFsmArchitecture(
-  inputList: Port[],
-  internalsList: Port[],
-  nodes: Node<FSMState>[],
-  edges: Edge<FSMTransition>[],
-) {
-  const definitions = getVhdlFsmArchitectureDefinitions(nodes);
-  const clockProcess = getVhdlFsmArchitectureClockProcess(nodes, edges);
-  const stateProcess = getVhdlFsmArchitectureStateProcess(
-    inputList,
-    internalsList,
-    nodes,
-    edges,
-  );
-
-  return (
-    vhdlCodeLine(VHDL_FSM_ARCHITECTURE_HEADER, VHDL_TAB_DEPTH.NO_TAB, false) +
-    definitions +
-    vhdlCodeLine(VHDL_BEGIN, VHDL_TAB_DEPTH.NO_TAB, false) +
-    clockProcess +
-    '\n' +
-    stateProcess +
-    vhdlCodeLine(VHDL_FSM_ARCHITECTURE_FOOTER, VHDL_TAB_DEPTH.NO_TAB)
-  );
-}
-
-export function generateVhdlCode(
-  inputList: Port[],
-  internalsList: Port[],
-  outputList: Port[],
-  nodes: Node<FSMState>[],
-  edges: Edge<FSMTransition>[],
-) {
-  const imports = generateVhdlImports();
-  const entity = generateVhdlFsmEntity(inputList, internalsList, outputList);
-  const architecture = generateVhdlFsmArchitecture(
-    inputList,
-    internalsList,
-    nodes,
-    edges,
-  );
-
-  return imports + '\n' + entity + '\n' + architecture;
 }
