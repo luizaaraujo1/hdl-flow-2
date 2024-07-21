@@ -13,6 +13,10 @@ export const VHDL_WHEN = 'when ';
 export const VHDL_DEFINITION_ARROW = '=>';
 export const VHDL_ASSIGNMENT_ARROW = ' <= ';
 export const VHDL_ELSE = 'else';
+export const VHDL_EQUALITY = ' = ';
+export const VHDL_INEQUALITY = ' /= ';
+export const VHDL_AND = ' and ';
+export const VHDL_OR = ' or ';
 
 export const VHDL_FSM_ENTITY_HEADER = 'entity FSM is';
 export const VHDL_FSM_ENTITY_PORT_HEADER = 'port (';
@@ -42,6 +46,8 @@ export const VHDL_FSM_STATE_PROCESS_OUTPUTS_COMMENT =
   'Note: Declare outputs on the Port Editor';
 export const VHDL_FSM_STATE_PROCESS_DEAD_COMMENT =
   'Warning! This is a dead state';
+export const VHDL_FSM_STATE_PROCESS_TRANSITION_ERROR =
+  'Error! This transition is invalid';
 
 export enum VHDL_TAB_DEPTH {
   NO_TAB,
