@@ -17,6 +17,7 @@ export default function generateVhdlCode(
   edges: Edge<FSMTransition>[],
 ) {
   const entityName = 'FSM';
+  const architectureName = 'Behavioral';
   const baseTabAmount = 0;
 
   // Generates the imports section
@@ -33,6 +34,9 @@ export default function generateVhdlCode(
 
   // Declares the FSM architecture with both clock and por processes
   const architecture = generateVhdlFsmArchitecture(
+    baseTabAmount,
+    architectureName,
+    entityName,
     inputList,
     internalsList,
     nodes,

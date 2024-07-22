@@ -10,10 +10,6 @@ import {
   VHDL_FSM_ARCHITECTURE_SIGNALS,
   VHDL_BEGIN,
   VHDL_BEGIN_PROCESS,
-  VHDL_FSM_CLOCK_PROCESS_LINE_1,
-  VHDL_FSM_CLOCK_PROCESS_LINE_2,
-  VHDL_FSM_CLOCK_PROCESS_LINE_3,
-  VHDL_FSM_CLOCK_PROCESS_LINE_4,
   VHDL_END_PROCESS,
   VHDL_STATE_PREFIX,
   VHDL_END_IF,
@@ -39,39 +35,68 @@ import {
   VHDL_AND,
   VHDL_OR,
   VHDL_FSM_STATE_PROCESS_TRANSITION_ERROR,
+  VHDL_SELECTOR_NAME,
+  VHDL_SELECTOR_NAME_2,
+  VHDL_FSM_CLOCK_PROCESS_CONDITION_1,
+  VHDL_FSM_CLOCK_PROCESS_CONDITION_2,
+  VHDL_FSM_CLOCK_PROCESS_CONTENT_1,
+  VHDL_FSM_CLOCK_PROCESS_CONTENT_2,
 } from '@constants/vhdl';
 import Port from '@models/port';
 import {PortTypeEnum} from '@models/port';
 import FSMState from '@models/state';
 import {LogicType, PortLogic} from '@models/state';
+import {ConditionElement} from '@models/transduction';
 import FSMTransition from '@models/transition';
 import {LogicalOperator} from '@models/transition';
+import {getStringWithBreakLines} from '@utils/transduction';
 
-import {vhdlCodeLine} from './utils';
+import {getVhdlConditionSection, vhdlCodeLine} from './utils';
 
-export function generateVhdlFsmArchitecture(
-  inputList: Port[],
-  internalsList: Port[],
-  nodes: Node<FSMState>[],
-  edges: Edge<FSMTransition>[],
+function getArchitectureSection(
+  tabAmount: number,
+  architectureName: string,
+  entityName: string,
+  getDefinition: (tabAmount: number) => string,
+  getContent: (tabAmount: number) => string,
 ) {
-  const definitions = getVhdlFsmArchitectureDefinitions(nodes);
-  const clockProcess = getVhdlFsmArchitectureClockProcess(nodes, edges);
-  const stateProcess = getVhdlFsmArchitectureStateProcess(
-    inputList,
-    internalsList,
-    nodes,
-    edges,
-  );
-
   return (
-    vhdlCodeLine(VHDL_FSM_ARCHITECTURE_HEADER, VHDL_TAB_DEPTH.NO_TAB, false) +
-    definitions +
-    vhdlCodeLine(VHDL_BEGIN, VHDL_TAB_DEPTH.NO_TAB, false) +
-    clockProcess +
-    '\n' +
-    stateProcess +
-    vhdlCodeLine(VHDL_FSM_ARCHITECTURE_FOOTER, VHDL_TAB_DEPTH.NO_TAB)
+    vhdlCodeLine(
+      VHDL_FSM_ARCHITECTURE_HEADER.replace(
+        VHDL_SELECTOR_NAME,
+        architectureName,
+      ).replace(VHDL_SELECTOR_NAME_2, entityName),
+      tabAmount,
+      false,
+    ) +
+    getDefinition(tabAmount + 1) +
+    vhdlCodeLine(VHDL_BEGIN, tabAmount, false) +
+    getContent(tabAmount + 1) +
+    vhdlCodeLine(
+      VHDL_FSM_ARCHITECTURE_FOOTER.replace(
+        VHDL_FSM_ARCHITECTURE_HEADER,
+        architectureName,
+      ),
+      tabAmount,
+    )
+  );
+}
+
+function getProcessSection(
+  tabAmount: number,
+  portList: string[],
+  getContent: (tabAmount: number) => string,
+) {
+  return (
+    vhdlCodeLine(
+      VHDL_BEGIN_PROCESS + portList.join(', ') + VHDL_FSM_END_SECTION,
+      tabAmount,
+      false,
+      false,
+    ) +
+    vhdlCodeLine(VHDL_BEGIN, tabAmount, false) +
+    getContent(tabAmount + 1) +
+    vhdlCodeLine(VHDL_END_PROCESS, tabAmount)
   );
 }
 
@@ -90,14 +115,17 @@ function getVhdlArchitectureStateList(nodes: Node<FSMState>[]) {
     .join(', ');
 }
 
-function getVhdlFsmArchitectureDefinitions(nodes: Node<FSMState>[]) {
+function getVhdlFsmArchitectureDefinitions(
+  tabAmount: number,
+  nodes: Node<FSMState>[],
+) {
   const stateList = getVhdlArchitectureStateList(nodes);
 
   return (
     vhdlCodeLine(
       VHDL_FSM_ARCHITECTURE_TYPE + stateList + VHDL_FSM_END_SECTION,
-      VHDL_TAB_DEPTH.ONE_TAB,
-    ) + vhdlCodeLine(VHDL_FSM_ARCHITECTURE_SIGNALS, VHDL_TAB_DEPTH.ONE_TAB)
+      tabAmount,
+    ) + vhdlCodeLine(VHDL_FSM_ARCHITECTURE_SIGNALS, tabAmount)
   );
 }
 
@@ -120,40 +148,35 @@ function getVhdlFsmFirstStateName(
 }
 
 function getVhdlFsmArchitectureClockProcess(
+  tabAmount: number,
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
 ) {
-  const clockProcessPortList = [DEFAULT_CLK_PORT, DEFAULT_RESET_PORT]
-    .map(port => port.id_name)
-    .join(', ');
+  const clockProcessPortList = [DEFAULT_CLK_PORT, DEFAULT_RESET_PORT].map(
+    port => port.id_name,
+  );
   const firstState = getVhdlFsmFirstStateName(nodes, edges);
 
-  return (
-    vhdlCodeLine(
-      VHDL_BEGIN_PROCESS + clockProcessPortList + VHDL_FSM_END_SECTION,
-      VHDL_TAB_DEPTH.ONE_TAB,
-      false,
-      false,
-    ) +
-    vhdlCodeLine(VHDL_BEGIN, VHDL_TAB_DEPTH.ONE_TAB, false) +
-    vhdlCodeLine(
-      VHDL_FSM_CLOCK_PROCESS_LINE_1,
-      VHDL_TAB_DEPTH.TWO_TABS,
-      false,
-    ) +
-    vhdlCodeLine(
-      VHDL_FSM_CLOCK_PROCESS_LINE_2 + firstState,
-      VHDL_TAB_DEPTH.THREE_TABS,
-    ) +
-    vhdlCodeLine(
-      VHDL_FSM_CLOCK_PROCESS_LINE_3,
-      VHDL_TAB_DEPTH.TWO_TABS,
-      false,
-    ) +
-    vhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_LINE_4, VHDL_TAB_DEPTH.THREE_TABS) +
-    vhdlCodeLine(VHDL_END_IF, VHDL_TAB_DEPTH.TWO_TABS, false) +
-    vhdlCodeLine(VHDL_END_PROCESS, VHDL_TAB_DEPTH.ONE_TAB)
-  );
+  function getProcessContent(contentTabs: number) {
+    const conditions: ConditionElement[] = [
+      {
+        conditionText: VHDL_FSM_CLOCK_PROCESS_CONDITION_1,
+        getConditionContent: (conditionTabs: number) =>
+          vhdlCodeLine(
+            VHDL_FSM_CLOCK_PROCESS_CONTENT_1 + firstState,
+            conditionTabs,
+          ),
+      },
+      {
+        conditionText: VHDL_FSM_CLOCK_PROCESS_CONDITION_2,
+        getConditionContent: (conditionTabs: number) =>
+          vhdlCodeLine(VHDL_FSM_CLOCK_PROCESS_CONTENT_2, conditionTabs),
+      },
+    ];
+    return getVhdlConditionSection(contentTabs, conditions);
+  }
+
+  return getProcessSection(tabAmount, clockProcessPortList, getProcessContent);
 }
 
 function getPortDefaultValue(port: Port) {
@@ -473,5 +496,43 @@ function getVhdlFsmArchitectureStateProcess(
     vhdlCodeLine(VHDL_BEGIN, VHDL_TAB_DEPTH.ONE_TAB, false) +
     caseSection +
     vhdlCodeLine(VHDL_END_PROCESS, 1)
+  );
+}
+
+export function generateVhdlFsmArchitecture(
+  tabAmount: number,
+  architectureName: string,
+  entityName: string,
+  inputList: Port[],
+  internalsList: Port[],
+  nodes: Node<FSMState>[],
+  edges: Edge<FSMTransition>[],
+) {
+  const getDefinitions = (contentTabs: number) => {
+    return getVhdlFsmArchitectureDefinitions(contentTabs, nodes);
+  };
+
+  const getContent = (contentTabs: number) => {
+    const clockProcess = getVhdlFsmArchitectureClockProcess(
+      contentTabs,
+      nodes,
+      edges,
+    );
+    const stateProcess = getVhdlFsmArchitectureStateProcess(
+      inputList,
+      internalsList,
+      nodes,
+      edges,
+    );
+
+    return getStringWithBreakLines([clockProcess, stateProcess]);
+  };
+
+  return getArchitectureSection(
+    tabAmount,
+    architectureName,
+    entityName,
+    getDefinitions,
+    getContent,
   );
 }

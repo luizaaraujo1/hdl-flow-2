@@ -7,13 +7,13 @@ export const VHDL_BEGIN_PROCESS = 'process (';
 export const VHDL_END_PROCESS = 'end process';
 export const VHDL_IF = 'if ';
 export const VHDL_ELSIF = 'elsif ';
+export const VHDL_ELSE = 'else ';
 export const VHDL_END_IF = 'end if';
 export const VHDL_THEN = ' then';
 export const VHDL_STATE_PREFIX = 'STATE_';
 export const VHDL_WHEN = 'when ';
 export const VHDL_DEFINITION_ARROW = '=>';
 export const VHDL_ASSIGNMENT_ARROW = ' <= ';
-export const VHDL_ELSE = 'else';
 export const VHDL_EQUALITY = ' = ';
 export const VHDL_INEQUALITY = ' /= ';
 export const VHDL_AND = ' and ';
@@ -23,20 +23,24 @@ export const VHDL_IN = ' in ';
 export const VHDL_COLON = ':';
 
 export const VHDL_SELECTOR_NAME = '__NAME__';
+export const VHDL_SELECTOR_NAME_2 = '__NAME2__';
+
 export const VHDL_FSM_ENTITY_HEADER = 'entity ' + VHDL_SELECTOR_NAME + ' is';
 export const VHDL_FSM_ENTITY_PORT_HEADER = 'port (';
 export const VHDL_FSM_ENTITY_FOOTER = 'end entity ' + VHDL_SELECTOR_NAME;
 
-export const VHDL_FSM_ARCHITECTURE_HEADER = 'architecture Behavioral of FSM is';
-export const VHDL_FSM_ARCHITECTURE_FOOTER = 'end architecture Behavioral';
+export const VHDL_FSM_ARCHITECTURE_HEADER =
+  'architecture ' + VHDL_SELECTOR_NAME + '  of ' + VHDL_SELECTOR_NAME_2 + ' is';
+export const VHDL_FSM_ARCHITECTURE_FOOTER =
+  'end architecture ' + VHDL_SELECTOR_NAME;
 export const VHDL_FSM_ARCHITECTURE_TYPE = 'type state_type is (';
 export const VHDL_FSM_ARCHITECTURE_SIGNALS =
   'signal current_state, next_state : state_type';
 
-export const VHDL_FSM_CLOCK_PROCESS_LINE_1 = "if reset = '1' then";
-export const VHDL_FSM_CLOCK_PROCESS_LINE_2 = 'current_state <= ';
-export const VHDL_FSM_CLOCK_PROCESS_LINE_3 = 'elsif rising_edge(clk) then';
-export const VHDL_FSM_CLOCK_PROCESS_LINE_4 = 'current_state <= next_state';
+export const VHDL_FSM_CLOCK_PROCESS_CONDITION_1 = "reset = '1'";
+export const VHDL_FSM_CLOCK_PROCESS_CONTENT_1 = 'current_state <= ';
+export const VHDL_FSM_CLOCK_PROCESS_CONDITION_2 = 'rising_edge(clk)';
+export const VHDL_FSM_CLOCK_PROCESS_CONTENT_2 = 'current_state <= next_state';
 
 export const VHDL_FSM_STATE_PROCESS_HEADER = 'case current_state is';
 export const VHDL_FSM_STATE_PROCESS_FOOTER = 'end case';
