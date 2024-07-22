@@ -70,6 +70,13 @@ function Canvas() {
         );
         if (isStartAlreadyConnected) return false;
       }
+      const isAlreadyConnected =
+        edges.filter(
+          edge =>
+            edge.target === connection.target &&
+            edge.source === connection.source,
+        ).length > 0;
+      if (isAlreadyConnected) return false;
       if (connection.targetHandle !== NODE_TYPE.State) return false;
       return true;
     },
@@ -90,14 +97,16 @@ function Canvas() {
     (connection: Connection) => {
       if (connection.source && connection.target) {
         //FIXME: Typescript shenanigans
+        const isStartNode = connection.source === START_NODE_ID;
+        const count = isStartNode ? 0 : transitionCount;
         const newEdge: Edge<FSMTransition> = {
           ...connection,
           source: connection.source,
           target: connection.target,
           id: crypto.randomUUID().toString(),
           data: {
-            transitionNumber: transitionCount,
-            name: `Transition ${transitionCount}`,
+            transitionNumber: count,
+            name: `Transition ${count}`,
             operator: LogicalOperator.And,
             portLogic: {
               inputs: {},
@@ -106,7 +115,8 @@ function Canvas() {
           },
         };
         setEdges(edges => addEdge(newEdge, edges));
-        setTransitionCount(prev => prev + 1);
+        if (connection.source !== START_NODE_ID)
+          setTransitionCount(prev => prev + 1);
       }
     },
     [setEdges, setTransitionCount, transitionCount],

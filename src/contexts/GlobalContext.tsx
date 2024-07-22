@@ -56,7 +56,7 @@ export const GlobalContextProvider = ({
     useNodesState<FSMState>(INITIAL_NODES);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [nodeCount, setNodeCount] = useState(0);
-  const [transitionCount, setTransitionCount] = useState(0);
+  const [transitionCount, setTransitionCount] = useState(1);
   return (
     <GlobalContext.Provider
       value={{

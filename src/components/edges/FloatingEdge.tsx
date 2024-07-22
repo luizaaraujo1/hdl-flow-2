@@ -6,6 +6,7 @@ import {
   EdgeLabelRenderer,
 } from 'reactflow';
 
+import {START_NODE_ID} from '@constants/nodes.constants';
 import {useDialog} from '@contexts/DialogContext';
 import {useGlobal} from '@contexts/GlobalContext';
 import FSMTransition from '@models/transition';
@@ -36,6 +37,8 @@ function FloatingEdge({
   if (!sourceNode || !targetNode) {
     return null;
   }
+
+  const isFromStart = sourceNode.id === START_NODE_ID;
 
   const {sx, sy, tx, ty} = getEdgeParams(sourceNode, targetNode);
 
@@ -82,15 +85,17 @@ function FloatingEdge({
               onClick={handleDeleteEdge}
               label="Delete"
               className="bg-red-100"
-              displayMode="left"
+              displayMode={!isFromStart ? 'left' : undefined}
               icon={<CrossCircledIcon />}
             />
-            <CanvasButton
-              onClick={handleOpenEditTransition}
-              label="Edit"
-              displayMode="right"
-              icon={<GearIcon />}
-            />
+            {!isFromStart && (
+              <CanvasButton
+                onClick={handleOpenEditTransition}
+                label="Edit"
+                displayMode="right"
+                icon={<GearIcon />}
+              />
+            )}
           </div>
         )}
         <div
