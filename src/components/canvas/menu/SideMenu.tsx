@@ -27,14 +27,14 @@ function CustomIcon({icon}: CustomIconProps) {
 
 function SideMenu() {
   const [open, setOpen] = useState(true);
-  const {setPortSettingsOpen, setCodeSettingsOpen} = useDialog();
+  const {setPortSettingsOpen, setCodeResultOpen} = useDialog();
 
   const togglePortSettings = () => {
     setPortSettingsOpen(prev => !prev);
   };
 
-  const toggleCodeSettings = () => {
-    setCodeSettingsOpen(prev => !prev);
+  const toggleCodeDialog = () => {
+    setCodeResultOpen(prev => !prev);
   };
 
   const onDragStart = (
@@ -63,7 +63,7 @@ function SideMenu() {
         draggable>
         {<CustomIcon icon={<FilePlusIcon />} />}
       </MenuButton>
-      <MenuButton onClick={toggleCodeSettings} label="Code editor">
+      <MenuButton onClick={toggleCodeDialog} label="Code results">
         {<CustomIcon icon={<CodeIcon />} />}
       </MenuButton>
       <MenuButton

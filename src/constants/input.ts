@@ -1,0 +1,1 @@
+export const DEFAULT_INPUT_MAX_LENGTH = 20;

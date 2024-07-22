@@ -19,7 +19,7 @@ interface Props {
 
 function PortElement({onDelete, portCategory, port, setPort}: Props) {
   const [editing, setEditing] = useState(false);
-  const editingStyle = editing ? 'min-h-[200px]' : 'min-h-0 h-0';
+  const editingStyle = editing ? 'h-[200px]' : 'h-0';
 
   const PORT_TYPE_OPTIONS = [
     {id: PortTypeEnum.Logic, value: PortTypeEnum.Logic},
@@ -85,7 +85,7 @@ function PortElement({onDelete, portCategory, port, setPort}: Props) {
         </div>
       </fieldset>
       <div
-        className={`rounded-b-md bg-zinc-600/20 shadow-lg transition-[min-height] ease-in-out ${editingStyle}`}>
+        className={`overflow-y-scroll rounded-b-md bg-zinc-600/20 shadow-lg transition-all ease-in-out ${editingStyle}`}>
         {editing && (
           <fieldset className="flex flex-col gap-1 p-2" disabled={!editing}>
             <TextInput

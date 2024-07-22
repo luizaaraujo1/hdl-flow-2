@@ -1,6 +1,6 @@
 import {createContext, useContext, useState} from 'react';
 
-import CodeSettingsDialog from '@components/canvas/settings/code/CodeSettingsDialog';
+import CodeResultDialog from '@components/canvas/settings/code/CodeResultDialog';
 import PortSettingsDialog from '@components/canvas/settings/port/PortSettingsDialog';
 import StateSettingsDialog from '@components/canvas/settings/state/StateSettingsDialog';
 import TransitionSettingsDialog from '@components/canvas/settings/transition/TransitionSettingsDialog';
@@ -18,8 +18,8 @@ export type DialogContextType = {
   setSelectedTransitionId: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
-  codeSettingsOpen: boolean;
-  setCodeSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  codeResultOpen: boolean;
+  setCodeResultOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const DialogContext = createContext<DialogContextType | undefined>(
@@ -40,7 +40,7 @@ export const DialogContextProvider = ({
   const [selectedTransitionId, setSelectedTransitionId] = useState<
     string | undefined
   >();
-  const [codeSettingsOpen, setCodeSettingsOpen] = useState(false);
+  const [codeResultOpen, setCodeResultOpen] = useState(false);
   return (
     <DialogContext.Provider
       value={{
@@ -54,14 +54,14 @@ export const DialogContextProvider = ({
         setTransitionSettingsOpen,
         selectedTransitionId,
         setSelectedTransitionId,
-        codeSettingsOpen,
-        setCodeSettingsOpen,
+        codeResultOpen,
+        setCodeResultOpen,
       }}>
       {children}
       <PortSettingsDialog />
       <StateSettingsDialog />
       <TransitionSettingsDialog />
-      <CodeSettingsDialog />
+      <CodeResultDialog />
     </DialogContext.Provider>
   );
 };
