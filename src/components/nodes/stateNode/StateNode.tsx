@@ -1,4 +1,3 @@
-import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import {useMemo} from 'react';
 import {
   NodeProps,
@@ -8,11 +7,13 @@ import {
   Position,
 } from 'reactflow';
 
-import {START_NODE_ID} from '../../../constants/nodes.constants';
-import {useDialog} from '../../../contexts/DialogContext';
-import {useGlobal} from '../../../contexts/GlobalContext';
-import FSMState from '../../../models/state';
-import CanvasButton from '../../shared/DeleteButton';
+import {START_NODE_ID} from '@constants/nodes.constants';
+import {useDialog} from '@contexts/DialogContext';
+import {useGlobal} from '@contexts/GlobalContext';
+import FSMState from '@models/state';
+import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
+import CanvasButton from '@shared/DeleteButton';
+
 import StateNodeHandler from './StateNodeHandler';
 import StateNodeHeader from './StateNodeHeader';
 import StateNodePortList from './StateNodePortList';

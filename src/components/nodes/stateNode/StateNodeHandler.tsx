@@ -1,5 +1,5 @@
-import {NODE_TYPE} from '../../../constants/nodes.constants';
-import HiddenHandle from '../../shared/HiddenHandle';
+import {NODE_TYPE} from '@constants/nodes.constants';
+import HiddenHandle from '@shared/HiddenHandle';
 
 interface StateNodeHandlerProps {
   isConnecting: boolean;

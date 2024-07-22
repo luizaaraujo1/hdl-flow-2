@@ -1,12 +1,13 @@
-import {GearIcon, TrashIcon} from '@radix-ui/react-icons';
 import {cloneElement, useCallback, useState} from 'react';
 import {zinc} from 'tailwindcss/colors';
 
-import {PortCategory} from '../../../../constants/ports.constants';
-import Port, {PortValue, PortTypeEnum} from '../../../../models/port';
-import {logicalOnlyPattern, numericOnlyPattern} from '../../../../utils/input';
-import SelectInput from '../../../shared/SelectInput';
-import TextInput from '../../../shared/TextInput';
+import {PortCategory} from '@constants/ports.constants';
+import Port, {PortValue, PortTypeEnum} from '@models/port';
+import {GearIcon, TrashIcon} from '@radix-ui/react-icons';
+import SelectInput from '@shared/SelectInput';
+import TextInput from '@shared/TextInput';
+import {logicalOnlyPattern, numericOnlyPattern} from '@utils/input';
+
 import PortInfo from './PortInfo';
 
 interface Props {
@@ -18,7 +19,7 @@ interface Props {
 
 function PortElement({onDelete, portCategory, port, setPort}: Props) {
   const [editing, setEditing] = useState(false);
-  const editingStyle = editing ? 'min-h-[200px]' : 'min-h-0 h-0';
+  const editingStyle = editing ? 'h-[200px]' : 'h-0';
 
   const PORT_TYPE_OPTIONS = [
     {id: PortTypeEnum.Logic, value: PortTypeEnum.Logic},
@@ -84,7 +85,7 @@ function PortElement({onDelete, portCategory, port, setPort}: Props) {
         </div>
       </fieldset>
       <div
-        className={`rounded-b-md bg-zinc-600/20 shadow-lg transition-[min-height] ease-in-out ${editingStyle}`}>
+        className={`overflow-y-scroll rounded-b-md bg-zinc-600/20 shadow-lg transition-all ease-in-out ${editingStyle}`}>
         {editing && (
           <fieldset className="flex flex-col gap-1 p-2" disabled={!editing}>
             <TextInput

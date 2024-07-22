@@ -1,7 +1,7 @@
 import {DefaultEdgeOptions, MarkerType} from 'reactflow';
 
-import DefaultEdge from '../components/edges/DefaultEdge';
-import FloatingEdge from '../components/edges/FloatingEdge';
+import DefaultEdge from '@components/edges/DefaultEdge';
+import FloatingEdge from '@components/edges/FloatingEdge';
 
 export enum EDGE_TYPE {
   Default = 'default',

@@ -13,27 +13,24 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import {zinc} from 'tailwindcss/colors';
 
-import SideMenu from '../components/canvas/menu/SideMenu';
-import PortSettingsDialog from '../components/canvas/settings/port/PortSettingsDialog';
-import StateSettingsDialog from '../components/canvas/settings/state/StateSettingsDialog';
-import TransitionSettingsDialog from '../components/canvas/settings/transition/TransitionSettingsDialog';
-import StraightConnectionLine from '../components/edges/StraightConnectionLine';
-import ErrorPage from '../components/shared/ErrorPage';
+import SideMenu from '@components/canvas/menu/SideMenu';
+import StraightConnectionLine from '@components/edges/StraightConnectionLine';
+import ErrorPage from '@components/shared/ErrorPage';
 import {
   EDGE_TYPES,
   connectionLineStyle,
   defaultEdgeOptions,
-} from '../constants/edges.constants';
+} from '@constants/edges.constants';
 import {
   DRAG_AND_DROP_EVENT_NAME,
   NODE_TYPE,
   NODE_TYPES,
   START_NODE_ID,
-} from '../constants/nodes.constants';
-import ROUTE_PATHS from '../constants/routePaths';
-import {useGlobal} from '../contexts/GlobalContext';
-import FSMTransition, {LogicalOperator} from '../models/transition';
-import {getPortLogicObjectFromPorts} from '../utils/port.utils';
+} from '@constants/nodes.constants';
+import ROUTE_PATHS from '@constants/routePaths';
+import {useGlobal} from '@contexts/GlobalContext';
+import FSMTransition, {LogicalOperator} from '@models/transition';
+import {getPortLogicObjectFromPorts} from '@utils/port.utils';
 
 function Canvas() {
   if (window.screen.width < 768) {
@@ -238,9 +235,6 @@ function Canvas() {
           <Controls position="bottom-right" />
         </ReactFlow>
         <SideMenu />
-        <PortSettingsDialog />
-        <StateSettingsDialog />
-        <TransitionSettingsDialog />
       </div>
     </div>
   );

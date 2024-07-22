@@ -1,19 +1,17 @@
-import {
-  ActivityLogIcon,
-  ChevronLeftIcon,
-  FilePlusIcon,
-  GearIcon,
-  QuestionMarkIcon,
-} from '@radix-ui/react-icons';
-import * as Toolbar from '@radix-ui/react-toolbar';
 import {cloneElement, useState} from 'react';
 import colors from 'tailwindcss/colors';
 
+import {DRAG_AND_DROP_EVENT_NAME, NODE_TYPE} from '@constants/nodes.constants';
+import {useDialog} from '@contexts/DialogContext';
 import {
-  DRAG_AND_DROP_EVENT_NAME,
-  NODE_TYPE,
-} from '../../../constants/nodes.constants';
-import {useDialog} from '../../../contexts/DialogContext';
+  ActivityLogIcon,
+  ChevronLeftIcon,
+  CodeIcon,
+  FilePlusIcon,
+  QuestionMarkIcon,
+} from '@radix-ui/react-icons';
+import * as Toolbar from '@radix-ui/react-toolbar';
+
 import MenuButton from './MenuButton';
 
 interface CustomIconProps {
@@ -29,10 +27,14 @@ function CustomIcon({icon}: CustomIconProps) {
 
 function SideMenu() {
   const [open, setOpen] = useState(true);
-  const {setPortSettingsOpen} = useDialog();
+  const {setPortSettingsOpen, setCodeResultOpen} = useDialog();
 
-  const toggleSettings = () => {
+  const togglePortSettings = () => {
     setPortSettingsOpen(prev => !prev);
+  };
+
+  const toggleCodeDialog = () => {
+    setCodeResultOpen(prev => !prev);
   };
 
   const onDragStart = (
@@ -47,13 +49,10 @@ function SideMenu() {
     <Toolbar.Root
       orientation="vertical"
       className={`relative bottom-1/2 flex h-96 w-20 -translate-y-1/2 flex-col gap-2 overflow-visible rounded-e-2xl border-zinc-300 bg-white px-2 py-8 shadow-lg transition-transform ${open ? '' : '-translate-x-20'}`}>
-      <MenuButton onClick={() => {}} label="Project Settings">
-        {<CustomIcon icon={<GearIcon />} />}
-      </MenuButton>
       <MenuButton onClick={() => {}} label="How to use">
         {<CustomIcon icon={<QuestionMarkIcon />} />}
       </MenuButton>
-      <MenuButton onClick={toggleSettings} label="Open Port editor">
+      <MenuButton onClick={togglePortSettings} label="Open Port editor">
         {<CustomIcon icon={<ActivityLogIcon />} />}
       </MenuButton>
       <MenuButton
@@ -63,6 +62,9 @@ function SideMenu() {
         label="Drag to add State"
         draggable>
         {<CustomIcon icon={<FilePlusIcon />} />}
+      </MenuButton>
+      <MenuButton onClick={toggleCodeDialog} label="Code results">
+        {<CustomIcon icon={<CodeIcon />} />}
       </MenuButton>
       <MenuButton
         onClick={() => setOpen(prev => !prev)}

@@ -11,7 +11,7 @@ interface Port {
   name: string;
   id_name: string;
   type: PortTypeEnum;
-  description: '';
+  description: string;
   defaultValue: PortValue;
 }
 
