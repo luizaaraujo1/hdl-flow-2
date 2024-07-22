@@ -12,7 +12,7 @@ export const VHDL_END_IF = 'end if';
 export const VHDL_THEN = ' then';
 export const VHDL_STATE_PREFIX = 'STATE_';
 export const VHDL_WHEN = 'when ';
-export const VHDL_DEFINITION_ARROW = '=>';
+export const VHDL_DEFINITION_ARROW = ' =>';
 export const VHDL_ASSIGNMENT_ARROW = ' <= ';
 export const VHDL_EQUALITY = ' = ';
 export const VHDL_INEQUALITY = ' /= ';
@@ -37,22 +37,25 @@ export const VHDL_FSM_ARCHITECTURE_TYPE = 'type state_type is (';
 export const VHDL_FSM_ARCHITECTURE_SIGNALS =
   'signal current_state, next_state : state_type';
 
-export const VHDL_FSM_CLOCK_PROCESS_CONDITION_1 = "reset = '1'";
-export const VHDL_FSM_CLOCK_PROCESS_CONTENT_1 = 'current_state <= ';
-export const VHDL_FSM_CLOCK_PROCESS_CONDITION_2 = 'rising_edge(clk)';
-export const VHDL_FSM_CLOCK_PROCESS_CONTENT_2 = 'current_state <= next_state';
+export const VHDL_FSM_ARCHITECTURE_STATE_NAME = 'current_state';
 
-export const VHDL_FSM_STATE_PROCESS_HEADER = 'case current_state is';
+export const VHDL_FSM_CLOCK_PROCESS_CONDITION_1 = "reset = '1'";
+export const VHDL_FSM_CLOCK_PROCESS_CONTENT_1 =
+  VHDL_FSM_ARCHITECTURE_STATE_NAME + ' <= ';
+export const VHDL_FSM_CLOCK_PROCESS_CONDITION_2 = 'rising_edge(clk)';
+export const VHDL_FSM_CLOCK_PROCESS_CONTENT_2 =
+  VHDL_FSM_ARCHITECTURE_STATE_NAME + ' <= next_state';
+
+export const VHDL_FSM_STATE_PROCESS_HEADER =
+  'case ' + VHDL_FSM_ARCHITECTURE_STATE_NAME + ' is';
 export const VHDL_FSM_STATE_PROCESS_FOOTER = 'end case';
 
 export const VHDL_FSM_STATE_PROCESS_WHEN_OTHERS = 'when others =>';
 export const VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN = 'next_state <= ';
 export const VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT =
   'Default state defined as first state';
-export const VHDL_FSM_STATE_PROCESS_INTERNALS_COMMENT =
-  'Note: Declare inputs on the Port Editor';
-export const VHDL_FSM_STATE_PROCESS_OUTPUTS_COMMENT =
-  'Note: Declare outputs on the Port Editor';
+export const VHDL_FSM_STATE_PROCESS_PORT_COMMENT =
+  'Note: Declare internal and output ports on the Port Editor';
 export const VHDL_FSM_STATE_PROCESS_DEAD_COMMENT =
   'Warning! This is a dead state';
 export const VHDL_FSM_STATE_PROCESS_TRANSITION_ERROR =

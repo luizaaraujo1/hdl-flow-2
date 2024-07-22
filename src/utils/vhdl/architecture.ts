@@ -27,8 +27,7 @@ import {
   VHDL_IF,
   VHDL_ELSIF,
   VHDL_THEN,
-  VHDL_FSM_STATE_PROCESS_INTERNALS_COMMENT,
-  VHDL_FSM_STATE_PROCESS_OUTPUTS_COMMENT,
+  VHDL_FSM_STATE_PROCESS_PORT_COMMENT,
   VHDL_FSM_STATE_PROCESS_DEAD_COMMENT,
   VHDL_EQUALITY,
   VHDL_INEQUALITY,
@@ -41,6 +40,7 @@ import {
   VHDL_FSM_CLOCK_PROCESS_CONDITION_2,
   VHDL_FSM_CLOCK_PROCESS_CONTENT_1,
   VHDL_FSM_CLOCK_PROCESS_CONTENT_2,
+  VHDL_FSM_ARCHITECTURE_STATE_NAME,
 } from '@constants/vhdl';
 import Port from '@models/port';
 import {PortTypeEnum} from '@models/port';
@@ -97,6 +97,45 @@ function getProcessSection(
     vhdlCodeLine(VHDL_BEGIN, tabAmount, false) +
     getContent(tabAmount + 1) +
     vhdlCodeLine(VHDL_END_PROCESS, tabAmount)
+  );
+}
+
+function getCaseWhens(
+  tabAmount: number,
+  conditions: ConditionElement[],
+  getDefault: (tabAmount: number) => string,
+) {
+  const whens: string[] = [];
+  conditions.forEach(condition => {
+    whens.push(
+      vhdlCodeLine(
+        VHDL_WHEN + condition.conditionText + VHDL_DEFINITION_ARROW,
+        tabAmount,
+        false,
+      ),
+    );
+    whens.push(condition.getConditionContent(tabAmount + 1));
+  });
+  whens.push(
+    vhdlCodeLine(VHDL_FSM_STATE_PROCESS_WHEN_OTHERS, tabAmount, false),
+  );
+  whens.push(getDefault(tabAmount + 1));
+
+  return [...whens].join('');
+}
+
+function getCasesSection(
+  tabAmount: number,
+  conditions: ConditionElement[],
+  getDefault: (tabAmount: number) => string,
+) {
+  if (conditions.length === 0) return getDefault(tabAmount);
+
+  const cases = getCaseWhens(tabAmount + 1, conditions, getDefault);
+  return (
+    vhdlCodeLine(VHDL_FSM_STATE_PROCESS_HEADER, tabAmount, false, false) +
+    cases +
+    vhdlCodeLine(VHDL_FSM_STATE_PROCESS_FOOTER, tabAmount)
   );
 }
 
@@ -208,43 +247,54 @@ function getVhdlFsmArchitecturePortValue(portLogic: PortLogic) {
   }
 }
 
-function getVhdlFsmArchitecturePortLogicAssignment(portLogic: PortLogic) {
+function getVhdlFsmArchitecturePortLogicAssignment(
+  tabAmount: number,
+  portLogic: PortLogic,
+) {
   const assignment =
     portLogic.port.id_name +
     VHDL_ASSIGNMENT_ARROW +
     getVhdlFsmArchitecturePortValue(portLogic);
-  return vhdlCodeLine(assignment, VHDL_TAB_DEPTH.FOUR_TABS);
+  return vhdlCodeLine(assignment, tabAmount);
 }
 
-function getVhdlFsmArchitectureStateAssignmentLines(portLogic: {
-  [key: string]: PortLogic;
-}) {
+function getVhdlFsmArchitectureStateAssignmentLines(
+  tabAmount: number,
+  portLogic: {
+    [key: string]: PortLogic;
+  },
+) {
   const logicKeys = Object.keys(portLogic);
   if (logicKeys.length === 0) return '';
   return logicKeys
-    .map(key => getVhdlFsmArchitecturePortLogicAssignment(portLogic[key]))
+    .map(key =>
+      getVhdlFsmArchitecturePortLogicAssignment(tabAmount, portLogic[key]),
+    )
     .join('');
 }
 
-function getVhdlFsmArchitectureStateAssignments(state: Node<FSMState>) {
+function getVhdlFsmArchitectureStateAssignments(
+  tabAmount: number,
+  state: Node<FSMState>,
+) {
   const {internals, outputs} = state.data.portLogic;
-  let internalLines = getVhdlFsmArchitectureStateAssignmentLines(internals);
-  let outputLines = getVhdlFsmArchitectureStateAssignmentLines(outputs);
-  if (internalLines === '')
-    internalLines = vhdlCodeLine(
-      VHDL_FSM_STATE_PROCESS_INTERNALS_COMMENT,
-      VHDL_TAB_DEPTH.FOUR_TABS,
+  const internalLines = getVhdlFsmArchitectureStateAssignmentLines(
+    tabAmount,
+    internals,
+  );
+  const outputLines = getVhdlFsmArchitectureStateAssignmentLines(
+    tabAmount,
+    outputs,
+  );
+  let stateAssignmentLines = internalLines + outputLines;
+  if (stateAssignmentLines === '')
+    stateAssignmentLines = vhdlCodeLine(
+      VHDL_FSM_STATE_PROCESS_PORT_COMMENT,
+      tabAmount,
       false,
       true,
     );
-  if (outputLines === '')
-    outputLines = vhdlCodeLine(
-      VHDL_FSM_STATE_PROCESS_OUTPUTS_COMMENT,
-      VHDL_TAB_DEPTH.FOUR_TABS,
-      false,
-      true,
-    );
-  return internalLines + outputLines;
+  return stateAssignmentLines;
 }
 
 function getVhdlFsmArchitectureStateTransitionElseCase(state: Node<FSMState>) {
@@ -323,6 +373,7 @@ function getTransitionTargetLine(
 }
 
 function getVhdlFsmArchitectureStateTransitionConditionLines(
+  tabAmount: number,
   state: Node<FSMState>,
   currentEdges: Edge<FSMTransition>[],
   allStates: Node<FSMState>[],
@@ -333,7 +384,7 @@ function getVhdlFsmArchitectureStateTransitionConditionLines(
     return (
       vhdlCodeLine(
         VHDL_FSM_STATE_PROCESS_DEAD_COMMENT,
-        VHDL_TAB_DEPTH.FOUR_TABS,
+        tabAmount,
         false,
         true,
       ) + elseCase
@@ -373,7 +424,7 @@ function getVhdlFsmArchitectureStateTransitionConditionLines(
       lineData.map(data => data[0]),
       lineData.map(data => data[1]),
       elseContentLine,
-      VHDL_TAB_DEPTH.FOUR_TABS,
+      tabAmount,
     );
 
     return conditionLines;
@@ -381,6 +432,7 @@ function getVhdlFsmArchitectureStateTransitionConditionLines(
 }
 
 function getVhdlFsmArchitectureStateTransition(
+  tabAmount: number,
   state: Node<FSMState>,
   edges: Edge<FSMTransition>[],
   allStates: Node<FSMState>[],
@@ -392,10 +444,11 @@ function getVhdlFsmArchitectureStateTransition(
   if (currentEdges.length === 0) {
     return vhdlCodeLine(
       VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + getVhdlStateName(state),
-      VHDL_TAB_DEPTH.FOUR_TABS,
+      tabAmount,
     );
   } else {
     return getVhdlFsmArchitectureStateTransitionConditionLines(
+      tabAmount,
       state,
       currentEdges,
       allStates,
@@ -404,99 +457,90 @@ function getVhdlFsmArchitectureStateTransition(
 }
 
 function getVhdlFsmArchitectureStateCase(
+  tabAmount: number,
   state: Node<FSMState>,
   edges: Edge<FSMTransition>[],
   allStates: Node<FSMState>[],
 ) {
-  const definitions = getVhdlFsmArchitectureStateAssignments(state);
+  const definitions = getVhdlFsmArchitectureStateAssignments(tabAmount, state);
   const transition = getVhdlFsmArchitectureStateTransition(
+    tabAmount,
     state,
     edges,
     allStates,
   );
-  const whenLine = VHDL_WHEN + getVhdlStateName(state) + VHDL_DEFINITION_ARROW;
 
-  return (
-    vhdlCodeLine(whenLine, VHDL_TAB_DEPTH.THREE_TABS, false) +
-    definitions +
-    '\n' +
-    transition
-  );
+  return definitions + transition;
 }
 
-function getVhdlFsmArchitectureStateProcessCases(
+function getVhdlFsmArchitectureProcessConditions(
+  nodes: Node<FSMState>[],
+  edges: Edge<FSMTransition>[],
+) {
+  const states = getStatesFromNodes(nodes);
+  const conditions = states.map((state): ConditionElement => {
+    return {
+      conditionText: getVhdlStateName(state),
+      getConditionContent: (tabAmount: number) => {
+        return getVhdlFsmArchitectureStateCase(tabAmount, state, edges, states);
+      },
+    };
+  });
+
+  return conditions;
+}
+
+function getVhdlFsmArchitectureStateProcessCaseSection(
+  tabAmount: number,
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
 ) {
   const firstState = getVhdlFsmFirstStateName(nodes, edges);
-  const states = getStatesFromNodes(nodes);
-  const stateCases = states
-    .map(state => getVhdlFsmArchitectureStateCase(state, edges, states))
-    .join('\n');
 
-  return (
-    stateCases +
-    vhdlCodeLine(
-      VHDL_FSM_STATE_PROCESS_WHEN_OTHERS,
-      VHDL_TAB_DEPTH.THREE_TABS,
-      false,
-    ) +
-    vhdlCodeLine(
-      VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT,
-      VHDL_TAB_DEPTH.FOUR_TABS,
-      false,
-      true,
-    ) +
-    vhdlCodeLine(
-      VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + firstState,
-      VHDL_TAB_DEPTH.FOUR_TABS,
-    )
+  const conditions = getVhdlFsmArchitectureProcessConditions(nodes, edges);
+
+  const cases = getCasesSection(
+    tabAmount,
+    conditions,
+    contentTab =>
+      vhdlCodeLine(
+        VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT,
+        contentTab,
+        false,
+        true,
+      ) +
+      vhdlCodeLine(
+        VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + firstState,
+        contentTab,
+      ),
   );
-}
 
-function getVhdlFsmArchitectureStateProcessCaseSection(
-  nodes: Node<FSMState>[],
-  edges: Edge<FSMTransition>[],
-) {
-  const cases = getVhdlFsmArchitectureStateProcessCases(nodes, edges);
-
-  return (
-    vhdlCodeLine(
-      VHDL_FSM_STATE_PROCESS_HEADER,
-      VHDL_TAB_DEPTH.TWO_TABS,
-      false,
-    ) +
-    cases +
-    vhdlCodeLine(VHDL_FSM_STATE_PROCESS_FOOTER, VHDL_TAB_DEPTH.TWO_TABS)
-  );
+  return cases;
 }
 
 function getVhdlFsmArchitectureStateProcess(
+  tabAmount: number,
   inputList: Port[],
   internalsList: Port[],
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
 ) {
   const stateProcessPortList = [
+    VHDL_FSM_ARCHITECTURE_STATE_NAME,
     ...inputList.map(input => input.id_name),
     ...internalsList.map(internal => internal.id_name),
-  ].join(', ');
-  const caseSection = getVhdlFsmArchitectureStateProcessCaseSection(
-    nodes,
-    edges,
-  );
+  ];
 
-  return (
-    vhdlCodeLine(
-      VHDL_BEGIN_PROCESS + stateProcessPortList + VHDL_FSM_END_SECTION,
-      VHDL_TAB_DEPTH.ONE_TAB,
-      false,
-      false,
-    ) +
-    vhdlCodeLine(VHDL_BEGIN, VHDL_TAB_DEPTH.ONE_TAB, false) +
-    caseSection +
-    vhdlCodeLine(VHDL_END_PROCESS, 1)
-  );
+  function getProcessContent(contentTabs: number) {
+    const caseSection = getVhdlFsmArchitectureStateProcessCaseSection(
+      contentTabs,
+      nodes,
+      edges,
+    );
+    return caseSection;
+  }
+
+  return getProcessSection(tabAmount, stateProcessPortList, getProcessContent);
 }
 
 export function generateVhdlFsmArchitecture(
@@ -519,6 +563,7 @@ export function generateVhdlFsmArchitecture(
       edges,
     );
     const stateProcess = getVhdlFsmArchitectureStateProcess(
+      contentTabs,
       inputList,
       internalsList,
       nodes,
