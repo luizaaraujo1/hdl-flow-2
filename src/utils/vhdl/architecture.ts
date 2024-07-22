@@ -74,7 +74,7 @@ function getArchitectureSection(
     getContent(tabAmount + 1) +
     vhdlCodeLine(
       VHDL_FSM_ARCHITECTURE_FOOTER.replace(
-        VHDL_FSM_ARCHITECTURE_HEADER,
+        VHDL_SELECTOR_NAME,
         architectureName,
       ),
       tabAmount,
