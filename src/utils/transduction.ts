@@ -50,7 +50,8 @@ function getConditionText(
   if (isFirstElement) startText = ifStartText;
   else if (isLastElement) startText = elseStartText;
   else startText = elsifStartText;
-  return startText + conditionText + conditionEndText;
+  //Note: This works well for VHDL, but maybe not other languages
+  return startText + conditionText + (!isLastElement ? conditionEndText : '\n');
 }
 
 export function getConditionSection(
