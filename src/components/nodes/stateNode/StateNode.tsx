@@ -40,10 +40,12 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
   const isConnecting = !!connectionNodeId;
   const isPossibleTarget = !!connectionNodeId && connectionNodeId !== id;
 
-  const isConnected = useMemo(
-    () => !!edges.find(edge => edge.target === id),
+  const connectedEdges = useMemo(
+    () => edges.filter(edge => edge.target === id),
     [edges, id],
   );
+
+  const isConnected = !!connectedEdges;
 
   const isStartConnected = useMemo(
     () => !!edges.find(edge => edge.source === START_NODE_ID),
@@ -54,6 +56,10 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
     !!isStartConnected &&
     !!connectionNodeId &&
     connectionNodeId === START_NODE_ID;
+
+  const isConnectedTryingToConnectAgain =
+    isConnected &&
+    !!connectedEdges.find(edge => edge.source === connectionNodeId);
 
   const selectedStyle = selected ? 'border-4' : 'border-2';
 
@@ -99,7 +105,9 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
       </div>
       <StateNodeHandler
         isConnecting={isConnecting}
-        isNotAllowed={isStartTryingToConnectAgain}
+        isNotAllowed={
+          isStartTryingToConnectAgain || isConnectedTryingToConnectAgain
+        }
         isPossibleTarget={isPossibleTarget}
         isConnected={isConnected}
         selectedStyle={selectedStyle}
