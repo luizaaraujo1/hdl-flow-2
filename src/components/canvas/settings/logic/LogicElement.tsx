@@ -91,7 +91,8 @@ function LogicElement({
 
   useEffect(() => {
     if (
-      logic.type === LogicType.Equality &&
+      (logic.type === LogicType.Equality ||
+        logic.type === LogicType.Inequality) &&
       !logic.customValue &&
       CUSTOM_VALUE_EQUALITY_OPTIONS.length > 0
     )
