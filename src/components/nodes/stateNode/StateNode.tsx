@@ -38,7 +38,6 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
   const internalsList = Object.values(internals);
 
   const isConnecting = !!connectionNodeId;
-  const isPossibleTarget = !!connectionNodeId && connectionNodeId !== id;
 
   const connectedEdges = useMemo(
     () => edges.filter(edge => edge.target === id),
@@ -108,7 +107,6 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
         isNotAllowed={
           isStartTryingToConnectAgain || isConnectedTryingToConnectAgain
         }
-        isPossibleTarget={isPossibleTarget}
         isConnected={isConnected}
         selectedStyle={selectedStyle}
       />
