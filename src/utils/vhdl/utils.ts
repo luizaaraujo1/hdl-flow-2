@@ -95,16 +95,15 @@ export function getVhdlPortDefaultValue(port: Port) {
 }
 
 export function getVhdlFsmTransitionConditionFromLogic(portLogic: PortLogic) {
+  const portValue = getVhdlPortValue(portLogic);
   switch (portLogic.type) {
-    case LogicType.Equality:
-      return portLogic.port.id_name + VHDL_EQUALITY + portLogic.customValue;
     case LogicType.Inequality:
-      return portLogic.port.id_name + VHDL_INEQUALITY + portLogic.customValue;
+      return portLogic.port.id_name + VHDL_INEQUALITY + portValue;
+    case LogicType.Custom:
+    case LogicType.Equality:
     case LogicType.Default:
     default:
-      return (
-        portLogic.port.id_name + VHDL_EQUALITY + portLogic.port.defaultValue
-      );
+      return portLogic.port.id_name + VHDL_EQUALITY + portValue;
   }
 }
 

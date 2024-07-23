@@ -60,12 +60,12 @@ function TransitionEditor() {
       value: Node<FSMTransition>[keyof Node<FSMTransition>],
     ) => {
       if (selectedTransitionId && currentEdge) {
-        const newNode = {...currentEdge, [field]: value};
-        const newNodes = [...edges].filter(
+        const newEdge = {...currentEdge, [field]: value};
+        const newEdges = [...edges].filter(
           edge => edge.id !== selectedTransitionId,
         );
-        newNodes.push(newNode);
-        setEdges(newNodes);
+        newEdges.push(newEdge);
+        setEdges(newEdges);
       }
     },
     [currentEdge, edges, selectedTransitionId, setEdges],
