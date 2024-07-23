@@ -65,7 +65,7 @@ export function getConditionSection(
 ) {
   if (conditions.length === 0) return '';
   if (conditions.length === 1 && !conditions[0].conditionText) {
-    return conditions[0].getConditionContent(tabAmount + 1);
+    return conditions[0].getConditionContent(tabAmount);
   }
 
   const content: string[] = [];

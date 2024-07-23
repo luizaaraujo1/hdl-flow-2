@@ -69,11 +69,6 @@ function PortEditor() {
     getListSetter(tab)(prev => [...prev, newPort]);
   };
 
-  const inputLogicObject = useMemo(
-    () => getPortLogicObjectFromPorts(inputList),
-    [inputList],
-  );
-
   const outputsLogicObject = useMemo(
     () => getPortLogicObjectFromPorts(outputList),
     [outputList],
@@ -85,6 +80,7 @@ function PortEditor() {
   );
 
   const updateNodesState = useCallback(() => {
+    // NOTE: Editing the Ports will reset all state customizations!
     setNodes(prev =>
       [...prev].map(node => ({
         ...node,
@@ -100,6 +96,7 @@ function PortEditor() {
   }, [internalsLogicObject, outputsLogicObject, setNodes]);
 
   const updateEdgesState = useCallback(() => {
+    // NOTE: Editing the Ports will clear all transition conditions!
     setEdges(prev =>
       [...prev].map(edge => {
         if (edge.data)
@@ -108,16 +105,16 @@ function PortEditor() {
             data: {
               ...edge.data,
               portLogic: {
-                inputs: {...inputLogicObject},
-                internals: {...internalsLogicObject},
-                outputs: {...outputsLogicObject},
+                inputs: {},
+                internals: {},
+                outputs: {},
               },
             },
           };
         else return {...edge};
       }),
     );
-  }, [inputLogicObject, internalsLogicObject, outputsLogicObject, setEdges]);
+  }, [setEdges]);
 
   useEffect(() => {
     updateNodesState();

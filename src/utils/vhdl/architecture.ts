@@ -318,7 +318,7 @@ function getVhdlFsmArchitectureStateTransitionConditions(
       };
 
       const conditionText =
-        portConditionsText !== ''
+        portConditionsText !== '' || currentEdges.length === 1
           ? portConditionsText
           : VHDL_FSM_STATE_PROCESS_CONDITION_ERROR;
 
@@ -344,6 +344,13 @@ function getVhdlFsmArchitectureStateTransitionConditions(
     conditionText: '',
     getConditionContent: getDefaultConditionContent,
   };
+
+  const hasSingleEdgeWithEmptyTransitionCondition =
+    transitionConditions.length === 1 &&
+    transitionConditions[0].conditionText === '';
+
+  if (hasSingleEdgeWithEmptyTransitionCondition)
+    return [...transitionConditions];
 
   return [...transitionConditions, defaultCondition];
 }
@@ -399,7 +406,7 @@ function getVhdlFsmArchitectureStateCase(
     allStates,
   );
 
-  return definitions + transition;
+  return getStringWithBreakLines([definitions, transition]);
 }
 
 function getVhdlFsmArchitectureProcessConditions(

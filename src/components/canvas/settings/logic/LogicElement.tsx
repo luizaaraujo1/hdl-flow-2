@@ -52,12 +52,12 @@ function LogicElement({
           logic.port.type,
         ),
         logic.port.id,
-      ).map(port => ({id: port.id, value: port.id_name}));
+      ).map(port => ({id: port.id_name, value: port.id_name}));
     if (isState) {
       return filterSamePort(
         filterPortsOfDifferentType([...internalsList], logic.port.type),
         logic.port.id,
-      ).map(port => ({id: port.id, value: port.id_name}));
+      ).map(port => ({id: port.id_name, value: port.id_name}));
     } else {
       return filterSamePort(
         filterPortsOfDifferentType(
@@ -65,7 +65,7 @@ function LogicElement({
           logic.port.type,
         ),
         logic.port.id,
-      ).map(port => ({id: port.id, value: port.id_name}));
+      ).map(port => ({id: port.id_name, value: port.id_name}));
     }
   }, [
     isInternal,
@@ -91,7 +91,8 @@ function LogicElement({
 
   useEffect(() => {
     if (
-      logic.type === LogicType.Equality &&
+      (logic.type === LogicType.Equality ||
+        logic.type === LogicType.Inequality) &&
       !logic.customValue &&
       CUSTOM_VALUE_EQUALITY_OPTIONS.length > 0
     )
@@ -103,7 +104,11 @@ function LogicElement({
     if (logic.type === LogicType.Default && !!logic.customValue) {
       onEditLogic(logic.port.id, 'customValue', undefined);
     }
-    if (logic.type === LogicType.Custom && !logic.customValue) {
+    if (
+      logic.type === LogicType.Custom &&
+      logic.customValue !== '' &&
+      !logic.customValue
+    ) {
       onEditLogic(logic.port.id, 'customValue', '');
     }
   }, [
