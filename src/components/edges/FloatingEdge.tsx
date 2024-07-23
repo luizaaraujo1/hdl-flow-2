@@ -12,7 +12,7 @@ import {useGlobal} from '@contexts/GlobalContext';
 import FSMTransition from '@models/transition';
 import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import CanvasButton from '@shared/DeleteButton';
-import {getEdgeParams} from '@utils/edge.utils';
+import {getCurvedPath, getEdgeParams} from '@utils/edge.utils';
 
 function FloatingEdge({
   id,
@@ -24,7 +24,7 @@ function FloatingEdge({
   data,
 }: EdgeProps<FSMTransition>) {
   const {
-    edgeState: {setEdges},
+    edgeState: {edges, setEdges},
   } = useGlobal();
   const {setSelectedTransitionId, setTransitionSettingsOpen} = useDialog();
   const sourceNode = useStore(
@@ -32,6 +32,9 @@ function FloatingEdge({
   );
   const targetNode = useStore(
     useCallback(store => store.nodeInternals.get(target), [target]),
+  );
+  const isBidirectional = !!edges.find(
+    edge => edge.source === targetNode?.id && edge.target === sourceNode?.id,
   );
 
   if (!sourceNode || !targetNode) {
@@ -42,12 +45,26 @@ function FloatingEdge({
 
   const {sx, sy, tx, ty} = getEdgeParams(sourceNode, targetNode);
 
-  const [edgePath, labelX, labelY] = getStraightPath({
+  const [straightEdgePath, straightLabelX, straightLabelY] = getStraightPath({
     sourceX: sx,
     sourceY: sy,
     targetX: tx,
     targetY: ty,
   });
+
+  const [curvedEdgePath, curvedLabelX, curvedLabelY] = getCurvedPath(
+    {
+      sourceX: sx,
+      sourceY: sy,
+      targetX: tx,
+      targetY: ty,
+    },
+    72,
+  );
+
+  const edgePath = isBidirectional ? curvedEdgePath : straightEdgePath;
+  const labelX = isBidirectional ? curvedLabelX : straightLabelX;
+  const labelY = isBidirectional ? curvedLabelY : straightLabelY;
 
   const handleDeleteEdge = () =>
     setEdges(edges => edges.filter(e => e.id !== id));

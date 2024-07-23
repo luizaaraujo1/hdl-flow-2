@@ -1,4 +1,4 @@
-import {Position, MarkerType, Node} from 'reactflow';
+import {Position, Node} from 'reactflow';
 
 //Here's the source for most of this code: https://reactflow.dev/examples/nodes/easy-connect:
 
@@ -94,31 +94,35 @@ export function getEdgeParams(
   };
 }
 
-export function createNodesAndEdges() {
-  const nodes = [];
-  const edges = [];
-  const center = {x: window.innerWidth / 2, y: window.innerHeight / 2};
+export type GetCurvedPathParams = {
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+};
 
-  nodes.push({id: 'target', data: {label: 'Target'}, position: center});
+export const getCurvedPath = (
+  {sourceX, sourceY, targetX, targetY}: GetCurvedPathParams,
+  offset: number,
+): [
+  path: string,
+  labelX: number,
+  labelY: number,
+  offsetX: number,
+  offsetY: number,
+] => {
+  const dx = targetX - sourceX;
+  const dy = targetY - sourceY;
 
-  for (let i = 0; i < 8; i++) {
-    const degrees = i * (360 / 8);
-    const radians = degrees * (Math.PI / 180);
-    const x = 250 * Math.cos(radians) + center.x;
-    const y = 250 * Math.sin(radians) + center.y;
+  const angle = Math.atan2(dy, dx);
 
-    nodes.push({id: `${i}`, data: {label: 'Source'}, position: {x, y}});
+  const offsetX = offset * Math.sin(angle);
+  const offsetY = offset * -Math.cos(angle);
 
-    edges.push({
-      id: `edge-${i}`,
-      target: 'target',
-      source: `${i}`,
-      type: 'floating',
-      markerEnd: {
-        type: MarkerType.Arrow,
-      },
-    });
-  }
+  const centerX = (sourceX + targetX) / 2 + offsetX;
+  const centerY = (sourceY + targetY) / 2 + offsetY;
 
-  return {nodes, edges};
-}
+  const edgePath = `M ${sourceX} ${sourceY} Q ${centerX} ${centerY} ${targetX} ${targetY}`;
+
+  return [edgePath, centerX, centerY, offsetX, offsetY];
+};
