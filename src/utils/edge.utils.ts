@@ -126,3 +126,32 @@ export const getCurvedPath = (
 
   return [edgePath, centerX, centerY, offsetX, offsetY];
 };
+
+export function getLoopPath(
+  source: Node<unknown, string | undefined>,
+): [path: string, labelX: number, labelY: number] {
+  const {width, height, positionAbsolute} = source;
+  const radius = 30;
+
+  if (width && height && positionAbsolute) {
+    const upperRightX = positionAbsolute.x + width;
+    const upperRightY = positionAbsolute.y;
+
+    const startPositionX = upperRightX;
+    const startPositionY = upperRightY + radius;
+
+    const endPositionX = upperRightX - radius;
+    const endPositionY = upperRightY;
+
+    const labelX = upperRightX + radius;
+    const labelY = upperRightY - radius;
+
+    return [
+      `M ${startPositionX} ${startPositionY} A ${radius} ${radius} 0 1 0 ${endPositionX} ${endPositionY}`,
+      labelX,
+      labelY,
+    ];
+  }
+  console.error('ERROR: Failed to get intersection requirements');
+  return ['', 0, 0];
+}

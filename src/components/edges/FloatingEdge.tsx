@@ -12,7 +12,7 @@ import {useGlobal} from '@contexts/GlobalContext';
 import FSMTransition from '@models/transition';
 import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import CanvasButton from '@shared/DeleteButton';
-import {getCurvedPath, getEdgeParams} from '@utils/edge.utils';
+import {getCurvedPath, getEdgeParams, getLoopPath} from '@utils/edge.utils';
 
 function FloatingEdge({
   id,
@@ -33,8 +33,12 @@ function FloatingEdge({
   const targetNode = useStore(
     useCallback(store => store.nodeInternals.get(target), [target]),
   );
+  const isSelfReferencing = sourceNode?.id === targetNode?.id;
   const isBidirectional = !!edges.find(
-    edge => edge.source === targetNode?.id && edge.target === sourceNode?.id,
+    edge =>
+      edge.source === targetNode?.id &&
+      edge.target === sourceNode?.id &&
+      sourceNode.id !== targetNode.id,
   );
 
   if (!sourceNode || !targetNode) {
@@ -62,9 +66,41 @@ function FloatingEdge({
     72,
   );
 
-  const edgePath = isBidirectional ? curvedEdgePath : straightEdgePath;
-  const labelX = isBidirectional ? curvedLabelX : straightLabelX;
-  const labelY = isBidirectional ? curvedLabelY : straightLabelY;
+  const [loopEdgePath, loopLabelX, loopLabelY] = getLoopPath(sourceNode);
+
+  const getPathParams = useCallback(() => {
+    if (isSelfReferencing)
+      return {
+        edgePath: loopEdgePath,
+        labelX: loopLabelX,
+        labelY: loopLabelY,
+      };
+    if (isBidirectional)
+      return {
+        edgePath: curvedEdgePath,
+        labelX: curvedLabelX,
+        labelY: curvedLabelY,
+      };
+    return {
+      edgePath: straightEdgePath,
+      labelX: straightLabelX,
+      labelY: straightLabelY,
+    };
+  }, [
+    curvedEdgePath,
+    curvedLabelX,
+    curvedLabelY,
+    isBidirectional,
+    isSelfReferencing,
+    loopEdgePath,
+    loopLabelX,
+    loopLabelY,
+    straightEdgePath,
+    straightLabelX,
+    straightLabelY,
+  ]);
+
+  const {edgePath, labelX, labelY} = getPathParams();
 
   const handleDeleteEdge = () =>
     setEdges(edges => edges.filter(e => e.id !== id));

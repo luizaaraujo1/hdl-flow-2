@@ -4,7 +4,6 @@ import HiddenHandle from '@shared/HiddenHandle';
 interface StateNodeHandlerProps {
   isConnecting: boolean;
   isNotAllowed: boolean;
-  isPossibleTarget: boolean;
   isConnected: boolean;
   selectedStyle: string;
 }
@@ -12,17 +11,16 @@ interface StateNodeHandlerProps {
 const StateNodeHandler = ({
   isConnecting,
   isNotAllowed,
-  isPossibleTarget,
   isConnected,
   selectedStyle,
 }: StateNodeHandlerProps) => {
-  const targetStyle = isPossibleTarget
+  const targetStyle = isConnecting
     ? isNotAllowed
       ? 'border-dashed bg-red-500/50'
       : 'border-dashed bg-slate-400'
     : 'border-solid bg-slate-200';
 
-  const label = isPossibleTarget ? 'Drop here' : 'Drag to connect';
+  const label = isConnecting ? 'Drop here' : 'Drag to connect';
 
   return (
     <div

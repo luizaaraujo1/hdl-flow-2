@@ -63,7 +63,6 @@ function Canvas() {
 
   const isValidConnection = useCallback(
     (connection: Connection) => {
-      if (connection.source === connection.target) return false;
       if (connection.source === START_NODE_ID) {
         const isStartAlreadyConnected = edges.find(
           edge => edge.source === START_NODE_ID,
