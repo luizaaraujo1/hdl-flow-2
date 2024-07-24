@@ -3,12 +3,12 @@ import {zinc} from 'tailwindcss/colors';
 
 import PortInfo from '@components/canvas/settings/port/PortInfo';
 import {PortCategory} from '@constants/ports.constants';
-import {useGlobal} from '@contexts/GlobalContext';
 import {LogicType, PortLogic, STATE_SUPPORTED_LOGIC_TYPES} from '@models/state';
 import {TRANSITION_SUPPORTED_LOGIC_TYPES} from '@models/transition';
 import {TrashIcon} from '@radix-ui/react-icons';
 import SelectInput from '@shared/SelectInput';
 import TextInput from '@shared/TextInput';
+import useStorePorts from '@store/useStorePorts';
 import {filterPortsOfDifferentType, filterSamePort} from '@utils/port.utils';
 
 import {EntityType} from './LogicEditor';
@@ -32,7 +32,8 @@ function LogicElement({
   portCategory,
   entityType,
 }: LogicElement) {
-  const {inputList, internalsList, outputList} = useGlobal();
+  const {inputList, internalsList, outputList} = useStorePorts();
+
   const isInternal = portCategory === 'Internal';
   const isState = entityType === 'State';
   const isInequality = logic.type === LogicType.Inequality;
@@ -121,7 +122,7 @@ function LogicElement({
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row items-center justify-between rounded-md bg-white p-2 shadow-lg">
+      <div className="flex flex-row flex-wrap items-center justify-between rounded-md bg-white p-2 shadow-lg">
         <PortInfo port={logic.port} portCategory={portCategory} />
         <div className="flex items-center justify-center gap-2">
           <h3 className="text-nowrap text-sm font-semibold">

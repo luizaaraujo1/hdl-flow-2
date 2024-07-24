@@ -8,11 +8,12 @@ import {
 } from 'reactflow';
 
 import {START_NODE_ID} from '@constants/nodes.constants';
-import {useDialog} from '@contexts/DialogContext';
-import {useGlobal} from '@contexts/GlobalContext';
 import FSMState from '@models/state';
 import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import CanvasButton from '@shared/DeleteButton';
+import useStoreDialog from '@store/useStoreDialog';
+import useStoreEdges from '@store/useStoreEdges';
+import useStoreNodes from '@store/useStoreNodes';
 
 import StateNodeHandler from './StateNodeHandler';
 import StateNodeHeader from './StateNodeHeader';
@@ -28,11 +29,9 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
     name,
     portLogic: {internals, outputs},
   } = data;
-  const {
-    edgeState: {edges, setEdges},
-    nodeState: {setNodes},
-  } = useGlobal();
-  const {setSelectedStateId, setStateSettingsOpen} = useDialog();
+  const {edges, setEdges} = useStoreEdges();
+  const {setNodes} = useStoreNodes();
+  const {setSelectedStateId, setStateSettingsOpen} = useStoreDialog();
 
   const outputsList = Object.values(outputs);
   const internalsList = Object.values(internals);

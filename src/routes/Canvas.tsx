@@ -28,8 +28,10 @@ import {
   START_NODE_ID,
 } from '@constants/nodes.constants';
 import ROUTE_PATHS from '@constants/routePaths';
-import {useGlobal} from '@contexts/GlobalContext';
 import FSMTransition, {LogicalOperator} from '@models/transition';
+import useStoreEdges from '@store/useStoreEdges';
+import useStoreNodes from '@store/useStoreNodes';
+import useStorePorts from '@store/useStorePorts';
 import {getPortLogicObjectFromPorts} from '@utils/port.utils';
 
 function Canvas() {
@@ -43,18 +45,12 @@ function Canvas() {
     );
   }
 
-  const {
-    edgeState: {edges, onEdgesChange, setEdges},
-    nodeState: {nodes, onNodesChange, setNodes},
-    counterState: {
-      nodeCount,
-      setNodeCount,
-      setTransitionCount,
-      transitionCount,
-    },
-    internalsList,
-    outputList,
-  } = useGlobal();
+  const {edges, onEdgesChange, setEdges, transitionCount, setTransitionCount} =
+    useStoreEdges();
+  const {nodes, onNodesChange, setNodes, nodeCount, setNodeCount} =
+    useStoreNodes();
+  const {internalsList, outputList} = useStorePorts();
+
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
     unknown,
     unknown
