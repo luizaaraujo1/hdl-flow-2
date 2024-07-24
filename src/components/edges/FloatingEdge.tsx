@@ -7,11 +7,11 @@ import {
 } from 'reactflow';
 
 import {START_NODE_ID} from '@constants/nodes.constants';
-import {useDialog} from '@contexts/DialogContext';
-import {useGlobal} from '@contexts/GlobalContext';
 import FSMTransition from '@models/transition';
 import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import CanvasButton from '@shared/DeleteButton';
+import useStoreDialog from '@store/useStoreDialog';
+import useStoreEdges from '@store/useStoreEdges';
 import {getCurvedPath, getEdgeParams, getLoopPath} from '@utils/edge.utils';
 
 function FloatingEdge({
@@ -23,10 +23,9 @@ function FloatingEdge({
   selected,
   data,
 }: EdgeProps<FSMTransition>) {
-  const {
-    edgeState: {edges, setEdges},
-  } = useGlobal();
-  const {setSelectedTransitionId, setTransitionSettingsOpen} = useDialog();
+  const {edges, setEdges} = useStoreEdges();
+  const {setSelectedTransitionId, setTransitionSettingsOpen} = useStoreDialog();
+
   const sourceNode = useStore(
     useCallback(store => store.nodeInternals.get(source), [source]),
   );

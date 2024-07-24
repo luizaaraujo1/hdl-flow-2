@@ -3,8 +3,6 @@ import {Node} from 'reactflow';
 
 import LogicEditor from '@components/canvas/settings/logic/LogicEditor';
 import {PortCategory} from '@constants/ports.constants';
-import {useDialog} from '@contexts/DialogContext';
-import {useGlobal} from '@contexts/GlobalContext';
 import Port from '@models/port';
 import {PortLogic} from '@models/state';
 import FSMTransition, {
@@ -14,18 +12,19 @@ import FSMTransition, {
 import RoundedScrollContainer from '@shared/RoundedScrollContainer';
 import SelectInput from '@shared/SelectInput';
 import TextInput from '@shared/TextInput';
+import useStoreDialog from '@store/useStoreDialog';
+import useStoreEdges from '@store/useStoreEdges';
+import useStorePorts from '@store/useStorePorts';
 import {numericOnlyPattern, removeAllNonNumeric} from '@utils/input';
 import {getPortLogicObjectFromPorts} from '@utils/port.utils';
 
 import TransitionConditionAdder from './TransitionConditionAdder';
 
 function TransitionEditor() {
-  const {selectedTransitionId} = useDialog();
-  const {
-    edgeState: {edges, setEdges},
-    inputList,
-    internalsList,
-  } = useGlobal();
+  const {selectedTransitionId} = useStoreDialog();
+  const {edges, setEdges} = useStoreEdges();
+  const {inputList, internalsList} = useStorePorts();
+
   const [selectedInputId, setSelectedInputId] = useState<string | undefined>(
     undefined,
   );

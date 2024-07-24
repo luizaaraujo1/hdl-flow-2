@@ -2,7 +2,6 @@ import {cloneElement, useState} from 'react';
 import colors from 'tailwindcss/colors';
 
 import {DRAG_AND_DROP_EVENT_NAME, NODE_TYPE} from '@constants/nodes.constants';
-import {useDialog} from '@contexts/DialogContext';
 import {
   ActivityLogIcon,
   ChevronLeftIcon,
@@ -11,6 +10,7 @@ import {
   QuestionMarkIcon,
 } from '@radix-ui/react-icons';
 import * as Toolbar from '@radix-ui/react-toolbar';
+import useStoreDialog from '@store/useStoreDialog';
 
 import MenuButton from './MenuButton';
 
@@ -27,7 +27,7 @@ function CustomIcon({icon}: CustomIconProps) {
 
 function SideMenu() {
   const [open, setOpen] = useState(true);
-  const {setPortSettingsOpen, setCodeResultOpen} = useDialog();
+  const {setPortSettingsOpen, setCodeResultOpen} = useStoreDialog();
 
   const togglePortSettings = () => {
     setPortSettingsOpen(prev => !prev);

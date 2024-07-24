@@ -1,10 +1,12 @@
 import {useCallback, useEffect, useMemo} from 'react';
 
 import {PortCategory, TabSchema} from '@constants/ports.constants';
-import {useGlobal} from '@contexts/GlobalContext';
 import Port, {PortTypeEnum} from '@models/port';
 import {PlusCircledIcon} from '@radix-ui/react-icons';
 import * as Tabs from '@radix-ui/react-tabs';
+import useStoreEdges from '@store/useStoreEdges';
+import useStoreNodes from '@store/useStoreNodes';
+import useStorePorts from '@store/useStorePorts';
 import {
   changeSpacesIntoUnderlines,
   removeAllNonLogical,
@@ -23,9 +25,9 @@ function PortEditor() {
     setInputList,
     setInternalsList,
     setOutputList,
-    nodeState: {setNodes},
-    edgeState: {setEdges},
-  } = useGlobal();
+  } = useStorePorts();
+  const {setNodes} = useStoreNodes();
+  const {setEdges} = useStoreEdges();
 
   const PORT_TABS: TabSchema[] = [
     {name: 'Input', portList: inputList},

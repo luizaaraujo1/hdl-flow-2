@@ -1,10 +1,10 @@
-import {useDialog} from '@contexts/DialogContext';
 import SettingsDialog from '@shared/SettingsDialog';
+import useStoreDialog from '@store/useStoreDialog';
 
 import CodeWorkspace from './CodeWorkspace';
 
 function CodeResultDialog() {
-  const {codeResultOpen, setCodeResultOpen} = useDialog();
+  const {codeResultOpen, setCodeResultOpen} = useStoreDialog();
 
   return (
     <SettingsDialog

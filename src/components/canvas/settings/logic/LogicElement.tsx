@@ -3,12 +3,12 @@ import {zinc} from 'tailwindcss/colors';
 
 import PortInfo from '@components/canvas/settings/port/PortInfo';
 import {PortCategory} from '@constants/ports.constants';
-import {useGlobal} from '@contexts/GlobalContext';
 import {LogicType, PortLogic, STATE_SUPPORTED_LOGIC_TYPES} from '@models/state';
 import {TRANSITION_SUPPORTED_LOGIC_TYPES} from '@models/transition';
 import {TrashIcon} from '@radix-ui/react-icons';
 import SelectInput from '@shared/SelectInput';
 import TextInput from '@shared/TextInput';
+import useStorePorts from '@store/useStorePorts';
 import {filterPortsOfDifferentType, filterSamePort} from '@utils/port.utils';
 
 import {EntityType} from './LogicEditor';
@@ -32,7 +32,8 @@ function LogicElement({
   portCategory,
   entityType,
 }: LogicElement) {
-  const {inputList, internalsList, outputList} = useGlobal();
+  const {inputList, internalsList, outputList} = useStorePorts();
+
   const isInternal = portCategory === 'Internal';
   const isState = entityType === 'State';
   const isInequality = logic.type === LogicType.Inequality;
