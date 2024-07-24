@@ -18,6 +18,11 @@ const useStoreEdges = create<EdgeStoreType>()(
       },
       transitionCount: 1,
       setTransitionCount: createSetter(set, 'transitionCount'),
+      resetEdges: () =>
+        set({
+          edges: [],
+          transitionCount: 1,
+        }),
     }),
     {
       name: 'edge-storage',

@@ -1,19 +1,18 @@
 import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 
-import {PortStoreType} from './types';
+import {DialogSettingsType} from './types';
 import {createSetter} from './utils';
 
-const useStorePorts = create<PortStoreType>()(
+const useStoreSettings = create<DialogSettingsType>()(
   persist(
     set => ({
-      inputList: [],
-      setInputList: createSetter(set, 'inputList'),
-      internalsList: [],
-      setInternalsList: createSetter(set, 'internalsList'),
-      outputList: [],
-      setOutputList: createSetter(set, 'outputList'),
-      resetPorts: () => set({inputList: [], internalsList: [], outputList: []}),
+      projectName: 'My Flow',
+      setProjectName: createSetter(set, 'projectName'),
+      language: 'VHDL',
+      setLanguage: createSetter(set, 'language'),
+      authorName: 'John Doe',
+      setAuthorName: createSetter(set, 'authorName'),
     }),
     {
       name: 'port-storage',
@@ -29,4 +28,4 @@ const useStorePorts = create<PortStoreType>()(
   ),
 );
 
-export default useStorePorts;
+export default useStoreSettings;

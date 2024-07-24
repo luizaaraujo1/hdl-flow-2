@@ -19,6 +19,8 @@ const useStoreDialog = create<DialogStoreType>()(
       setSelectedTransitionId: createSetter(set, 'selectedTransitionId'),
       codeResultOpen: false,
       setCodeResultOpen: createSetter(set, 'codeResultOpen'),
+      projectSettingsOpen: false,
+      setProjectSettingsOpen: createSetter(set, 'projectSettingsOpen'),
     }),
     {
       name: 'dialog-storage',

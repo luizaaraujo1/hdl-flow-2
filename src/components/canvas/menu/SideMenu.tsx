@@ -7,6 +7,7 @@ import {
   ChevronLeftIcon,
   CodeIcon,
   FilePlusIcon,
+  GearIcon,
   QuestionMarkIcon,
 } from '@radix-ui/react-icons';
 import * as Toolbar from '@radix-ui/react-toolbar';
@@ -27,7 +28,8 @@ function CustomIcon({icon}: CustomIconProps) {
 
 function SideMenu() {
   const [open, setOpen] = useState(true);
-  const {setPortSettingsOpen, setCodeResultOpen} = useStoreDialog();
+  const {setPortSettingsOpen, setCodeResultOpen, setProjectSettingsOpen} =
+    useStoreDialog();
 
   const togglePortSettings = () => {
     setPortSettingsOpen(prev => !prev);
@@ -35,6 +37,10 @@ function SideMenu() {
 
   const toggleCodeDialog = () => {
     setCodeResultOpen(prev => !prev);
+  };
+
+  const toggleProjectSettings = () => {
+    setProjectSettingsOpen(prev => !prev);
   };
 
   const onDragStart = (
@@ -48,9 +54,12 @@ function SideMenu() {
   return (
     <Toolbar.Root
       orientation="vertical"
-      className={`relative bottom-1/2 flex h-96 w-20 -translate-y-1/2 flex-col gap-2 overflow-visible rounded-e-2xl border-zinc-300 bg-white px-2 py-8 shadow-lg transition-transform ${open ? '' : '-translate-x-20'}`}>
+      className={`relative bottom-1/2 flex h-auto w-20 -translate-y-1/2 flex-col gap-2 overflow-visible rounded-e-2xl border-zinc-300 bg-white px-2 py-8 shadow-lg transition-transform ${open ? '' : '-translate-x-20'}`}>
       <MenuButton onClick={() => {}} label="How to use">
         {<CustomIcon icon={<QuestionMarkIcon />} />}
+      </MenuButton>
+      <MenuButton onClick={toggleProjectSettings} label="Project Settings">
+        {<CustomIcon icon={<GearIcon />} />}
       </MenuButton>
       <MenuButton onClick={togglePortSettings} label="Open Port editor">
         {<CustomIcon icon={<ActivityLogIcon />} />}

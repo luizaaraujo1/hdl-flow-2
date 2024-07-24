@@ -12,6 +12,7 @@ export type NodeStoreType = {
   onNodesChange: (changes: NodeChange[]) => void;
   nodeCount: number;
   setNodeCount: SetterType<number>;
+  resetNodes: () => void;
 };
 
 export type PortStoreType = {
@@ -21,6 +22,7 @@ export type PortStoreType = {
   setInternalsList: SetterType<Port[]>;
   outputList: Port[];
   setOutputList: SetterType<Port[]>;
+  resetPorts: () => void;
 };
 
 export type EdgeStoreType = {
@@ -29,6 +31,7 @@ export type EdgeStoreType = {
   onEdgesChange: (changes: EdgeChange[]) => void;
   transitionCount: number;
   setTransitionCount: SetterType<number>;
+  resetEdges: () => void;
 };
 
 export type DialogStoreType = {
@@ -44,4 +47,15 @@ export type DialogStoreType = {
   setSelectedTransitionId: SetterType<string | undefined>;
   codeResultOpen: boolean;
   setCodeResultOpen: SetterType<boolean>;
+  projectSettingsOpen: boolean;
+  setProjectSettingsOpen: SetterType<boolean>;
+};
+
+export type DialogSettingsType = {
+  projectName: string;
+  setProjectName: SetterType<string>;
+  authorName: string;
+  setAuthorName: SetterType<string>;
+  language: string;
+  setLanguage: SetterType<string>;
 };

@@ -122,7 +122,7 @@ function LogicElement({
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row items-center justify-between rounded-md bg-white p-2 shadow-lg">
+      <div className="flex flex-row flex-wrap items-center justify-between rounded-md bg-white p-2 shadow-lg">
         <PortInfo port={logic.port} portCategory={portCategory} />
         <div className="flex items-center justify-center gap-2">
           <h3 className="text-nowrap text-sm font-semibold">

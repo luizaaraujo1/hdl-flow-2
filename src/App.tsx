@@ -2,6 +2,7 @@ import {Outlet} from 'react-router-dom';
 
 import CodeResultDialog from '@components/canvas/settings/code/CodeResultDialog';
 import PortSettingsDialog from '@components/canvas/settings/port/PortSettingsDialog';
+import ProjectSettingsDialog from '@components/canvas/settings/project/ProjectSettingsDialog';
 import StateSettingsDialog from '@components/canvas/settings/state/StateSettingsDialog';
 import TransitionSettingsDialog from '@components/canvas/settings/transition/TransitionSettingsDialog';
 import '@fontsource/roboto/300.css';
@@ -19,6 +20,7 @@ function App() {
       <StateSettingsDialog />
       <TransitionSettingsDialog />
       <CodeResultDialog />
+      <ProjectSettingsDialog />
     </div>
   );
 }

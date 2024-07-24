@@ -9,6 +9,7 @@ import RoundedScrollContainer from '@shared/RoundedScrollContainer';
 import useStoreEdges from '@store/useStoreEdges';
 import useStoreNodes from '@store/useStoreNodes';
 import useStorePorts from '@store/useStorePorts';
+import useStoreSettings from '@store/useStoreSettings';
 import generateVhdlCode from '@utils/vhdl';
 
 function generateResultingCode(
@@ -17,18 +18,45 @@ function generateResultingCode(
   outputList: Port[],
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
+  projectName: string,
+  authorName: string,
 ) {
-  return generateVhdlCode(inputList, internalsList, outputList, nodes, edges);
+  return generateVhdlCode(
+    inputList,
+    internalsList,
+    outputList,
+    nodes,
+    edges,
+    projectName,
+    authorName,
+  );
 }
 
 function CodeWorkspace() {
   const {inputList, internalsList, outputList} = useStorePorts();
   const {nodes} = useStoreNodes();
   const {edges} = useStoreEdges();
+  const {projectName, authorName} = useStoreSettings();
   const resultCode = useMemo(
     () =>
-      generateResultingCode(inputList, internalsList, outputList, nodes, edges),
-    [edges, inputList, internalsList, nodes, outputList],
+      generateResultingCode(
+        inputList,
+        internalsList,
+        outputList,
+        nodes,
+        edges,
+        projectName,
+        authorName,
+      ),
+    [
+      authorName,
+      edges,
+      inputList,
+      internalsList,
+      nodes,
+      outputList,
+      projectName,
+    ],
   );
 
   return (

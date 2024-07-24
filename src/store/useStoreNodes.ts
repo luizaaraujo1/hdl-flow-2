@@ -2,6 +2,8 @@ import {applyNodeChanges, NodeChange} from 'reactflow';
 import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 
+import {INITIAL_NODES} from '@constants/nodes.constants';
+
 import {NodeStoreType} from './types';
 import {createSetter} from './utils';
 
@@ -18,8 +20,8 @@ const useStoreNodes = create<NodeStoreType>()(
       },
       nodeCount: 0,
       setNodeCount: createSetter(set, 'nodeCount'),
+      resetNodes: () => set({nodes: INITIAL_NODES, nodeCount: 0}),
     }),
-
     {
       name: 'node-storage',
       storage: createJSONStorage(() => localStorage),
