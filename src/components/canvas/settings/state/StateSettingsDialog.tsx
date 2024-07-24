@@ -1,11 +1,11 @@
-import {useDialog} from '@contexts/DialogContext';
 import SettingsDialog from '@shared/SettingsDialog';
+import useStoreDialog from '@store/useStoreDialog';
 
 import StateEditor from './StateEditor';
 
 function StateSettingsDialog() {
   const {stateSettingsOpen, setStateSettingsOpen, setSelectedStateId} =
-    useDialog();
+    useStoreDialog();
 
   const STATE_SETTINGS_DISCLAIMERS = [
     'Warning! If you change your Ports you will lose these changes',

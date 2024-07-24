@@ -65,3 +65,7 @@ export const INITIAL_NODES: Node<FSMState>[] = [
     },
   },
 ];
+
+export function getInitialNodes() {
+  return INITIAL_NODES;
+}

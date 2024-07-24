@@ -15,13 +15,15 @@ export default function generateVhdlCode(
   outputList: Port[],
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
+  projectName: string,
+  authorName: string,
 ) {
   const entityName = 'FSM';
   const architectureName = 'Behavioral';
   const baseTabAmount = 0;
 
   // Generates the imports section
-  const imports = generateVhdlImports(baseTabAmount);
+  const imports = generateVhdlImports(baseTabAmount, projectName, authorName);
 
   // Declares the FSM entity and it's ports
   const entity = generateVhdlFsmEntity(

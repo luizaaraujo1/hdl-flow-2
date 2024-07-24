@@ -1,5 +1,5 @@
-import {useDialog} from '@contexts/DialogContext';
 import SettingsDialog from '@shared/SettingsDialog';
+import useStoreDialog from '@store/useStoreDialog';
 
 import TransitionEditor from './TransitionEditor';
 
@@ -8,7 +8,7 @@ function TransitionSettingsDialog() {
     transitionSettingsOpen,
     setTransitionSettingsOpen,
     setSelectedTransitionId,
-  } = useDialog();
+  } = useStoreDialog();
 
   const TRANSITION_SETTINGS_DISCLAIMERS = [
     'Warning! If you change your Ports you will lose these changes',

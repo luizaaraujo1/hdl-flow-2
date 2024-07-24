@@ -25,6 +25,7 @@ function MenuButton({
       onMouseLeave={() => setActive(false)}
       onFocus={() => setActive(true)}
       onBlur={() => setActive(false)}
+      aria-label={label}
       {...rest}>
       <>
         {label && active && (

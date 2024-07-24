@@ -3,18 +3,16 @@ import {Node} from 'reactflow';
 
 import LogicEditor from '@components/canvas/settings/logic/LogicEditor';
 import {PortCategory} from '@constants/ports.constants';
-import {useDialog} from '@contexts/DialogContext';
-import {useGlobal} from '@contexts/GlobalContext';
 import FSMState, {PortLogic, StatePortLogic} from '@models/state';
 import RoundedScrollContainer from '@shared/RoundedScrollContainer';
 import TextInput from '@shared/TextInput';
+import useStoreDialog from '@store/useStoreDialog';
+import useStoreNodes from '@store/useStoreNodes';
 import {numericOnlyPattern, removeAllNonNumeric} from '@utils/input';
 
 function StateEditor() {
-  const {selectedStateId} = useDialog();
-  const {
-    nodeState: {nodes, setNodes},
-  } = useGlobal();
+  const {nodes, setNodes} = useStoreNodes();
+  const {selectedStateId} = useStoreDialog();
 
   const currentNode = useMemo(
     () => nodes.find(node => node.id === selectedStateId),
