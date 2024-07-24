@@ -59,3 +59,8 @@ export type DialogSettingsType = {
   language: string;
   setLanguage: SetterType<string>;
 };
+
+export type SaveFileFormat = Pick<NodeStoreType, 'nodes' | 'nodeCount'> &
+  Pick<PortStoreType, 'inputList' | 'internalsList' | 'outputList'> &
+  Pick<EdgeStoreType, 'edges' | 'transitionCount'> &
+  Pick<DialogSettingsType, 'authorName' | 'language' | 'projectName'>;
