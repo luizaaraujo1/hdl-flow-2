@@ -21,6 +21,11 @@ function AboutTransitionSettings() {
         cannot be edited. As it will always lead to the <b>Initial State </b>
         unconditionally.
       </p>
+      <p>
+        A transition represents a condition for the source State to move to the
+        target State in the FSM. If the logic defined here returns true, then
+        the State Transition will happen on the rising edge of the FSM clock.
+      </p>
       <p>Here you can:</p>
       <p>
         <b>Change Transition name:</b> This name will appear as a comment in the
