@@ -7,6 +7,7 @@ import AboutPortSettings from './contents/AboutPortSettings';
 import AboutProjectSettings from './contents/AboutProjectSettings';
 import AboutStateSettings from './contents/AboutStateSettings';
 import AboutTransitionSettings from './contents/AboutTransitionSettings';
+import CanvasControls from './contents/CanvasControls';
 import CodeResults from './contents/CodeResults';
 import GettingStarted from './contents/GettingStarted';
 import WhatIsHdlFlow from './contents/WhatIsHdlFlow';
@@ -16,6 +17,10 @@ function HowToUse() {
     {
       title: 'What is HDL Flow?',
       content: <WhatIsHdlFlow />,
+    },
+    {
+      title: 'Canvas controls',
+      content: <CanvasControls />,
     },
     {
       title: 'Getting started',

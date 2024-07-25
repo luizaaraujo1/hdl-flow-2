@@ -18,9 +18,7 @@ function SimpleAccordions({elements}: Props) {
   );
 
   const handleClick = (index: number) => {
-    console.log('🚀 ~ handleClick ~ index:', index);
     setIsOpenArray(prev => {
-      console.log('🚀 ~ handleClick ~ prev:', prev);
       const newArray = [...prev];
       newArray[index] = !newArray[index];
       return newArray;
