@@ -2,8 +2,9 @@ function AboutTransitionSettings() {
   return (
     <section className="text-md flex flex-col gap-2">
       <p>
-        Click on the edit button on a Transition to open the{' '}
-        <b>Transition Settings</b> for it.
+        Select a Transition that is on the <b>Canvas</b>, then click on the edit
+        button that appears above it to open the <b>Transition Settings</b> for
+        it.
       </p>
       <img
         alt="transition edit button"
@@ -22,11 +23,11 @@ function AboutTransitionSettings() {
       </p>
       <p>Here you can:</p>
       <p>
-        <b>Change transition name:</b> This name will appear as a comment in the
+        <b>Change Transition name:</b> This name will appear as a comment in the
         resulting code.
       </p>
       <p>
-        <b>Change transition number:</b> This will change the displayed number
+        <b>Change Transition number:</b> This will change the displayed number
         for this transition on the Canvas.
       </p>
       <p>
