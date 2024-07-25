@@ -7,6 +7,7 @@ import AboutPortSettings from './contents/AboutPortSettings';
 import AboutProjectSettings from './contents/AboutProjectSettings';
 import AboutStateSettings from './contents/AboutStateSettings';
 import AboutTransitionSettings from './contents/AboutTransitionSettings';
+import CodeResults from './contents/CodeResults';
 import GettingStarted from './contents/GettingStarted';
 import WhatIsHdlFlow from './contents/WhatIsHdlFlow';
 
@@ -36,6 +37,7 @@ function HowToUse() {
       title: 'About: Project settings',
       content: <AboutProjectSettings />,
     },
+    {title: 'About: Code results', content: <CodeResults />},
   ];
 
   return (
