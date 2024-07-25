@@ -21,6 +21,8 @@ const useStoreDialog = create<DialogStoreType>()(
       setCodeResultOpen: createSetter(set, 'codeResultOpen'),
       projectSettingsOpen: false,
       setProjectSettingsOpen: createSetter(set, 'projectSettingsOpen'),
+      howToUseOpen: false,
+      setHowToUseOpen: createSetter(set, 'howToUseOpen'),
     }),
     {
       name: 'dialog-storage',
