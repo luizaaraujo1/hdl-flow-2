@@ -21,14 +21,14 @@ function AboutStateSettings() {
         resulting code.
       </p>
       <p>
-        <b>Change State number:</b> This number will be important to identify
-        the state in the resulting code, so make sure that every State in your
-        project has a unique number!
+        <b>Change State number:</b> This number <b>will be important</b> to
+        identify the state in the resulting code, so make sure that every State
+        in your project has a <b>unique number</b>!
       </p>
       <p>
         Once you add Ports to your project, the <b>Internal and Output</b> ports
         will appear here so that you can set the value for them when the FSM
-        reaches this state.
+        reaches this State.
       </p>
       <img
         alt="state settings operations"
@@ -42,8 +42,9 @@ function AboutStateSettings() {
         by that port when the FSM reaches that state.
       </p>
       <p>
-        If you pick the Custom logic operation, make sure to write valid HDL as
-        it will be directly outputted to the resulting code.
+        If you pick the Custom logic operation, make sure to{' '}
+        <b>write valid HDL code</b> as it will be directly outputted to the
+        resulting code.
       </p>
     </section>
   );

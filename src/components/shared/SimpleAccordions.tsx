@@ -27,6 +27,8 @@ function SimpleAccordions({elements}: Props) {
 
   const getSpinStyle = (open: boolean) => (open ? 'rotate-180' : '');
 
+  const getFixedStyle = (open: boolean) => (open ? 'sticky top-0' : '');
+
   const getRoundStyle = (open: boolean) =>
     open ? 'rounded-lg rounded-b-none' : 'rounded-lg';
 
@@ -37,7 +39,7 @@ function SimpleAccordions({elements}: Props) {
           key={`header-${index}`}
           className="rounded-lg bg-white shadow-md focus-within:ring focus-within:ring-gray-400 focus-within:ring-opacity-75 focus:outline-none">
           <div
-            className={`btn-canvas w-full px-2 py-4 hover:cursor-pointer ${getRoundStyle(isOpenArray[index])}`}
+            className={`btn-canvas w-full px-2 py-4 hover:cursor-pointer ${getRoundStyle(isOpenArray[index])} ${getFixedStyle(isOpenArray[index])}`}
             onClick={() => handleClick(index)}>
             <div className="flex w-full justify-between ">
               <span className="select-none text-sm font-medium text-black">
