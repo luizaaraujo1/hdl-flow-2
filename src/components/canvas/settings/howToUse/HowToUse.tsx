@@ -5,6 +5,7 @@ import SimpleAccordions, {
 
 import AboutPortSettings from './contents/AboutPortSettings';
 import AboutProjectSettings from './contents/AboutProjectSettings';
+import AboutTransitionSettings from './contents/AboutTransitionSettings';
 import GettingStarted from './contents/GettingStarted';
 import WhatIsHdlFlow from './contents/WhatIsHdlFlow';
 
@@ -21,6 +22,10 @@ function HowToUse() {
     {
       title: 'About: Port settings',
       content: <AboutPortSettings />,
+    },
+    {
+      title: 'About: Transition settings',
+      content: <AboutTransitionSettings />,
     },
     {
       title: 'About: Project settings',
