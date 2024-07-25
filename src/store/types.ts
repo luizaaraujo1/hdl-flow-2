@@ -49,6 +49,8 @@ export type DialogStoreType = {
   setCodeResultOpen: SetterType<boolean>;
   projectSettingsOpen: boolean;
   setProjectSettingsOpen: SetterType<boolean>;
+  howToUseOpen: boolean;
+  setHowToUseOpen: SetterType<boolean>;
 };
 
 export type DialogSettingsType = {

@@ -176,7 +176,9 @@ function LogicElement({
         <div className="flex flex-col items-end">
           <SelectInput
             id="type_select"
-            label="Select port operation:"
+            label={
+              isState ? 'Select port operation:' : 'Select port condition:'
+            }
             className="w-full"
             onTextChange={newType =>
               onEditLogic(logic.port.id, 'type', newType)
