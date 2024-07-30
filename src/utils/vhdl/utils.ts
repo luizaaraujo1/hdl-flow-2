@@ -1,6 +1,6 @@
 import {Node} from 'reactflow';
 
-import {START_NODE_ID} from '@constants/nodes.constants';
+import {RESET_NODE_ID} from '@constants/nodes.constants';
 import {
   VHDL_COMMENT_SPACING_SIZE,
   VHDL_ELSE,
@@ -112,5 +112,5 @@ export function getVhdlStateName(state: Node<FSMState>) {
 }
 
 export function getStatesFromNodes(nodes: Node<FSMState>[]) {
-  return nodes.filter(node => node.id !== START_NODE_ID);
+  return nodes.filter(node => node.id !== RESET_NODE_ID);
 }

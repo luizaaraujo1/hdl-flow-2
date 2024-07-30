@@ -1,6 +1,6 @@
 import {Edge, getConnectedEdges, Node} from 'reactflow';
 
-import {START_NODE_ID} from '@constants/nodes.constants';
+import {RESET_NODE_ID} from '@constants/nodes.constants';
 import {DEFAULT_CLK_PORT, DEFAULT_RESET_PORT} from '@constants/ports.constants';
 import {
   VHDL_FSM_END_SECTION,
@@ -32,8 +32,8 @@ import {
   VHDL_FSM_CLOCK_PROCESS_CONTENT_2,
   VHDL_FSM_ARCHITECTURE_STATE_NAME,
   VHDL_FSM_STATE_PROCESS_CONDITION_ERROR,
-  VHDL_FSM_START_ERROR,
-  VHDL_FSM_START_INVALID_ERROR,
+  VHDL_FSM_RESET_ERROR,
+  VHDL_FSM_RESET_INVALID_ERROR,
 } from '@constants/vhdl';
 import Port from '@models/port';
 import FSMState from '@models/state';
@@ -170,16 +170,16 @@ function getVhdlFsmFirstStateName(
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
 ) {
-  const firstTransition = edges.find(edge => edge.source === START_NODE_ID);
+  const firstTransition = edges.find(edge => edge.source === RESET_NODE_ID);
 
   if (firstTransition) {
     const state = getStateByNodeId(nodes, firstTransition.target);
     return state
       ? getVhdlStateName(state)
-      : VHDL_INLINE_COMMENT + VHDL_FSM_START_INVALID_ERROR;
+      : VHDL_INLINE_COMMENT + VHDL_FSM_RESET_INVALID_ERROR;
   }
 
-  return VHDL_INLINE_COMMENT + VHDL_FSM_START_ERROR;
+  return VHDL_INLINE_COMMENT + VHDL_FSM_RESET_ERROR;
 }
 
 function getVhdlFsmArchitectureClockProcess(

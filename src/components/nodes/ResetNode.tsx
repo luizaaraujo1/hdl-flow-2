@@ -6,7 +6,7 @@ import HiddenHandle from '@shared/HiddenHandle';
 const connectionNodeIdSelector = (state: ReactFlowState) =>
   state.connectionNodeId;
 
-function StartNode({id}: NodeProps) {
+function ResetNode({id}: NodeProps) {
   const connectionNodeId = useStore(connectionNodeIdSelector);
 
   const isConnecting = !!connectionNodeId;
@@ -19,11 +19,11 @@ function StartNode({id}: NodeProps) {
     <div
       className={`h-[100px] w-[100px] content-center rounded-full border-2 border-black transition-colors ${targetStyle}`}>
       <h1 className="text-center font-semibold text-black">
-        {isTarget ? 'NOT ALLOWED' : 'START'}
+        {isTarget ? 'NOT ALLOWED' : 'RESET'}
       </h1>
-      <HiddenHandle isConnecting={isConnecting} type={NODE_TYPE.Start} />
+      <HiddenHandle isConnecting={isConnecting} type={NODE_TYPE.Reset} />
     </div>
   );
 }
 
-export default StartNode;
+export default ResetNode;
