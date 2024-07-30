@@ -5,8 +5,9 @@ import {
   EdgeProps,
   EdgeLabelRenderer,
 } from 'reactflow';
+import {red} from 'tailwindcss/colors';
 
-import {START_NODE_ID} from '@constants/nodes.constants';
+import {RESET_NODE_ID} from '@constants/nodes.constants';
 import FSMTransition from '@models/transition';
 import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import CanvasButton from '@shared/DeleteButton';
@@ -44,7 +45,7 @@ function FloatingEdge({
     return null;
   }
 
-  const isFromStart = sourceNode.id === START_NODE_ID;
+  const isFromReset = sourceNode.id === RESET_NODE_ID;
 
   const {sx, sy, tx, ty} = getEdgeParams(sourceNode, targetNode);
 
@@ -111,6 +112,16 @@ function FloatingEdge({
     }
   };
 
+  const currentStyle = {
+    ...style,
+    ...(isFromReset
+      ? {
+          stroke: red['500'],
+        }
+      : {}),
+    ...(selected ? {strokeWidth: (Number(style?.strokeWidth) ?? 2) + 1} : {}),
+  };
+
   return (
     <>
       <path
@@ -118,11 +129,7 @@ function FloatingEdge({
         className="react-flow__edge-path transition-[stroke-width]"
         d={edgePath}
         markerEnd={markerEnd}
-        style={
-          selected
-            ? {...style, strokeWidth: (Number(style?.strokeWidth) ?? 2) + 1}
-            : style
-        }
+        style={currentStyle}
       />
       <EdgeLabelRenderer>
         {selected && (
@@ -137,10 +144,10 @@ function FloatingEdge({
               onClick={handleDeleteEdge}
               label="Delete"
               className="bg-red-100"
-              displayMode={!isFromStart ? 'left' : undefined}
+              displayMode={!isFromReset ? 'left' : undefined}
               icon={<CrossCircledIcon />}
             />
-            {!isFromStart && (
+            {!isFromReset && (
               <CanvasButton
                 onClick={handleOpenEditTransition}
                 label="Edit"
@@ -150,14 +157,16 @@ function FloatingEdge({
             )}
           </div>
         )}
-        <div
-          style={{
-            position: 'absolute',
-            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-          }}
-          className="nodrag nopan rounded-md border-2 border-black bg-white p-2 text-lg font-semibold shadow-md">
-          {`T${data?.transitionNumber}`}
-        </div>
+        {!isFromReset && (
+          <div
+            style={{
+              position: 'absolute',
+              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+            }}
+            className="nodrag nopan rounded-md border-2 border-black bg-white p-2 text-lg font-semibold shadow-md">
+            {`T${data?.transitionNumber}`}
+          </div>
+        )}
       </EdgeLabelRenderer>
       {/* Used for click area */}
       <path

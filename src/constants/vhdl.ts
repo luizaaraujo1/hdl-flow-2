@@ -58,10 +58,10 @@ export const VHDL_FSM_STATE_PROCESS_PORT_COMMENT =
   'Note: Declare internal and output ports on the Port Editor';
 export const VHDL_FSM_STATE_PROCESS_DEAD_COMMENT =
   'Warning! This is a dead state';
-export const VHDL_FSM_START_ERROR =
-  'Error! Start node is not connected to any State, try editing the Canvas';
-export const VHDL_FSM_START_INVALID_ERROR =
-  'Error! Start node is connection is invalid, try editing the Canvas';
+export const VHDL_FSM_RESET_ERROR =
+  'Error! Reset Node is not connected to any State, try editing the Canvas';
+export const VHDL_FSM_RESET_INVALID_ERROR =
+  'Error! Reset Node is connection is invalid, try editing the Canvas';
 export const VHDL_FSM_STATE_PROCESS_TRANSITION_ERROR =
   'Error! This transition is invalid';
 export const VHDL_FSM_STATE_PROCESS_CONDITION_ERROR =

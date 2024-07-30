@@ -25,7 +25,7 @@ import {
   DRAG_AND_DROP_EVENT_NAME,
   NODE_TYPE,
   NODE_TYPES,
-  START_NODE_ID,
+  RESET_NODE_ID,
 } from '@constants/nodes.constants';
 import ROUTE_PATHS from '@constants/routePaths';
 import FSMTransition, {LogicalOperator} from '@models/transition';
@@ -59,11 +59,11 @@ function Canvas() {
 
   const isValidConnection = useCallback(
     (connection: Connection) => {
-      if (connection.source === START_NODE_ID) {
-        const isStartAlreadyConnected = edges.find(
-          edge => edge.source === START_NODE_ID,
+      if (connection.source === RESET_NODE_ID) {
+        const isResetAlreadyConnected = edges.find(
+          edge => edge.source === RESET_NODE_ID,
         );
-        if (isStartAlreadyConnected) return false;
+        if (isResetAlreadyConnected) return false;
       }
       const isAlreadyConnected =
         edges.filter(
@@ -92,8 +92,8 @@ function Canvas() {
     (connection: Connection) => {
       if (connection.source && connection.target) {
         //FIXME: Typescript shenanigans
-        const isStartNode = connection.source === START_NODE_ID;
-        const count = isStartNode ? 0 : transitionCount;
+        const isResetNode = connection.source === RESET_NODE_ID;
+        const count = isResetNode ? 0 : transitionCount;
         const newEdge: Edge<FSMTransition> = {
           ...connection,
           source: connection.source,
@@ -110,7 +110,7 @@ function Canvas() {
           },
         };
         setEdges(edges => addEdge(newEdge, edges));
-        if (connection.source !== START_NODE_ID)
+        if (connection.source !== RESET_NODE_ID)
           setTransitionCount(prev => prev + 1);
       }
     },

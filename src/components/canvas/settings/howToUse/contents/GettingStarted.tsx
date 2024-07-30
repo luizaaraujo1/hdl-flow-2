@@ -2,8 +2,8 @@ function GettingStarted() {
   return (
     <section className="text-md flex flex-col gap-2">
       <p>
-        In a new empty project, you will see the <b>Canvas</b> page with a{' '}
-        <b>Start Node and State 0</b>.
+        In a new empty project, you will see the <b>Canvas</b> page with a Reset
+        Node and State 0.
       </p>
       <img
         alt="default state"
@@ -83,7 +83,7 @@ function GettingStarted() {
         src="/images/transition_connect_end.png"
       />
       <p>
-        Make sure to always connect the <b>Start State</b> to any State to
+        Make sure to connect the <b>Reset Node</b> to any other one, to
         determine the initial State of your FSM, as it will not be correct
         without it! Every FSM in HDL Flow needs to have this connection.
       </p>

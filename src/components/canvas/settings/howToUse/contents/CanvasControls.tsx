@@ -50,8 +50,8 @@ function CanvasControls() {
         src="/images/canvas_controls.png"
       />
       <p>
-        <b>Move elements</b> All elements ( besides the <b>Start State</b> ) can
-        be moved by <b>clicking and dragging</b> them on the Canvas. Use this to
+        <b>Move elements</b> All elements ( besides the <b>Reset Node</b> ) can
+        be moved by clicking and dragging them on the Canvas. Use this to
         position them as you see fit.
       </p>
       <p>
@@ -156,15 +156,15 @@ function CanvasControls() {
         (or to itself) one time.
       </p>
       <p>
-        -- The Start State can only have one connection: There can only be one
+        -- The Reset Node can only have one connection: There can only be one
         initial state on your FSM, so you will not be able to create multiple
-        connections with it. If you want to change the connection then you can
+        connections with it. If you want to change this connection then you can
         Edit it, or Delete it first and then create another one pointing
         somewhere else.
       </p>
       <p>
-        -- States cannot connect to the Start: You will not be able to connect
-        any States to the <b>Start Node</b>.
+        -- States cannot connect to the Reset Node: You will not be able to
+        connect any States to the <b>Reset Node</b>.
       </p>
     </section>
   );

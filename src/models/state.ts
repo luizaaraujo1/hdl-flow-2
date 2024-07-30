@@ -34,7 +34,7 @@ interface FSMState {
   stateNumber: number;
   name: string;
   portLogic: StatePortLogic;
-  isStart?: boolean;
+  isReset?: boolean;
 }
 
 export default FSMState;

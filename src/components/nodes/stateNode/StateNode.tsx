@@ -7,7 +7,7 @@ import {
   Position,
 } from 'reactflow';
 
-import {START_NODE_ID} from '@constants/nodes.constants';
+import {RESET_NODE_ID} from '@constants/nodes.constants';
 import FSMState from '@models/state';
 import {CrossCircledIcon, GearIcon} from '@radix-ui/react-icons';
 import CanvasButton from '@shared/DeleteButton';
@@ -45,15 +45,15 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
 
   const isConnected = !!connectedEdges;
 
-  const isStartConnected = useMemo(
-    () => !!edges.find(edge => edge.source === START_NODE_ID),
+  const isResetConnected = useMemo(
+    () => !!edges.find(edge => edge.source === RESET_NODE_ID),
     [edges],
   );
 
-  const isStartTryingToConnectAgain =
-    !!isStartConnected &&
+  const isResetTryingToConnectAgain =
+    !!isResetConnected &&
     !!connectionNodeId &&
-    connectionNodeId === START_NODE_ID;
+    connectionNodeId === RESET_NODE_ID;
 
   const isConnectedTryingToConnectAgain =
     isConnected &&
@@ -104,7 +104,7 @@ function StateNode({id, selected, data}: NodeProps<FSMState>) {
       <StateNodeHandler
         isConnecting={isConnecting}
         isNotAllowed={
-          isStartTryingToConnectAgain || isConnectedTryingToConnectAgain
+          isResetTryingToConnectAgain || isConnectedTryingToConnectAgain
         }
         isConnected={isConnected}
         selectedStyle={selectedStyle}
