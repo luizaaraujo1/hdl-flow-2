@@ -16,7 +16,7 @@ function AboutPortSettings() {
         Port you want to create/edit.
       </p>
       <p>
-        <b>Add a Port</b> Click on the bottom right button to add a Port of the
+        <b>Add a Port:</b> Click on the bottom right button to add a Port of the
         selected Port Type to your project. Conceptually the FSM Port allows for
         communication between the FSM and other components in the system. This
         could include inputs that trigger state changes, outputs that reflect

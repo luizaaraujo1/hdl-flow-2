@@ -16,11 +16,11 @@ function GettingStarted() {
       </p>
       <img alt="side menu" width="150px" src="/images/side_menu.png" />
       <p>
-        The first thing you should do in a brand new project is using the
+        The first thing you should do in a brand new project is going to the
         <b> Port Editor</b> to add all the <b>Ports</b> (third button on the
         menu, top to bottom) that are relevant to the FSM you want to create.
         You can add <b>Input, Output and Internal</b> type Ports and they will
-        be automatically added to all the States that you create.
+        be automatically added to all the States that you create from then on.
       </p>
       <img
         alt="side menu port editor"
@@ -37,8 +37,8 @@ function GettingStarted() {
         <b> States </b>
         into the <b>Canvas</b> (click and drag the fourth icon of the side menu,
         top to bottom, and release it on the Canvas to create a new State). All
-        states that you add should be uniquely numbered, fortunately the default
-        number will increment automatically. You can change it on the{' '}
+        states that you add should be <b>uniquely numbered</b>, fortunately the
+        default number will increment automatically. You can change it on the{' '}
         <b>State Editor</b> later!
       </p>
       <img
@@ -63,8 +63,9 @@ function GettingStarted() {
       />
       <p>
         Now you can connect your FSM States with <b>Transitions</b>, click and
-        drag box in the bottom of them, and then connect the resulting line to
-        other states, or to itself, to add a Transition.
+        <b> drag the highlighted area</b> in the bottom of them, and then
+        connect the resulting line to other states, or to itself, to add a
+        Transition.
       </p>
       <img
         alt="transition connect start"
@@ -92,9 +93,9 @@ function GettingStarted() {
         src="/images/start_connected.png"
       />
       <p>
-        The next step is setting up all the <b>State Logic</b> inside all the
-        states you created, you can click any <b>State</b> in the Canvas to make
-        the <b>Edit</b> button appear, use it to open the <b>State Editor</b> to
+        The next step is setting up the <b>State Logic</b> inside all the States
+        you created, you can click any <b>State</b> in the Canvas to make the{' '}
+        <b>Edit</b> button appear, click it to open the <b>State Editor</b> to
         set up the value the Ports will assume when the FSM reaches that State.
       </p>
       <img
@@ -155,8 +156,8 @@ function GettingStarted() {
       <p>
         Finally it is time to check your results! Check the <b>Code Results</b>{' '}
         menu to see the generated HDL code. There is a button here you can use
-        to easily copy all the code, and this component will automatically
-        update if you make any changes to the Canvas.
+        to easily copy all of the code, and this component will{' '}
+        <b>automatically update</b> if you make any changes to the Canvas.
       </p>
       <img
         alt="side menu code results"

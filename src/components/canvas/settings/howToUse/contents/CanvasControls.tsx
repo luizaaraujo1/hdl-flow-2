@@ -21,16 +21,16 @@ function CanvasControls() {
         <b>-- Navigating the Canvas -- </b>
       </p>
       <p>
-        <b>Viewport movement:</b> Use your mouse to click in the background of
-        the <b>Canvas</b>and drag the screen around in order to move your
-        viewport.
+        <b>Viewport movement:</b> Use your mouse to{' '}
+        <b>click in the background</b> of the <b>Canvas</b> and <b>drag</b> the
+        screen around in order to move your viewport.
       </p>
       <p>
-        <b>Zoom control:</b> Use your mouse wheel to scroll up and down to zoom
-        in and out your viewport.
+        <b>Zoom control:</b> Use your mouse wheel to <b>scroll up and down</b>{' '}
+        to zoom in and out your viewport.
       </p>
       <p>
-        <b>Canvas control buttons:</b> In the bottom left corner there are
+        <b>Canvas control buttons:</b> In the bottom right corner there are
         controls for the Canvas that you can also use. From top to bottom you
         have:
       </p>
@@ -41,8 +41,8 @@ function CanvasControls() {
         of it&apos;s contents at once)
       </p>
       <p>
-        -- Editing lock (Will disable/enable editing for all the elements in the
-        Canvas)
+        -- Editing lock (Will disable/enable moving, selecting and editing for
+        all the elements in the Canvas)
       </p>
       <img
         alt="canvas controls"
@@ -56,9 +56,9 @@ function CanvasControls() {
       </p>
       <p>
         <b>Delete elements:</b> You are able to delete some elements of the
-        Canvas. You can do that by selecting them and typing the Shift or Delete
-        key in you keyboard, or you can click the Delete button that appears
-        above them when they are selected.
+        Canvas. You can do that by selecting them and typing the{' '}
+        <b>Shift or Delete keys</b> in you keyboard, or you can click the Delete
+        button that appears above them when they are selected.
       </p>
       <p>
         <b>Create States:</b> You can click and drag the fourth option on the
@@ -86,8 +86,8 @@ function CanvasControls() {
       />
       <p>
         <b>Create transition:</b> You can create transitions between different
-        states by on the highlighted area and dragging it to where to the
-        corresponding area in a different state.
+        states by <b>clicking on the highlighted area</b> and <b>dragging</b> it
+        to where to the corresponding area in a different state.
       </p>
       <img
         alt="transition connect start"
@@ -107,8 +107,9 @@ function CanvasControls() {
       <p>
         <b>Create a self referencing transition:</b> Sometimes you want a FSM
         state to have a specific condition where it will loop into itself, you
-        can add that loop transition by clicking the highlighted area and
-        dragging it to it&apos;s center, and then releasing it.
+        can add that loop transition by{' '}
+        <b>clicking the highlighted area, dragging it to it&apos;s center </b>
+        and then releasing it.
       </p>
       <img
         alt="transition connect start"
@@ -126,9 +127,10 @@ function CanvasControls() {
         src="/images/transition_connect_self_end.png"
       />
       <p>
-        <b>Edit a transition:</b> By clicking right below a State that has an
-        incoming connection, you will be able to drag it around and place it
-        somewhere else (If you leave it disconnected, it will be deleted)
+        <b>Edit a transition:</b> By <b>clicking right below a State</b> that
+        has an incoming connection, you will be able to <b>drag</b> it around
+        and <b>place it somewhere else</b> (If you leave it disconnected, it
+        will be deleted)
       </p>
       <img
         alt="transition edit start"

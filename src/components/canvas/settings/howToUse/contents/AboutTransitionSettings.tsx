@@ -20,6 +20,11 @@ function AboutTransitionSettings() {
         Note: The reset connection (the one that comes from the Reset Node) is
         not a transition. It&apos;s job is just to point to the initial State.
       </p>
+      <p>
+        A transition represents a condition for the source State to move to the
+        target State in the FSM. If the logic defined here returns true, then
+        the State Transition will happen on the rising edge of the FSM clock.
+      </p>
       <p>Here you can:</p>
       <p>
         <b>Change Transition name:</b> This name will appear as a comment in the
