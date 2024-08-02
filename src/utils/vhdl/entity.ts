@@ -86,6 +86,7 @@ function getEntityPortListContent(port: Port, portCategory: PortCategory) {
     VHDL_COLON +
     getEntityPortCategory(portCategory) +
     getEntityPortType(port) +
+    ';' +
     (port.description.length > 0 ? getVhdlInlineComment(port.description) : '')
   );
 }
@@ -97,7 +98,11 @@ function getEntityPortList(
 ) {
   const portList = ports
     .map(port =>
-      vhdlCodeLine(getEntityPortListContent(port, portCategory), tabAmount),
+      vhdlCodeLine(
+        getEntityPortListContent(port, portCategory),
+        tabAmount,
+        false,
+      ),
     )
     .join('');
 
