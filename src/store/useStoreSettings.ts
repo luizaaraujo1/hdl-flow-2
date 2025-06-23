@@ -9,8 +9,6 @@ const useStoreSettings = create<DialogSettingsType>()(
     set => ({
       projectName: 'My Flow',
       setProjectName: createSetter(set, 'projectName'),
-      language: 'VHDL',
-      setLanguage: createSetter(set, 'language'),
       authorName: 'John Doe',
       setAuthorName: createSetter(set, 'authorName'),
     }),
