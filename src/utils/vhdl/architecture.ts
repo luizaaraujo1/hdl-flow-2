@@ -20,7 +20,6 @@ import {
   VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN,
   VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT,
   VHDL_ASSIGNMENT_ARROW,
-  VHDL_FSM_STATE_PROCESS_PORT_COMMENT,
   VHDL_AND,
   VHDL_OR,
   VHDL_FSM_STATE_PROCESS_TRANSITION_ERROR,
@@ -31,9 +30,10 @@ import {
   VHDL_FSM_CLOCK_PROCESS_CONTENT_1,
   VHDL_FSM_CLOCK_PROCESS_CONTENT_2,
   VHDL_FSM_ARCHITECTURE_STATE_NAME,
-  VHDL_FSM_STATE_PROCESS_CONDITION_ERROR,
   VHDL_FSM_RESET_ERROR,
   VHDL_FSM_RESET_INVALID_ERROR,
+  VHDL_END_IF,
+  VHDL_FSM_STATE_PROCESS_DATA_OTHERS_COMMENT,
 } from '@constants/vhdl';
 import Port from '@models/port';
 import FSMState from '@models/state';
@@ -43,6 +43,7 @@ import FSMTransition from '@models/transition';
 import {LogicalOperator} from '@models/transition';
 import {getStringWithBreakLines} from '@utils/transduction';
 
+import {getEntityPortType} from './entity';
 import {
   getStatesFromNodes,
   getVhdlConditionSection,
@@ -102,7 +103,7 @@ function getProcessSection(
 function getCaseWhens(
   tabAmount: number,
   conditions: ConditionElement[],
-  getDefault: (tabAmount: number) => string,
+  getDefault?: (tabAmount: number) => string,
 ) {
   const whens: string[] = [];
 
@@ -117,10 +118,12 @@ function getCaseWhens(
     whens.push(condition.getConditionContent(tabAmount + 1));
   });
 
-  whens.push(
-    vhdlCodeLine(VHDL_FSM_STATE_PROCESS_WHEN_OTHERS, tabAmount, false),
-  );
-  whens.push(getDefault(tabAmount + 1));
+  if (getDefault) {
+    whens.push(
+      vhdlCodeLine(VHDL_FSM_STATE_PROCESS_WHEN_OTHERS, tabAmount, false),
+    );
+    whens.push(getDefault(tabAmount + 1));
+  }
 
   return [...whens].join('');
 }
@@ -128,9 +131,14 @@ function getCaseWhens(
 function getCasesSection(
   tabAmount: number,
   conditions: ConditionElement[],
-  getDefault: (tabAmount: number) => string,
+  getDefault?: (tabAmount: number) => string,
 ) {
-  if (conditions.length === 0) return getDefault(tabAmount);
+  if (conditions.length === 0) {
+    if (getDefault) {
+      return getDefault(tabAmount);
+    }
+    return '';
+  }
 
   const cases = getCaseWhens(tabAmount + 1, conditions, getDefault);
 
@@ -151,14 +159,27 @@ function getVhdlArchitectureStateNameList(nodes: Node<FSMState>[]) {
 function getVhdlFsmArchitectureDefinitions(
   tabAmount: number,
   nodes: Node<FSMState>[],
+  internalsList: Port[],
 ) {
   const stateList = getVhdlArchitectureStateNameList(nodes);
+
+  // Generate internal signals
+  const internalSignals = internalsList
+    .map(internal =>
+      vhdlCodeLine(
+        `signal ${internal.id_name} : ${getEntityPortType(internal)}`,
+        tabAmount,
+      ),
+    )
+    .join('');
 
   return (
     vhdlCodeLine(
       VHDL_FSM_ARCHITECTURE_TYPE + stateList + VHDL_FSM_END_SECTION,
       tabAmount,
-    ) + vhdlCodeLine(VHDL_FSM_ARCHITECTURE_SIGNALS, tabAmount)
+    ) +
+    vhdlCodeLine(VHDL_FSM_ARCHITECTURE_SIGNALS, tabAmount) +
+    internalSignals
   );
 }
 
@@ -212,17 +233,29 @@ function getVhdlFsmArchitectureClockProcess(
     return getVhdlConditionSection(contentTabs, conditions);
   }
 
-  return getProcessSection(tabAmount, clockProcessPortList, getProcessContent);
+  const commentLine = vhdlCodeLine('-- State Register', tabAmount, false);
+  return (
+    commentLine +
+    getProcessSection(tabAmount, clockProcessPortList, getProcessContent)
+  );
 }
 
 function getVhdlFsmArchitecturePortLogicAssignment(
   tabAmount: number,
   portLogic: PortLogic,
 ) {
+  let outputPort = portLogic.port.id_name;
+  if (
+    (portLogic as any).from !== undefined &&
+    (portLogic as any).to !== undefined &&
+    (portLogic as any).from !== '' &&
+    (portLogic as any).to !== ''
+  ) {
+    outputPort = `${outputPort}(${(portLogic as any).from} downto ${(portLogic as any).to})`;
+  }
+
   const assignment =
-    portLogic.port.id_name +
-    VHDL_ASSIGNMENT_ARROW +
-    getVhdlPortValue(portLogic);
+    outputPort + VHDL_ASSIGNMENT_ARROW + getVhdlPortValue(portLogic);
 
   return vhdlCodeLine(assignment, tabAmount);
 }
@@ -257,16 +290,7 @@ function getVhdlFsmArchitectureStateAssignments(
     outputs,
   );
 
-  let stateAssignmentLines = internalLines + outputLines;
-  if (stateAssignmentLines === '')
-    stateAssignmentLines = vhdlCodeLine(
-      VHDL_FSM_STATE_PROCESS_PORT_COMMENT,
-      tabAmount,
-      false,
-      true,
-    );
-
-  return stateAssignmentLines;
+  return internalLines + outputLines;
 }
 
 function getTransitionTargetLine(
@@ -317,16 +341,29 @@ function getVhdlFsmArchitectureStateTransitionConditions(
         return getTransitionTargetLine(contentTab, edge.target, allStates);
       };
 
-      const conditionText =
-        portConditionsText !== '' || currentEdges.length === 1
-          ? portConditionsText
-          : VHDL_FSM_STATE_PROCESS_CONDITION_ERROR;
-
-      return {conditionText, getConditionContent};
+      // If there is a port condition, use it as a condition.
+      // If not, leave conditionText empty so it can be handled as 'else' below.
+      return {conditionText: portConditionsText, getConditionContent};
     }
 
     return {conditionText: '', getConditionContent: () => ''};
   });
+
+  const emptyConditionIndexes = transitionConditions
+    .map((cond, idx) => ((cond.conditionText ?? '').trim() === '' ? idx : -1))
+    .filter(idx => idx !== -1);
+
+  // If there is at least one edge with empty condition, make the first one the else/default,
+  // and remove any additional default/else that would be added.
+  if (emptyConditionIndexes.length > 0) {
+    const firstEmptyIdx = emptyConditionIndexes[0];
+    const defaultCondition = transitionConditions[firstEmptyIdx];
+    const filteredConditions = transitionConditions.filter(
+      (cond, idx) =>
+        idx !== firstEmptyIdx && (cond.conditionText ?? '').trim() !== '',
+    );
+    return [...filteredConditions, defaultCondition];
+  }
 
   const getDefaultConditionContent = (contentTab: number) => {
     const targetState = allStates.find(
@@ -392,90 +429,157 @@ function getVhdlFsmArchitectureStateTransition(
   }
 }
 
-function getVhdlFsmArchitectureStateCase(
-  tabAmount: number,
-  state: Node<FSMState>,
-  edges: Edge<FSMTransition>[],
-  allStates: Node<FSMState>[],
-) {
-  const definitions = getVhdlFsmArchitectureStateAssignments(tabAmount, state);
-  const transition = getVhdlFsmArchitectureStateTransition(
-    tabAmount,
-    state,
-    edges,
-    allStates,
-  );
-
-  return getStringWithBreakLines([definitions, transition]);
-}
-
-function getVhdlFsmArchitectureProcessConditions(
-  nodes: Node<FSMState>[],
-  edges: Edge<FSMTransition>[],
-) {
-  const states = getStatesFromNodes(nodes);
-  const conditions = states.map((state): ConditionElement => {
-    return {
-      conditionText: getVhdlStateName(state),
-      getConditionContent: (tabAmount: number) => {
-        return getVhdlFsmArchitectureStateCase(tabAmount, state, edges, states);
-      },
-    };
-  });
-
-  return conditions;
-}
-
-function getVhdlFsmArchitectureStateProcessCaseSection(
-  tabAmount: number,
-  nodes: Node<FSMState>[],
-  edges: Edge<FSMTransition>[],
-) {
-  const firstState = getVhdlFsmFirstStateName(nodes, edges);
-  const conditions = getVhdlFsmArchitectureProcessConditions(nodes, edges);
-
-  const cases = getCasesSection(
-    tabAmount,
-    conditions,
-    contentTab =>
-      vhdlCodeLine(
-        VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT,
-        contentTab,
-        false,
-        true,
-      ) +
-      vhdlCodeLine(
-        VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + firstState,
-        contentTab,
-      ),
-  );
-
-  return cases;
-}
-
-function getVhdlFsmArchitectureStateProcess(
+function getVhdlFsmArchitectureStateTransitionProcess(
   tabAmount: number,
   inputList: Port[],
   internalsList: Port[],
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
 ) {
+  // Sensitivity list contains all ports used in transition conditions
+  const usedPortIds = new Set<string>();
+  edges.forEach(edge => {
+    if (edge.data) {
+      const {portLogic} = edge.data;
+      Object.keys(portLogic.inputs).forEach(id => usedPortIds.add(id));
+      Object.keys(portLogic.internals).forEach(id => usedPortIds.add(id));
+    }
+  });
+  const usedInputPorts = inputList.filter(port => usedPortIds.has(port.id));
+  const usedInternalPorts = internalsList.filter(port =>
+    usedPortIds.has(port.id),
+  );
   const stateProcessPortList = [
     VHDL_FSM_ARCHITECTURE_STATE_NAME,
-    ...inputList.map(input => input.id_name),
-    ...internalsList.map(internal => internal.id_name),
+    ...usedInputPorts.map(input => input.id_name),
+    ...usedInternalPorts.map(internal => internal.id_name),
   ];
 
   function getProcessContent(contentTabs: number) {
-    const caseSection = getVhdlFsmArchitectureStateProcessCaseSection(
+    const firstState = getVhdlFsmFirstStateName(nodes, edges);
+    const states = getStatesFromNodes(nodes);
+    const conditions = states.map((state): ConditionElement => {
+      return {
+        conditionText: getVhdlStateName(state),
+        getConditionContent: (tabAmount: number) => {
+          return getVhdlFsmArchitectureStateTransition(
+            tabAmount,
+            state,
+            edges,
+            states,
+          );
+        },
+      };
+    });
+
+    const cases = getCasesSection(
       contentTabs,
-      nodes,
-      edges,
+      conditions,
+      contentTab =>
+        vhdlCodeLine(
+          VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT,
+          contentTab,
+          false,
+          true,
+        ) +
+        vhdlCodeLine(
+          VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN + firstState,
+          contentTab,
+        ),
     );
-    return caseSection;
+
+    return cases;
   }
 
-  return getProcessSection(tabAmount, stateProcessPortList, getProcessContent);
+  const commentLine = vhdlCodeLine(
+    '-- State Transition Logic',
+    tabAmount,
+    false,
+  );
+  return (
+    commentLine +
+    getProcessSection(tabAmount, stateProcessPortList, getProcessContent)
+  );
+}
+
+function getVhdlFsmArchitectureStateAssignmentProcess(
+  tabAmount: number,
+  outputList: Port[],
+  internalsList: Port[],
+  nodes: Node<FSMState>[],
+) {
+  const clockProcessPortList = [DEFAULT_CLK_PORT, DEFAULT_RESET_PORT].map(
+    port => port.id_name,
+  );
+
+  function getProcessContent(contentTabs: number) {
+    // Generate initialization for all ports (outputs and internals) with zero
+    const allPorts = [...outputList, ...internalsList];
+    const zeroAssignments = allPorts
+      .map(port => {
+        let zeroValue = "'0'";
+        if (
+          port.type === 'logic_vector' &&
+          typeof port.defaultValue === 'string'
+        ) {
+          zeroValue = `"${'0'.repeat(port.defaultValue.length)}"`;
+        } else if (
+          port.type === 'integer' &&
+          typeof port.defaultValue === 'number'
+        ) {
+          zeroValue = '0';
+        }
+        return vhdlCodeLine(
+          `${port.id_name} ${VHDL_ASSIGNMENT_ARROW} ${zeroValue}`,
+          contentTabs + 1,
+        );
+      })
+      .join('');
+
+    // Generate state assignments for each state
+    const states = getStatesFromNodes(nodes);
+    const stateAssignments = states.map((state): ConditionElement => {
+      return {
+        conditionText: getVhdlStateName(state),
+        getConditionContent: (tabAmount: number) => {
+          return getVhdlFsmArchitectureStateAssignments(tabAmount, state);
+        },
+      };
+    });
+    const cases = getCasesSection(
+      contentTabs + 1,
+      stateAssignments,
+      tabAmount =>
+        vhdlCodeLine(
+          VHDL_FSM_STATE_PROCESS_DATA_OTHERS_COMMENT,
+          tabAmount,
+          false,
+          true,
+        ),
+    );
+
+    return (
+      vhdlCodeLine(
+        `if ${VHDL_FSM_CLOCK_PROCESS_CONDITION_1} then`,
+        contentTabs,
+        false,
+      ) +
+      zeroAssignments +
+      vhdlCodeLine(
+        `elsif ${VHDL_FSM_CLOCK_PROCESS_CONDITION_2} then`,
+        contentTabs,
+        false,
+      ) +
+      cases +
+      vhdlCodeLine(`${VHDL_END_IF}`, contentTabs)
+    );
+  }
+
+  const commentLine = vhdlCodeLine('-- Data Logic', tabAmount, false);
+  return (
+    commentLine +
+    getProcessSection(tabAmount, clockProcessPortList, getProcessContent)
+  );
 }
 
 export function generateVhdlFsmArchitecture(
@@ -483,12 +587,13 @@ export function generateVhdlFsmArchitecture(
   architectureName: string,
   entityName: string,
   inputList: Port[],
+  outputList: Port[],
   internalsList: Port[],
   nodes: Node<FSMState>[],
   edges: Edge<FSMTransition>[],
 ) {
   const getDefinitions = (contentTabs: number) => {
-    return getVhdlFsmArchitectureDefinitions(contentTabs, nodes);
+    return getVhdlFsmArchitectureDefinitions(contentTabs, nodes, internalsList);
   };
 
   const getContent = (contentTabs: number) => {
@@ -497,15 +602,25 @@ export function generateVhdlFsmArchitecture(
       nodes,
       edges,
     );
-    const stateProcess = getVhdlFsmArchitectureStateProcess(
+    const stateTransitionProcess = getVhdlFsmArchitectureStateTransitionProcess(
       contentTabs,
       inputList,
       internalsList,
       nodes,
       edges,
     );
+    const stateAssignmentProcess = getVhdlFsmArchitectureStateAssignmentProcess(
+      contentTabs,
+      outputList,
+      internalsList,
+      nodes,
+    );
 
-    return getStringWithBreakLines([clockProcess, stateProcess]);
+    return getStringWithBreakLines([
+      clockProcess,
+      stateTransitionProcess,
+      stateAssignmentProcess,
+    ]);
   };
 
   return getArchitectureSection(

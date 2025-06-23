@@ -58,11 +58,9 @@ export type DialogSettingsType = {
   setProjectName: SetterType<string>;
   authorName: string;
   setAuthorName: SetterType<string>;
-  language: string;
-  setLanguage: SetterType<string>;
 };
 
 export type SaveFileFormat = Pick<NodeStoreType, 'nodes' | 'nodeCount'> &
   Pick<PortStoreType, 'inputList' | 'internalsList' | 'outputList'> &
   Pick<EdgeStoreType, 'edges' | 'transitionCount'> &
-  Pick<DialogSettingsType, 'authorName' | 'language' | 'projectName'>;
+  Pick<DialogSettingsType, 'authorName' | 'projectName'>;

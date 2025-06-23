@@ -130,8 +130,8 @@ function Canvas() {
             stateNumber: newCount,
             name: `State ${newCount}`,
             portLogic: {
-              outputs: outputsLogicObject,
-              internals: internalsLogicObject,
+              outputs: {},
+              internals: {},
             },
           },
         },

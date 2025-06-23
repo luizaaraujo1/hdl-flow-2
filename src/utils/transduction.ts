@@ -47,11 +47,15 @@ function getConditionText(
   conditionText: string,
 ) {
   let startText = '';
+  const isElseStmt =
+    isLastElement &&
+    (!conditionText || (conditionText && conditionText.trim() === ''));
   if (isFirstElement) startText = ifStartText;
-  else if (isLastElement) startText = elseStartText;
+  else if (isLastElement)
+    startText = !isElseStmt ? elsifStartText : elseStartText;
   else startText = elsifStartText;
   //Note: This works well for VHDL, but maybe not other languages
-  return startText + conditionText + (!isLastElement ? conditionEndText : '\n');
+  return startText + conditionText + (!isElseStmt ? conditionEndText : '\n');
 }
 
 export function getConditionSection(

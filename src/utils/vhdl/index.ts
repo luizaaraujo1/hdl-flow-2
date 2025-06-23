@@ -30,7 +30,6 @@ export default function generateVhdlCode(
     baseTabAmount,
     entityName,
     inputList,
-    internalsList,
     outputList,
   );
 
@@ -40,6 +39,7 @@ export default function generateVhdlCode(
     architectureName,
     entityName,
     inputList,
+    outputList,
     internalsList,
     nodes,
     edges,

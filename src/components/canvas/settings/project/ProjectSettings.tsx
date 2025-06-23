@@ -1,5 +1,4 @@
 import RoundedScrollContainer from '@components/shared/RoundedScrollContainer';
-import SelectInput from '@components/shared/SelectInput';
 import TextInput from '@components/shared/TextInput';
 import {DownloadIcon, ExclamationTriangleIcon} from '@radix-ui/react-icons';
 import useStoreEdges from '@store/useStoreEdges';
@@ -8,20 +7,9 @@ import useStorePorts from '@store/useStorePorts';
 import useStoreSettings from '@store/useStoreSettings';
 import {generateAndExportFile} from '@store/utils';
 
-const LANGUAGE_OPTIONS = [
-  {id: 'VDHL', value: 'VHDL'},
-  {id: 'very', value: 'VERILOG (Coming soon)'},
-];
-
 function ProjectSettings() {
-  const {
-    projectName,
-    setProjectName,
-    authorName,
-    setAuthorName,
-    language,
-    setLanguage,
-  } = useStoreSettings();
+  const {projectName, setProjectName, authorName, setAuthorName} =
+    useStoreSettings();
   const {resetEdges, edges, transitionCount, setEdges, setTransitionCount} =
     useStoreEdges();
   const {
@@ -52,7 +40,6 @@ function ProjectSettings() {
       nodes,
       nodeCount,
       authorName,
-      language,
       projectName,
     });
   }
@@ -70,7 +57,6 @@ function ProjectSettings() {
         state.nodes,
         state.nodeCount,
         state.authorName,
-        state.language,
         state.projectName)
       ) {
         setEdges(state.edges);
@@ -81,7 +67,6 @@ function ProjectSettings() {
         setNodes(state.nodes);
         setNodeCount(state.nodeCount);
         setAuthorName(state.authorName);
-        setLanguage(state.language);
         setProjectName(state.projectName);
       } else {
         console.error('Failed to import file');
@@ -109,15 +94,6 @@ function ProjectSettings() {
             placeholder="Add your name to the project"
             onTextChange={value => setAuthorName(value)}
             value={authorName}
-          />
-        </div>
-        <div className="flex flex-col">
-          <SelectInput
-            id="language_select"
-            label="Select HDL language"
-            onTextChange={newType => setLanguage(newType)}
-            value={language}
-            options={LANGUAGE_OPTIONS}
           />
         </div>
       </fieldset>

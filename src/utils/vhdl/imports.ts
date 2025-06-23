@@ -16,6 +16,7 @@ export function generateVhdlImports(
       true,
     ) +
     vhdlCodeLine('library IEEE', tabAmount) +
-    vhdlCodeLine('use IEEE.std_logic_1164.all', tabAmount)
+    vhdlCodeLine('use IEEE.std_logic_1164.all', tabAmount) +
+    vhdlCodeLine('use IEEE.numeric_std.all', tabAmount)
   );
 }

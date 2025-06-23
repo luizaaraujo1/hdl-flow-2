@@ -14,6 +14,7 @@ import CanvasButton from '@shared/DeleteButton';
 import useStoreDialog from '@store/useStoreDialog';
 import useStoreEdges from '@store/useStoreEdges';
 import {getCurvedPath, getEdgeParams, getLoopPath} from '@utils/edge.utils';
+import {getDisplayFsmTransitionConditionFromLogic} from '@utils/vhdl/utils';
 
 function FloatingEdge({
   id,
@@ -122,6 +123,34 @@ function FloatingEdge({
     ...(selected ? {strokeWidth: (Number(style?.strokeWidth) ?? 2) + 1} : {}),
   };
 
+  // Construct and display edge condition
+  let conditionDisplay = '';
+  if (data) {
+    const {portLogic, operator} = data;
+    const {inputs, internals} = portLogic;
+
+    const inputConditions = Object.keys(inputs).map(inputKey =>
+      getDisplayFsmTransitionConditionFromLogic(inputs[inputKey]),
+    );
+
+    const internalConditions = Object.keys(internals).map(internalsKey =>
+      getDisplayFsmTransitionConditionFromLogic(internals[internalsKey]),
+    );
+    // Encapsulate each condition with () if there is more than one condition
+    const encapsulate = (cond: string) =>
+      inputConditions.length + internalConditions.length > 1
+        ? `(${cond})`
+        : cond;
+
+    const allConditions = [
+      ...inputConditions.map(encapsulate),
+      ...internalConditions.map(encapsulate),
+    ];
+    const operatorName = ' ' + operator.toLowerCase() + ' ';
+    conditionDisplay =
+      allConditions.length > 0 ? allConditions.join(operatorName) : '';
+  }
+
   return (
     <>
       <path
@@ -164,7 +193,15 @@ function FloatingEdge({
               transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
             }}
             className="nodrag nopan rounded-md border-2 border-black bg-white p-2 text-lg font-semibold shadow-md">
-            {`T${data?.transitionNumber}`}
+            <div>{`T${data?.transitionNumber}`}</div>
+            {conditionDisplay && (
+              <div className="my-2 w-full border-b-2 border-black" />
+            )}
+            {conditionDisplay && (
+              <div className="mt-1 text-xs font-normal text-gray-700">
+                {conditionDisplay}
+              </div>
+            )}
           </div>
         )}
       </EdgeLabelRenderer>

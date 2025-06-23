@@ -89,8 +89,8 @@ function PortEditor() {
         data: {
           ...node.data,
           portLogic: {
-            internals: {...internalsLogicObject},
-            outputs: {...outputsLogicObject},
+            internals: {},
+            outputs: {},
           },
         },
       })),

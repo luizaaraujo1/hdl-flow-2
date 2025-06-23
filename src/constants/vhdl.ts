@@ -16,8 +16,18 @@ export const VHDL_DEFINITION_ARROW = ' =>';
 export const VHDL_ASSIGNMENT_ARROW = ' <= ';
 export const VHDL_EQUALITY = ' = ';
 export const VHDL_INEQUALITY = ' /= ';
+export const VHDL_LESS_THAN = ' < ';
+export const VHDL_LESS_THAN_OR_EQUAL = ' <= ';
+export const VHDL_GREATER_THAN = ' > ';
+export const VHDL_GREATER_THAN_OR_EQUAL = ' >= ';
 export const VHDL_AND = ' and ';
 export const VHDL_OR = ' or ';
+export const VHDL_NAND = ' nand ';
+export const VHDL_NOR = ' nor ';
+export const VHDL_XOR = ' xor ';
+export const VHDL_XNOR = ' xnor ';
+export const VHDL_SLL = ' sll ';
+export const VHDL_SRL = ' srl ';
 export const VHDL_OUT = ' out ';
 export const VHDL_IN = ' in ';
 export const VHDL_COLON = ':';
@@ -54,8 +64,8 @@ export const VHDL_FSM_STATE_PROCESS_WHEN_OTHERS = 'when others =>';
 export const VHDL_FSM_STATE_PROCESS_NEXT_STATE_ASSIGN = 'next_state <= ';
 export const VHDL_FSM_STATE_PROCESS_DEFAULT_COMMENT =
   'Default state defined as first state';
-export const VHDL_FSM_STATE_PROCESS_PORT_COMMENT =
-  'Note: Declare internal and output ports on the Port Editor';
+export const VHDL_FSM_STATE_PROCESS_DATA_OTHERS_COMMENT =
+  'Default data state - empty';
 export const VHDL_FSM_STATE_PROCESS_DEAD_COMMENT =
   'Warning! This is a dead state';
 export const VHDL_FSM_RESET_ERROR =
@@ -64,5 +74,3 @@ export const VHDL_FSM_RESET_INVALID_ERROR =
   'Error! Reset Node is connection is invalid, try editing the Canvas';
 export const VHDL_FSM_STATE_PROCESS_TRANSITION_ERROR =
   'Error! This transition is invalid';
-export const VHDL_FSM_STATE_PROCESS_CONDITION_ERROR =
-  '/*Error! Missing transition condition, try the Transition Editor*/';

@@ -59,7 +59,7 @@ function getEntity(
   );
 }
 
-function getEntityPortType(port: Port) {
+export function getEntityPortType(port: Port) {
   switch (port.type) {
     case PortTypeEnum.LogicVector:
       return (
@@ -70,6 +70,7 @@ function getEntityPortType(port: Port) {
     case PortTypeEnum.Logic:
       return 'std_logic';
     case PortTypeEnum.Integer:
+      return 'integer';
     default:
       return 'std_logic_vector(8 downto 0)';
   }
@@ -113,7 +114,6 @@ export function generateVhdlFsmEntity(
   tabAmount: number,
   entityName: string,
   inputList: Port[],
-  internalsList: Port[],
   outputList: Port[],
 ) {
   const getContent = (contentTabs: number) => {
@@ -123,9 +123,14 @@ export function generateVhdlFsmEntity(
       'Input',
     );
     const inputs = getEntityPortList(contentTabs, inputList, 'Input');
-    const internals = getEntityPortList(contentTabs, internalsList, 'Internal');
     const outputs = getEntityPortList(contentTabs, outputList, 'Output');
-    return defaults + inputs + internals + outputs;
+
+    let ret = defaults + inputs + outputs;
+    // Remove the last semicolon, if present
+    if (ret.trim().endsWith(';')) {
+      ret = ret.replace(/;(\s*)$/, '$1');
+    }
+    return ret;
   };
 
   return getEntity(tabAmount, entityName, getContent);
